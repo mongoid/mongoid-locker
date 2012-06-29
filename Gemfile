@@ -11,7 +11,6 @@ group :development do
   gem 'rspec', '~> 2.8'
   gem 'bundler', '~> 1.1'
   gem 'jeweler', '~> 1.8'
-  gem 'debugger'
 end
 
 group :development, :test do
