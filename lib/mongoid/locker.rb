@@ -13,10 +13,12 @@ module Mongoid
       self.locked_at = Time.now
       self.save!
 
-      yield
-
-      self.locked_at = nil
-      self.save!
+      begin
+        yield
+      ensure
+        self.locked_at = nil
+        self.save!
+      end
     end
   end
 end

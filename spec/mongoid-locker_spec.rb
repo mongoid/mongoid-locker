@@ -23,26 +23,37 @@ describe Mongoid::Locker do
   it "shouldn't be locked when created" do
     user = User.create!
     user.should_not be_locked
-    User.first.should_not be_locked
   end
 
   describe "#with_lock" do
+    before { @user = User.create! }
+
     it "should lock and unlock the user" do
-      user = User.create!
-      user.with_lock do
-        user.should be_locked
+      @user.with_lock do
+        @user.should be_locked
         User.first.should be_locked
       end
-      user.should_not be_locked
-      User.first.should_not be_locked
+
+      @user.should_not be_locked
+      @user.reload.should_not be_locked
     end
 
     it "should allow execution within a lock" do
-      user = User.create!
-      user.with_lock do
-        user.account_balance = 10
+      @user.with_lock do
+        @user.account_balance = 10
       end
-      user.account_balance.should eq(10)
+
+      @user.reload.account_balance.should eq(10)
+    end
+
+    it "should handle errors gracefully" do
+      expect {
+        @user.with_lock do
+          raise "booyah!"
+        end
+      }.to raise_error
+
+      @user.reload.should_not be_locked
     end
   end
 end
