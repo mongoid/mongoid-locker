@@ -1,0 +1,3 @@
+test:
+  host: localhost
+  database: mongoid_locker_test
