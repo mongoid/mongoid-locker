@@ -18,7 +18,7 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/afeld/mongoid-locker"
   gem.license = "MIT"
   gem.summary = "Document-level locking for MongoDB via Mongoid"
-  gem.description = %Q{TODO: longer description of your gem}
+  # gem.description = %Q{TODO: longer description of your gem}
   gem.email = "aidan.feldman@gmail.com"
   gem.authors = ["Aidan Feldman"]
   # dependencies defined in Gemfile
