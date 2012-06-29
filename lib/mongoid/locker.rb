@@ -1,8 +1,22 @@
 module Mongoid
   module Locker
-    def self.included mod
-      mod.field :locked_at, :type => Time
+    module ClassMethods
+      def locker_timeout_after new_time
+        @locker_timeout = new_time
+      end
+
+      def locker_timeout
+        @locker_timeout
+      end
     end
+
+    def self.included mod
+      mod.extend ClassMethods
+      mod.field :locked_at, :type => Time
+      # default timeout of five seconds
+      mod.instance_variable_set :@locker_timeout, 5
+    end
+
 
     def locked?
       !!self.locked_at
@@ -23,9 +37,17 @@ module Mongoid
     def lock
       time = Time.now
       self.locked_at = time
+      expiration = time - self.class.locker_timeout
+
       # update the DB without persisting entire doc
       record = self.class.collection.find_and_modify(
-        :query => {:_id => self.id, :locked_at => nil},
+        :query => {
+          :_id => self.id,
+          '$or' => [
+            {:locked_at => nil},
+            {:locked_at => {'$lte' => expiration}}
+          ]
+        },
         :update => {'$set' => {:locked_at => time}}
       )
 
