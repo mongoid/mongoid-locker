@@ -7,7 +7,7 @@ describe Mongoid::Locker do
       include Mongoid::Document
       include Mongoid::Locker
 
-      field :account_balance, type: Integer # easier to test than Float
+      field :account_balance, :type => Integer # easier to test than Float
     end
   end
 
