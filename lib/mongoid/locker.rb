@@ -35,17 +35,20 @@ module Mongoid
     protected
 
     def lock wait=false
+      coll = self.class.collection
       time = Time.now
       self.locked_at = time
       timeout = self.class.locker_timeout
       expiration = time - timeout
 
       # update the DB without persisting entire doc
-      record = self.class.collection.find_and_modify(
+      record = coll.find_and_modify(
         :query => {
           :_id => self.id,
           '$or' => [
+            # not locked
             {:locked_at => nil},
+            # expired
             {:locked_at => {'$lte' => expiration}}
           ]
         },
@@ -53,8 +56,19 @@ module Mongoid
       )
 
       unless record
-        if wait
-          sleep timeout
+        # couldn't grab lock
+
+        existing_query = {
+          :_id => self.id,
+          :locked_at => {'$exists' => true}
+        }
+
+        if wait && existing = coll.find(existing_query, :limit => 1).first
+          # doc is locked - wait until it expires
+          wait_time = timeout - (Time.now - existing.locked_at)
+          sleep wait_time if wait_time > 0
+
+          # retry lock grab
           self.lock
         else
           raise LockError.new("could not get lock")
