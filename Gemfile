@@ -12,3 +12,10 @@ group :development do
   gem 'bundler', '~> 1.1'
   gem 'jeweler', '~> 1.8'
 end
+
+group :development, :test do
+  gem 'bson_ext'
+  gem 'spork'
+  gem 'guard-rspec'
+  gem 'guard-spork'
+end
