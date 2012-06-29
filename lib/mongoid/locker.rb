@@ -19,7 +19,7 @@ module Mongoid
 
 
     def locked?
-      !!self.locked_at
+      self.locked_at && self.locked_at > Time.now - self.class.locker_timeout
     end
 
     def with_lock &block

@@ -23,6 +23,15 @@ describe Mongoid::Locker do
     it "shouldn't be locked when created" do
       @user.should_not be_locked
     end
+
+    it "should respect the expiration" do
+      User.locker_timeout_after 1
+
+      @user.with_lock do
+        sleep 2
+        @user.should_not be_locked
+      end
+    end
   end
 
   describe "#with_lock" do
