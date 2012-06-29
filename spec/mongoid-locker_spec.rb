@@ -1,6 +1,10 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
 describe Mongoid::Locker do
+  def remove_class klass
+    Object.send :remove_const, klass.to_s.to_sym
+  end
+
   before do
     # recreate the class for each spec
     class User
@@ -15,7 +19,7 @@ describe Mongoid::Locker do
 
   after do
     User.delete_all
-    Object.send :remove_const, :User
+    remove_class User
   end
 
 
@@ -75,6 +79,21 @@ describe Mongoid::Locker do
         }.to raise_error(Mongoid::LockError)
       end
     end
+
+    it "should wait until the lock times out, if desired" do
+      User.locker_timeout_after 1
+
+      @user.with_lock do
+        user_dup = User.first
+
+        user_dup.with_lock true do
+          user_dup.account_balance = 10
+          user_dup.save!
+        end
+      end
+
+      @user.reload.account_balance.should eq(10)
+    end
   end
 
   describe ".locker_timeout_after" do
@@ -104,6 +123,8 @@ describe Mongoid::Locker do
       Account.locker_timeout_after 2
 
       User.locker_timeout.should eq(1)
+
+      remove_class Account
     end
   end
 end
