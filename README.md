@@ -1,4 +1,4 @@
-# mongoid-locker [![Build Status](https://secure.travis-ci.org/[YOUR_GITHUB_USERNAME]/[YOUR_PROJECT_NAME].png)](http://travis-ci.org/[YOUR_GITHUB_USERNAME]/[YOUR_PROJECT_NAME])
+# mongoid-locker [![Build Status](https://secure.travis-ci.org/afeld/mongoid-locker.png)](http://travis-ci.org/afeld/mongoid-locker)
 
 Document-level locking for MongoDB via Mongoid.
 

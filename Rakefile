@@ -17,7 +17,7 @@ Jeweler::Tasks.new do |gem|
   gem.name = "mongoid-locker"
   gem.homepage = "http://github.com/afeld/mongoid-locker"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
+  gem.summary = "Document-level locking for MongoDB via Mongoid"
   gem.description = %Q{TODO: longer description of your gem}
   gem.email = "aidan.feldman@gmail.com"
   gem.authors = ["Aidan Feldman"]
@@ -31,19 +31,4 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
-RSpec::Core::RakeTask.new(:rcov) do |spec|
-  spec.pattern = 'spec/**/*_spec.rb'
-  spec.rcov = true
-end
-
 task :default => :spec
-
-require 'rdoc/task'
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "mongoid-locker #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-end
