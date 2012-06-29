@@ -1,9 +1,11 @@
 module Mongoid
   module Locker
-    class << self
-      def inherited mod
-        mod.include Mongoid::Document # in case they forgot
-      end
+    def self.included mod
+      mod.field :locked_at, type: Time
+    end
+
+    def locked?
+      !!locked_at
     end
   end
 end

@@ -16,4 +16,9 @@ describe Mongoid::Locker do
   it "should find no users to start" do
     User.all.should be_empty
   end
+
+  it "shouldn't be locked when initialized" do
+    user = User.new
+    user.should_not be_locked
+  end
 end
