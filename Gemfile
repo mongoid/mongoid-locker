@@ -14,6 +14,6 @@ group :development do
 end
 
 group :development, :test do
-  gem 'bson_ext'
+  gem 'bson_ext', :platforms => :ruby
   gem 'guard-rspec'
 end
