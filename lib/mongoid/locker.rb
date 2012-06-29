@@ -24,7 +24,12 @@ module Mongoid
       time = Time.now
       self.locked_at = time
       # update the DB without persisting entire doc
-      self.class.collection.update({:_id => self.id}, {'$set' => {:locked_at => time}}, {:safe => true})
+      record = self.class.collection.find_and_modify(
+        :query => {:_id => self.id, :locked_at => nil},
+        :update => {'$set' => {:locked_at => time}}
+      )
+
+      raise LockError.new("could not get lock") unless record
     end
 
     def unlock
@@ -33,4 +38,6 @@ module Mongoid
       self.locked_at = nil
     end
   end
+
+  class LockError < Exception; end
 end

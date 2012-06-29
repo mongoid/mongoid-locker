@@ -56,5 +56,17 @@ describe Mongoid::Locker do
 
       @user.reload.should_not be_locked
     end
+
+    it "should complain if trying to lock locked doc" do
+      @user.with_lock do
+        user_dup = User.first
+
+        expect {
+          user_dup.with_lock do
+            fail "shouldn't get the lock"
+          end
+        }.to raise_error(Mongoid::LockError)
+      end
+    end
   end
 end
