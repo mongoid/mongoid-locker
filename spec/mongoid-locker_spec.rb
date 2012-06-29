@@ -29,7 +29,7 @@ describe Mongoid::Locker do
     end
 
     it "should respect the expiration" do
-      User.locker_timeout_after 1
+      User.timeout_lock_after 1
 
       @user.with_lock do
         sleep 2
@@ -81,7 +81,7 @@ describe Mongoid::Locker do
     end
 
     it "should wait until the lock times out, if desired" do
-      User.locker_timeout_after 1
+      User.timeout_lock_after 1
 
       @user.with_lock do
         user_dup = User.first
@@ -98,7 +98,7 @@ describe Mongoid::Locker do
 
   describe ".locker_timeout_after" do
     it "should ignore the lock if it has timed out" do
-      User.locker_timeout_after 1
+      User.timeout_lock_after 1
 
       @user.with_lock do
         user_dup = User.first
@@ -119,8 +119,8 @@ describe Mongoid::Locker do
         include Mongoid::Locker
       end
 
-      User.locker_timeout_after 1
-      Account.locker_timeout_after 2
+      User.timeout_lock_after 1
+      Account.timeout_lock_after 2
 
       User.locker_timeout.should eq(1)
 
