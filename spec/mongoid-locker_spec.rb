@@ -86,7 +86,7 @@ describe Mongoid::Locker do
       @user.with_lock do
         user_dup = User.first
 
-        user_dup.with_lock true do
+        user_dup.with_lock :wait => true do
           user_dup.account_balance = 10
           user_dup.save!
         end
@@ -94,9 +94,18 @@ describe Mongoid::Locker do
 
       @user.reload.account_balance.should eq(10)
     end
+
+    it "should override the default timeout" do
+      User.timeout_lock_after 1
+
+      expiration = (Time.now + 3).to_i
+      @user.with_lock :timeout => 3 do
+        @user.locked_until.to_i.should eq(expiration)
+      end
+    end
   end
 
-  describe ".locker_timeout_after" do
+  describe ".timeout_lock_after" do
     it "should ignore the lock if it has timed out" do
       User.timeout_lock_after 1
 
@@ -122,7 +131,7 @@ describe Mongoid::Locker do
       User.timeout_lock_after 1
       Account.timeout_lock_after 2
 
-      User.locker_timeout.should eq(1)
+      User.lock_timeout.should eq(1)
 
       remove_class Account
     end
