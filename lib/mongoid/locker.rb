@@ -80,8 +80,12 @@ module Mongoid
           wait_time = existing.locked_until - Time.now
           sleep wait_time if wait_time > 0
 
+          # only wait once
+          opts.dup
+          opts.delete :wait
+
           # retry lock grab
-          self.lock
+          self.lock opts
         else
           raise LockError.new("could not get lock")
         end
