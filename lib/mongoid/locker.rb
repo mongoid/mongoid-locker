@@ -5,20 +5,32 @@ module Mongoid
     end
 
     def locked?
-      !!locked_at
+      !!self.locked_at
     end
 
-    # note this saves the user before and after the block is executed
     def with_lock &block
-      self.locked_at = Time.now
-      self.save!
-
+      self.lock
       begin
         yield
       ensure
-        self.locked_at = nil
-        self.save!
+        self.unlock
       end
+    end
+
+
+    protected
+
+    def lock
+      time = Time.now
+      self.locked_at = time
+      # update the DB without persisting entire doc
+      self.class.collection.update({:_id => self.id}, {'$set' => {:locked_at => time}}, {:safe => true})
+    end
+
+    def unlock
+      # update the DB without persisting entire doc
+      self.class.collection.update({:_id => self.id}, {'$set' => {:locked_at => nil}}, {:safe => true})
+      self.locked_at = nil
     end
   end
 end

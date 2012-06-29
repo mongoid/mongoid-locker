@@ -38,12 +38,13 @@ describe Mongoid::Locker do
       @user.reload.should_not be_locked
     end
 
-    it "should allow execution within a lock" do
+    it "shouldn't save the full document" do
       @user.with_lock do
         @user.account_balance = 10
       end
 
-      @user.reload.account_balance.should eq(10)
+      @user.account_balance.should eq(10)
+      User.first.account_balance.should be_nil
     end
 
     it "should handle errors gracefully" do
