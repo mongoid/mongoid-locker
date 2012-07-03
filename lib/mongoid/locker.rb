@@ -1,6 +1,20 @@
 module Mongoid
   module Locker
     module ClassMethods
+      # A scope to retrieve all locked documents in the collection.
+      #
+      # @return [Mongoid::Criteria]
+      def locked
+        where :locked_until.gt => Time.now
+      end
+
+      # A scope to retrieve all unlocked documents in the collection.
+      #
+      # @return [Mongoid::Criteria]
+      def unlocked
+        any_of({:locked_until => nil}, {:locked_until.lte => Time.now})
+      end
+
       # Set the default lock timeout for this class.  Note this only applies to new locks.  Defaults to five seconds.
       #
       # @param [Fixnum] new_time the default number of seconds until a lock is considered "expired", in seconds

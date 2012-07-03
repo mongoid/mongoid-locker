@@ -136,4 +136,24 @@ describe Mongoid::Locker do
       remove_class Account
     end
   end
+
+  describe ".locked" do
+    it "should return the locked documents" do
+      user2 = User.create!
+
+      @user.with_lock do
+        User.locked.to_a.should eq([@user])
+      end
+    end
+  end
+
+  describe ".unlocked" do
+    it "should return the unlocked documents" do
+      user2 = User.create!
+
+      @user.with_lock do
+        User.unlocked.to_a.should eq([user2])
+      end
+    end
+  end
 end
