@@ -11,9 +11,12 @@ group :development do
   gem 'rspec', '~> 2.8'
   gem 'bundler', '~> 1.1'
   gem 'jeweler', '~> 1.8'
+
+  gem 'guard-rspec'
+  gem 'guard-yard'
+  gem 'redcarpet'
 end
 
 group :development, :test do
   gem 'bson_ext', :platforms => :ruby
-  gem 'guard-rspec'
 end

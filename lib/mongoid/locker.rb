@@ -1,16 +1,23 @@
 module Mongoid
   module Locker
     module ClassMethods
-      # note this only applies to new locks
+      # Set the default lock timeout for this class.  Note this only applies to new locks.  Defaults to five seconds.
+      #
+      # @param [Fixnum] new_time the default number of seconds until a lock is considered "expired", in seconds
+      # @return [void]
       def timeout_lock_after new_time
         @lock_timeout = new_time
       end
 
+      # Retrieve the lock timeout default for this class.
+      #
+      # @return [Fixnum] the default number of seconds until a lock is considered "expired", in seconds
       def lock_timeout
         @lock_timeout
       end
     end
 
+    # @api private
     def self.included mod
       mod.extend ClassMethods
 
@@ -22,10 +29,19 @@ module Mongoid
     end
 
 
+    # Returns whether the document is currently locked or not.
+    #
+    # @return [Boolean] true if locked, false otherwise
     def locked?
       self.locked_until && self.locked_until > Time.now
     end
 
+    # Primary method of plugin: execute the provided code once the document has been successfully locked.
+    #
+    # @param [Hash] opts for the locking mechanism
+    # @option opts [Fixnum] :timeout The number of seconds until the lock is considered "expired" - defaults to the {ClassMethods#lock_timeout}
+    # @option opts [Boolean] :wait If the document is currently locked, wait until the lock expires and try again
+    # @return [void]
     def with_lock opts={}, &block
       self.lock opts
       begin
@@ -106,5 +122,6 @@ module Mongoid
     end
   end
 
+  # Error thrown if document could not be successfully locked.
   class LockError < Exception; end
 end

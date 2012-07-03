@@ -8,3 +8,9 @@ guard 'rspec', :version => 2 do
   watch(%r{^lib/(.+)\.rb$})     { "spec" }
   watch('spec/spec_helper.rb')  { "spec" }
 end
+
+guard 'yard', :port => '8808' do
+  watch(%r{^lib/(.+)\.rb$})
+
+  callback(:start_end) { `open http://localhost:8808` }
+end
