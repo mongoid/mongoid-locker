@@ -13,8 +13,6 @@ group :development do
   gem 'jeweler', '~> 1.8'
 
   gem 'guard-rspec'
-  gem 'guard-yard'
-  gem 'redcarpet'
 end
 
 group :development, :test do
