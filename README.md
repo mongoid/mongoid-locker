@@ -13,20 +13,23 @@ Document-level locking for MongoDB via Mongoid.  The need arose at [Jux](https:/
 In the model you wish to lock, include `Mongoid::Locker` after `Mongoid::Document`.  For example:
 
 ```ruby
-class User
-    include Mongoid::Document
-    include Mongoid::Locker
-    
-    field :account_balance, :type => Float
+class QueueItem
+  include Mongoid::Document
+  include Mongoid::Locker
+
+  field :completed_at, :type => Time
 end
 ```
 
 Then, execute any code you like in a block like so:
 
 ```ruby
-user.with_lock do
-    user.account_balance -= 100.00
-    user.save!
+queue_item.with_lock do
+
+  # do stuff
+
+  queue_item.completed_at = Time.now
+  queue_item.save!
 end
 ```
 
@@ -38,13 +41,13 @@ end
 The default timeout can also be set on a per-class basis:
 
 ```ruby
-class User
-    # ...
-    timeout_lock_after 10
+class QueueItem
+  # ...
+  timeout_lock_after 10
 end
 ```
 
-Note that these locks are only enforced when using `#with_lock`, not at the database level.  Enjoy!
+Note that these locks are only enforced when using `#with_lock`, not at the database level.  It is useful for transactional operations, where you can make atomic modification of the document with checks.  For exmple, you could deduct a purchase from a user's balance... _unless_ they are broke.  Enjoy!
 
 ## Contributing
 

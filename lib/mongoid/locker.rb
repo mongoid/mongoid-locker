@@ -44,7 +44,7 @@ module Mongoid
       timeout = opts[:timeout] || self.class.lock_timeout
       expiration = time + timeout
 
-      # update the DB without persisting entire doc
+      # lock the document atomically in the DB without persisting entire doc
       record = coll.find_and_modify(
         :query => {
           :_id => self.id,
@@ -93,7 +93,7 @@ module Mongoid
     end
 
     def unlock
-      # update the DB without persisting entire doc
+      # unlock the document in the DB without persisting entire doc
       self.class.collection.update({:_id => self.id}, {
         '$set' => {
           :locked_at => nil,
