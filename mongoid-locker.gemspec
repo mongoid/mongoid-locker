@@ -5,11 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = "mongoid-locker"
-  s.version = "0.0.0"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Aidan Feldman"]
-  s.date = "2012-06-29"
+  s.date = "2012-07-03"
+  s.description = "Allows multiple processes to operate on individual documents in MongoDB while ensuring that only one can act at a time."
   s.email = "aidan.feldman@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -27,6 +28,7 @@ Gem::Specification.new do |s|
     "VERSION",
     "lib/mongoid-locker.rb",
     "lib/mongoid/locker.rb",
+    "mongoid-locker.gemspec",
     "spec/database.yml",
     "spec/mongoid-locker_spec.rb",
     "spec/spec_helper.rb"
@@ -45,23 +47,23 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rspec>, ["~> 2.8"])
       s.add_development_dependency(%q<bundler>, ["~> 1.1"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8"])
-      s.add_development_dependency(%q<bson_ext>, [">= 0"])
       s.add_development_dependency(%q<guard-rspec>, [">= 0"])
+      s.add_development_dependency(%q<bson_ext>, [">= 0"])
     else
       s.add_dependency(%q<mongoid>, ["~> 2.4"])
       s.add_dependency(%q<rspec>, ["~> 2.8"])
       s.add_dependency(%q<bundler>, ["~> 1.1"])
       s.add_dependency(%q<jeweler>, ["~> 1.8"])
-      s.add_dependency(%q<bson_ext>, [">= 0"])
       s.add_dependency(%q<guard-rspec>, [">= 0"])
+      s.add_dependency(%q<bson_ext>, [">= 0"])
     end
   else
     s.add_dependency(%q<mongoid>, ["~> 2.4"])
     s.add_dependency(%q<rspec>, ["~> 2.8"])
     s.add_dependency(%q<bundler>, ["~> 1.1"])
     s.add_dependency(%q<jeweler>, ["~> 1.8"])
-    s.add_dependency(%q<bson_ext>, [">= 0"])
     s.add_dependency(%q<guard-rspec>, [">= 0"])
+    s.add_dependency(%q<bson_ext>, [">= 0"])
   end
 end
 
