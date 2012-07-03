@@ -1,7 +1,3 @@
-# NOTE in development - will be released as a gem soon
-
-------------------
-
 # mongoid-locker [![Build Status](https://secure.travis-ci.org/afeld/mongoid-locker.png)](http://travis-ci.org/afeld/mongoid-locker)
 
 Document-level locking for MongoDB via Mongoid.  The need arose at [Jux](https://jux.com) from multiple processes on multiple servers trying to act upon the same document and stepping on each other's toes.  Mongoid-Locker is an easy way to ensure only one process can perform a certain operation on a document at a time.
@@ -10,7 +6,13 @@ Document-level locking for MongoDB via Mongoid.  The need arose at [Jux](https:/
 
 ## Usage
 
-In the model you wish to lock, include `Mongoid::Locker` after `Mongoid::Document`.  For example:
+Add to your `Gemfile`:
+
+```ruby
+gem 'mongoid-locker', '~> 0.1.0'
+```
+
+and run `bundle install`.  In the model you wish to lock, include `Mongoid::Locker` after `Mongoid::Document`.  For example:
 
 ```ruby
 class QueueItem
