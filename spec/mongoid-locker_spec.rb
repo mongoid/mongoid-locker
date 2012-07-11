@@ -117,6 +117,8 @@ describe Mongoid::Locker do
 
       admin.should_not be_locked
       admin.reload.should_not be_locked
+
+      remove_class Admin
     end
   end
 
