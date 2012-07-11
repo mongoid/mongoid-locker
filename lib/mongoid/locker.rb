@@ -27,7 +27,8 @@ module Mongoid
       #
       # @return [Fixnum] the default number of seconds until a lock is considered "expired", in seconds
       def lock_timeout
-        @lock_timeout
+        # default timeout of five seconds
+        @lock_timeout || 5
       end
     end
 
@@ -37,9 +38,6 @@ module Mongoid
 
       mod.field :locked_at, :type => Time
       mod.field :locked_until, :type => Time
-
-      # default timeout of five seconds
-      mod.instance_variable_set :@lock_timeout, 5
     end
 
 
@@ -47,7 +45,7 @@ module Mongoid
     #
     # @return [Boolean] true if locked, false otherwise
     def locked?
-      self.locked_until && self.locked_until > Time.now
+      !!(self.locked_until && self.locked_until > Time.now)
     end
 
     # Primary method of plugin: execute the provided code once the document has been successfully locked.

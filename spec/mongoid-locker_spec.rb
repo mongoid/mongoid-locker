@@ -103,6 +103,21 @@ describe Mongoid::Locker do
         @user.locked_until.to_i.should eq(expiration)
       end
     end
+
+    it "should succeed for subclasses" do
+      class Admin < User
+      end
+
+      admin = Admin.create!
+
+      admin.with_lock do
+        admin.should be_locked
+        Admin.first.should be_locked
+      end
+
+      admin.should_not be_locked
+      admin.reload.should_not be_locked
+    end
   end
 
   describe ".timeout_lock_after" do
