@@ -25,7 +25,13 @@ describe Mongoid::Locker do
 
   describe "#locked?" do
     it "shouldn't be locked when created" do
-      @user.should_not be_locked
+      @user.locked?.should be_false
+    end
+
+    it "should be true when locked" do
+      @user.with_lock do
+        @user.locked?.should be_true
+      end
     end
 
     it "should respect the expiration" do
@@ -33,7 +39,40 @@ describe Mongoid::Locker do
 
       @user.with_lock do
         sleep 2
-        @user.should_not be_locked
+        @user.locked?.should be_false
+      end
+    end
+
+    it "should be true for a different instance" do
+      @user.with_lock do
+        User.first.locked?.should be_true
+      end
+    end
+  end
+
+  describe "#has_lock?" do
+    it "shouldn't be has_lock when created" do
+      @user.has_lock?.should be_false
+    end
+
+    it "should be true when has_lock" do
+      @user.with_lock do
+        @user.has_lock?.should be_true
+      end
+    end
+
+    it "should respect the expiration" do
+      User.timeout_lock_after 1
+
+      @user.with_lock do
+        sleep 2
+        @user.has_lock?.should be_false
+      end
+    end
+
+    it "should be false for a different instance" do
+      @user.with_lock do
+        User.first.has_lock?.should be_false
       end
     end
   end
@@ -78,6 +117,16 @@ describe Mongoid::Locker do
           end
         }.to raise_error(Mongoid::LockError)
       end
+    end
+
+    it "should handle recursive calls" do
+      @user.with_lock do
+        @user.with_lock do
+          @user.account_balance = 10
+        end
+      end
+
+      @user.account_balance.should eq(10)
     end
 
     it "should wait until the lock times out, if desired" do

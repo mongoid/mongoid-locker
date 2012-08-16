@@ -48,6 +48,13 @@ module Mongoid
       !!(self.locked_until && self.locked_until > Time.now)
     end
 
+    # Returns whether the current instance has the lock or not.
+    #
+    # @return [Boolean] true if locked, false otherwise
+    def has_lock?
+      @has_lock && self.locked?
+    end
+
     # Primary method of plugin: execute the provided code once the document has been successfully locked.
     #
     # @param [Hash] opts for the locking mechanism
@@ -55,11 +62,14 @@ module Mongoid
     # @option opts [Boolean] :wait If the document is currently locked, wait until the lock expires and try again
     # @return [void]
     def with_lock opts={}, &block
-      self.lock opts
+      # don't try to re-lock/unlock on recursive calls
+      had_lock = self.has_lock?
+      self.lock(opts) unless had_lock
+
       begin
         yield
       ensure
-        self.unlock
+        self.unlock unless had_lock
       end
     end
 
@@ -95,6 +105,7 @@ module Mongoid
         # lock successful
         self.locked_at = time
         self.locked_until = expiration
+        @has_lock = true
       else
         # couldn't grab lock
 
@@ -131,6 +142,7 @@ module Mongoid
 
       self.locked_at = nil
       self.locked_until = nil
+      @has_lock = false
     end
   end
 
