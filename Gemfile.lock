@@ -1,3 +1,12 @@
+GIT
+  remote: git://github.com/thoughtbot/appraisal.git
+  revision: ad2aeb99649f6a78f78be5009fb50306f06eaa9f
+  ref: ad2aeb99649f6a78f78be5009fb50306f06eaa9f
+  specs:
+    appraisal (0.4.1)
+      bundler
+      rake
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -7,9 +16,6 @@ GEM
     activesupport (3.2.8)
       i18n (~> 0.6)
       multi_json (~> 1.0)
-    appraisal (0.4.1)
-      bundler
-      rake
     bson (1.6.4)
     bson_ext (1.6.4)
       bson (~> 1.6.4)
@@ -63,10 +69,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  appraisal
+  appraisal!
   bson_ext
   bundler (~> 1.1)
   guard-rspec
   jeweler (~> 1.8)
   mongoid (>= 2.4, <= 3.1)
+  rake
   rspec (~> 2.8)
