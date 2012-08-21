@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 # Example:
 #   gem 'activesupport', '>= 2.3.5'
 
-gem 'mongoid', '~> 2.4'
+gem 'mongoid', '>= 2.4', '<= 3.1'
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
@@ -17,4 +17,5 @@ end
 
 group :development, :test do
   gem 'bson_ext', :platforms => :ruby
+  gem 'appraisal'
 end
