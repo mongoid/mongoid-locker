@@ -1,3 +1,10 @@
 test:
   host: localhost
   database: mongoid_locker_test
+
+  # for Mongoid 3
+  sessions:
+    default:
+      database: mongoid_locker_test
+      hosts:
+        - localhost:27017
