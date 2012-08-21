@@ -1,3 +1,5 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'locker', 'wrapper'))
+
 module Mongoid
   module Locker
     module ClassMethods
@@ -77,13 +79,13 @@ module Mongoid
     protected
 
     def lock opts={}
-      coll = self.class.collection
       time = Time.now
       timeout = opts[:timeout] || self.class.lock_timeout
       expiration = time + timeout
 
       # lock the document atomically in the DB without persisting entire doc
-      error_obj = coll.update(
+      locked = Mongoid::Locker::Wrapper.update(
+        self.class,
         {
           :_id => self.id,
           '$or' => [
@@ -98,11 +100,10 @@ module Mongoid
             :locked_at => time,
             :locked_until => expiration
           }
-        },
-        :safe => true
+        }
       )
 
-      if error_obj['n'] == 1
+      if locked
         # document successfully updated, meaning it was locked
         self.locked_at = time
         self.locked_until = expiration
@@ -110,14 +111,9 @@ module Mongoid
       else
         # couldn't grab lock
 
-        existing_query = {
-          :_id => self.id,
-          :locked_until => {'$exists' => true}
-        }
-
-        if opts[:wait] && existing = coll.find_one(existing_query, :fields => {:locked_until => 1})
+        if opts[:wait] && locked_until = Mongoid::Locker::Wrapper.locked_until(self)
           # doc is locked - wait until it expires
-          wait_time = existing['locked_until'] - Time.now
+          wait_time = locked_until - Time.now
           sleep wait_time if wait_time > 0
 
           # only wait once
@@ -134,12 +130,16 @@ module Mongoid
 
     def unlock
       # unlock the document in the DB without persisting entire doc
-      self.class.collection.update({:_id => self.id}, {
-        '$set' => {
-          :locked_at => nil,
-          :locked_until => nil,
+      Mongoid::Locker::Wrapper.update(
+        self.class,
+        {:_id => self.id},
+        {
+          '$set' => {
+            :locked_at => nil,
+            :locked_until => nil,
+          }
         }
-      }, :safe => true)
+      )
 
       self.locked_at = nil
       self.locked_until = nil
