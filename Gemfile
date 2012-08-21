@@ -2,6 +2,9 @@ source 'http://rubygems.org'
 
 gem 'mongoid', '>= 2.4', '<= 3.1'
 
+
+# groups need to be copied to gemfiles/*.gemfile
+
 group :development do
   gem 'rspec', '~> 2.8'
   gem 'bundler', '~> 1.1'

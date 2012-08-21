@@ -11,4 +11,5 @@ Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
   Mongoid.load! File.join(File.dirname(__FILE__), 'database.yml')
+  Mongoid.logger.level = Logger::WARN
 end

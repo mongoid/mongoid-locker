@@ -7,9 +7,18 @@ gem 'mongoid', '~> 3.0.0'
 
 ###### added manually ######
 
-gem 'rspec', '~> 2.8'
-gem 'jeweler', '~> 1.8'
-gem 'bson_ext', :platforms => :ruby
+group :development do
+  gem 'rspec', '~> 2.8'
+  gem 'bundler', '~> 1.1'
+  gem 'jeweler', '~> 1.8'
 
-gem 'rake'
-gem 'appraisal', :git => 'git://github.com/thoughtbot/appraisal.git', :ref => 'ad2aeb99649f6a78f78be5009fb50306f06eaa9f'
+  gem 'guard-rspec'
+end
+
+group :development, :test do
+  gem 'bson_ext', :platforms => :ruby
+
+  gem 'rake'
+  # v0.4.1 doesn't support multiple group names
+  gem 'appraisal', :git => 'git://github.com/thoughtbot/appraisal.git', :ref => 'ad2aeb99649f6a78f78be5009fb50306f06eaa9f'
+end
