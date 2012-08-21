@@ -83,8 +83,8 @@ module Mongoid
       expiration = time + timeout
 
       # lock the document atomically in the DB without persisting entire doc
-      record = coll.find_and_modify(
-        :query => {
+      error_obj = coll.update(
+        {
           :_id => self.id,
           '$or' => [
             # not locked
@@ -93,16 +93,17 @@ module Mongoid
             {:locked_until => {'$lte' => time}}
           ]
         },
-        :update => {
+        {
           '$set' => {
             :locked_at => time,
             :locked_until => expiration
           }
-        }
+        },
+        :safe => true
       )
 
-      if record
-        # lock successful
+      if error_obj['n'] == 1
+        # document successfully updated, meaning it was locked
         self.locked_at = time
         self.locked_until = expiration
         @has_lock = true
@@ -114,9 +115,9 @@ module Mongoid
           :locked_until => {'$exists' => true}
         }
 
-        if opts[:wait] && existing = coll.find(existing_query, :limit => 1).first
+        if opts[:wait] && existing = coll.find_one(existing_query, :fields => {:locked_until => 1})
           # doc is locked - wait until it expires
-          wait_time = existing.locked_until - Time.now
+          wait_time = existing['locked_until'] - Time.now
           sleep wait_time if wait_time > 0
 
           # only wait once
@@ -138,7 +139,7 @@ module Mongoid
           :locked_at => nil,
           :locked_until => nil,
         }
-      }, {:safe => true})
+      }, :safe => true)
 
       self.locked_at = nil
       self.locked_until = nil
