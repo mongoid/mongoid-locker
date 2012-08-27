@@ -10,3 +10,14 @@ rvm:
 gemfile:
   - gemfiles/mongoid2.gemfile
   - gemfiles/mongoid3.gemfile
+matrix:
+  exclude:
+    # not supported by Mongoid 3
+    - rvm: 1.8.7
+      gemfile: gemfiles/mongoid3.gemfile
+    - rvm: 1.9.2
+      gemfile: gemfiles/mongoid3.gemfile
+    - rvm: jruby-18mode
+      gemfile: gemfiles/mongoid3.gemfile
+    - rvm: rbx-18mode
+      gemfile: gemfiles/mongoid3.gemfile
