@@ -4,6 +4,7 @@
 
 * handle recursive calls to `#with_lock` - #7
 * lock optimizations, particularly for large documents
+* add Mongoid 3 support
 
 ## 0.1.1 ([diff](https://github.com/afeld/mongoid-locker/compare/v0.1.0...v0.1.1?w=1))
 
