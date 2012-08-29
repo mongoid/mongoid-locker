@@ -1,4 +1,5 @@
 test:
+  # for Mongoid 2
   host: localhost
   database: mongoid_locker_test
 

@@ -11,12 +11,14 @@ module Mongoid
       # @param [Hash] The Mongoid setter
       # @return [Boolean] true if the document was successfully updated, false otherwise
       def self.update klass, query, setter
-        if IS_OLD_MONGOID
-          error_obj = klass.collection.update(query, setter, :safe => true)
-          error_obj['n'] == 1
-        else
-          !!klass.where(query).find_and_modify(setter, :new => false)
-        end
+        error_obj =
+          if IS_OLD_MONGOID
+            klass.collection.update(query, setter, :safe => true)
+          else
+            klass.with(:safe => true).collection.find(query).update(setter)
+          end
+
+        error_obj['n'] == 1
       end
 
       # Determine whether the provided document is locked in the database or not.
