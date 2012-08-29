@@ -2,7 +2,7 @@ module Mongoid
   module Locker
     # Normalizes queries between Mongoid 2 and 3.
     module Wrapper
-      IS_OLD_MONGOID = Mongoid::VERSION.start_with? '2'
+      IS_OLD_MONGOID = Mongoid::VERSION.start_with? '2.'
 
       # Update the document for the provided Class matching the provided query with the provided setter.
       #
