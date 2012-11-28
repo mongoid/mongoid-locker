@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "mongoid-locker"
-  s.version = "0.2.0"
+  s.version = "0.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Aidan Feldman"]
-  s.date = "2012-08-27"
+  s.date = "2012-11-28"
   s.description = "Allows multiple processes to operate on individual documents in MongoDB while ensuring that only one can act at a time."
   s.email = "aidan.feldman@gmail.com"
   s.extra_rdoc_files = [
@@ -29,6 +29,12 @@ Gem::Specification.new do |s|
     "README.md",
     "Rakefile",
     "VERSION",
+    "demo/README.md",
+    "demo/config/mongoid.yml",
+    "demo/instagram.graffle",
+    "demo/instagram.png",
+    "demo/showoff.css",
+    "demo/showoff.md",
     "gemfiles/mongoid2.gemfile",
     "gemfiles/mongoid3.gemfile",
     "lib/mongoid-locker.rb",
