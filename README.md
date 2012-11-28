@@ -1,4 +1,4 @@
-# mongoid-locker [![Build Status](https://secure.travis-ci.org/afeld/mongoid-locker.png)](http://travis-ci.org/afeld/mongoid-locker)
+# mongoid-locker [![Build Status](https://secure.travis-ci.org/afeld/mongoid-locker.png?branch=master)](http://travis-ci.org/afeld/mongoid-locker)
 
 Document-level locking for MongoDB via Mongoid.  The need arose at [Jux](https://jux.com) from multiple processes on multiple servers trying to act upon the same document and stepping on each other's toes.  Mongoid-Locker is an easy way to ensure only one process can perform a certain operation on a document at a time.
 

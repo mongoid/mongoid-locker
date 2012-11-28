@@ -1,0 +1,6 @@
+development:
+  sessions:
+    default:
+      database: mongoid-locker_demo
+      hosts:
+        - localhost:27017
