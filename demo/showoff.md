@@ -8,6 +8,10 @@
 
 !SLIDE
 
+![Instagram diagram](instagram.png)
+
+!SLIDE
+
 # Jux needed a queue.
 
 * Distributed, but synchronized
