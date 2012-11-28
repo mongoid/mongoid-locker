@@ -15,6 +15,7 @@ Jeweler::Tasks.new do |gem|
   gem.description = %Q{Allows multiple processes to operate on individual documents in MongoDB while ensuring that only one can act at a time.}
   gem.email = "aidan.feldman@gmail.com"
   gem.authors = ["Aidan Feldman"]
+  gem.files.exclude 'demo'
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
