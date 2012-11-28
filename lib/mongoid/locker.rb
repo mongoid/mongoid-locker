@@ -120,6 +120,8 @@ module Mongoid
           opts.dup
           opts.delete :wait
 
+          # reload to update with any new values
+          self.reload
           # retry lock grab
           self.lock opts
         else

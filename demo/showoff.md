@@ -42,6 +42,9 @@
       field :balance, type: Float
     end
 
+    # cleanup
+    User.destroy_all
+
     bob = User.create!(balance: 100.00)
 
 !SLIDE
@@ -109,13 +112,12 @@
     class User
       # add doc-level locking
       include Mongoid::Locker
-      timeout_lock_after 30
+      timeout_lock_after 20
 
       def purchase(amount)
         # only one at a time
         self.with_lock(wait: true) do
-          # make sure balance is up-to-date
-          self.reload
+          # after the `wait`, will have updated `balance`
 
           if amount > self.balance
             raise "Can't have negative balance!" 

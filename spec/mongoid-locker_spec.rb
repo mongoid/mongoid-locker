@@ -14,7 +14,7 @@ describe Mongoid::Locker do
       field :account_balance, :type => Integer # easier to test than Float
     end
 
-    @user = User.create!
+    @user = User.create! account_balance: 20
   end
 
   after do
@@ -94,7 +94,7 @@ describe Mongoid::Locker do
       end
 
       @user.account_balance.should eq(10)
-      User.first.account_balance.should be_nil
+      User.first.account_balance.should eq(20)
     end
 
     it "should handle errors gracefully" do
@@ -150,6 +150,22 @@ describe Mongoid::Locker do
       expiration = (Time.now + 3).to_i
       @user.with_lock :timeout => 3 do
         @user.locked_until.to_i.should eq(expiration)
+      end
+    end
+
+    it "should reload the document if it needs to wait for a lock" do
+      User.timeout_lock_after 1
+
+      @user.with_lock do
+        user_dup = User.first
+
+        @user.account_balance = 10
+        @user.save!
+
+        user_dup.account_balance.should eq(20)
+        user_dup.with_lock :wait => true do
+          user_dup.account_balance.should eq(10)
+        end
       end
     end
 
