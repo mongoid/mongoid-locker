@@ -138,6 +138,14 @@
 
 !SLIDE
 
+# Summary
+
+* Easy document-level locking
+* Useful for queueing or pseudo-transactions
+* No additional dependencies
+
+!SLIDE
+
 # Fin.
 
 [afeld/mongoid-locker](https://github.com/afeld/mongoid-locker)

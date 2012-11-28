@@ -14,7 +14,7 @@ describe Mongoid::Locker do
       field :account_balance, :type => Integer # easier to test than Float
     end
 
-    @user = User.create! account_balance: 20
+    @user = User.create! :account_balance => 20
   end
 
   after do
