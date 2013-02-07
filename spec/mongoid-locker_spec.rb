@@ -153,7 +153,7 @@ describe Mongoid::Locker do
 
     it "should allow override of the default reload behavior" do
       @user.should_not_receive(:reload)
-      @user.with_lock reload: false do
+      @user.with_lock :reload => false do
         # no-op
       end
     end
@@ -175,7 +175,7 @@ describe Mongoid::Locker do
 
       @user.should_receive(:acquire_lock).exactly(6).times
       expect{
-        @user.with_lock retries: 5 do
+        @user.with_lock :retries => 5 do
           # no-op
         end
       }.to raise_error(Mongoid::LockError)
@@ -187,7 +187,7 @@ describe Mongoid::Locker do
       @user.stub(:sleep) {|time| time.should be_within(0.1).of(5)}
 
       expect{
-        @user.with_lock retries: 1 do
+        @user.with_lock :retries => 1 do
           # no-op
         end
       }.to raise_error(Mongoid::LockError)
@@ -198,7 +198,7 @@ describe Mongoid::Locker do
       @user.stub(:sleep) {|time| time.should be_within(0.1).of(3)}
 
       expect{
-        @user.with_lock retries: 1, retry_sleep: 3 do
+        @user.with_lock({:retries => 1, :retry_sleep => 3}) do
           # no-op
         end
       }.to raise_error(Mongoid::LockError)
