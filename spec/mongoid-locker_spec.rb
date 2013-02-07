@@ -144,6 +144,66 @@ describe Mongoid::Locker do
       @user.reload.account_balance.should eq(10)
     end
 
+    it "should, by default, reload the row after acquiring the lock" do
+      @user.should_receive(:reload)
+      @user.with_lock do
+        # no-op
+      end
+    end
+
+    it "should allow override of the default reload behavior" do
+      @user.should_not_receive(:reload)
+      @user.with_lock reload: false do
+        # no-op
+      end
+    end
+
+    it "should, by default, not retry" do
+      @user.should_receive(:acquire_lock).once.and_return(true)
+      @user.with_lock do
+        user_dup = User.first
+
+        user_dup.with_lock do
+          # no-op
+        end
+      end
+    end
+
+    it "should retry the number of times given, if desired" do
+      @user.stub(:acquire_lock).and_return(false)
+      Mongoid::Locker::Wrapper.stub(:locked_until => Time.now)
+
+      @user.should_receive(:acquire_lock).exactly(6).times
+      expect{
+        @user.with_lock retries: 5 do
+          # no-op
+        end
+      }.to raise_error(Mongoid::LockError)
+    end
+
+    it "should, by default, when retrying, sleep until the lock expires" do
+      @user.stub(:acquire_lock).and_return(false)
+      Mongoid::Locker::Wrapper.stub(:locked_until => (Time.now + 5.seconds))
+      @user.stub(:sleep) {|time| time.should be_within(0.1).of(5)}
+
+      expect{
+        @user.with_lock retries: 1 do
+          # no-op
+        end
+      }.to raise_error(Mongoid::LockError)
+    end
+
+    it "should sleep for the time given, if desired" do
+      @user.stub(:acquire_lock).and_return(false)
+      @user.stub(:sleep) {|time| time.should be_within(0.1).of(3)}
+
+      expect{
+        @user.with_lock retries: 1, retry_sleep: 3 do
+          # no-op
+        end
+      }.to raise_error(Mongoid::LockError)
+    end
+
     it "should override the default timeout" do
       User.timeout_lock_after 1
 
