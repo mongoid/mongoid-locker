@@ -35,10 +35,7 @@ queue_item.with_lock do
 end
 ```
 
-`#with_lock` takes a couple options as a hash:
-
-* `timeout`: The amount of time until a lock expires, in seconds.  Defaults to `5`.
-* `wait`: If a lock exists on the document, wait until that lock expires and try again.  Defaults to `false`.
+`#with_lock` takes an optional [handful of options around retrying](http://rdoc.info/github/afeld/mongoid-locker/Mongoid/Locker:with_lock), so make sure to take a look.
 
 The default timeout can also be set on a per-class basis:
 
