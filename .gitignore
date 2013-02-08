@@ -50,3 +50,6 @@ gemfiles/*.lock
 
 # For rubinius:
 #*.rbc
+
+# Guard
+tmp

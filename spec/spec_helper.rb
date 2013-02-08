@@ -10,7 +10,8 @@ ENV['RACK_ENV'] = 'test'
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
-  Mongoid.load! File.join(File.dirname(__FILE__), 'database.yml')
+  version = Mongoid::VERSION.split('.')[0]
+  Mongoid.load! File.join(File.dirname(__FILE__), "database#{version}.yml")
 
   # use to check the query conditions
   if ENV['LOG']

@@ -1,8 +1,4 @@
 test:
-  # for Mongoid 2
-  host: localhost
-  database: mongoid_locker_test
-
   # for Mongoid 3
   sessions:
     default:
