@@ -2,6 +2,8 @@
 
 ## HEAD ([diff](https://github.com/afeld/mongoid-locker/compare/v0.2.1...master?w=1))
 
+* change exception class to be `Mongoid::Locker::LockError` - #8
+
 Thanks to @mooremo, @yanowitz and @nchainani (#9):
 
 * add `:retries` option to attempt to grab a lock multiple times - #2

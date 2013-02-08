@@ -2,6 +2,9 @@ require File.expand_path(File.join(File.dirname(__FILE__), 'locker', 'wrapper'))
 
 module Mongoid
   module Locker
+    # Error thrown if document could not be successfully locked.
+    class LockError < Exception; end
+
     module ClassMethods
       # A scope to retrieve all locked documents in the collection.
       #
@@ -165,7 +168,4 @@ module Mongoid
       @has_lock = false
     end
   end
-
-  # Error thrown if document could not be successfully locked.
-  class LockError < Exception; end
 end
