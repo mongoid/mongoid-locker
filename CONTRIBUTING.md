@@ -1,11 +1,17 @@
 # Contributing
 
-Pull requests are welcome.  To run tests:
+Pull requests are welcome.  To set up:
 
-    $ bundle install
+    $ ./setup.sh
+
+To run tests for Mongoid 3:
+
     $ rake
 
-To auto-run tests as you code:
+To run tests for both Mongoid 2 *and* 3:
 
-    $ bundle install
-    $ guard
+    $ rake appraisal spec
+
+To auto-run Mongoid 3 tests as you code:
+
+    $ bundle exec guard

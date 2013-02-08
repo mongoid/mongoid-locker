@@ -115,7 +115,7 @@ describe Mongoid::Locker do
           user_dup.with_lock do
             fail "shouldn't get the lock"
           end
-        }.to raise_error(Mongoid::LockError)
+        }.to raise_error(Mongoid::Locker::LockError)
       end
     end
 
@@ -178,7 +178,7 @@ describe Mongoid::Locker do
         @user.with_lock :retries => 5 do
           # no-op
         end
-      }.to raise_error(Mongoid::LockError)
+      }.to raise_error(Mongoid::Locker::LockError)
     end
 
     it "should, by default, when retrying, sleep until the lock expires" do
@@ -190,7 +190,7 @@ describe Mongoid::Locker do
         @user.with_lock :retries => 1 do
           # no-op
         end
-      }.to raise_error(Mongoid::LockError)
+      }.to raise_error(Mongoid::Locker::LockError)
     end
 
     it "should sleep for the time given, if desired" do
@@ -201,7 +201,7 @@ describe Mongoid::Locker do
         @user.with_lock({:retries => 1, :retry_sleep => 3}) do
           # no-op
         end
-      }.to raise_error(Mongoid::LockError)
+      }.to raise_error(Mongoid::Locker::LockError)
     end
 
     it "should override the default timeout" do
