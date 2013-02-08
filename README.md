@@ -52,15 +52,3 @@ end
 Note that these locks are only enforced when using `#with_lock`, not at the database level.  It is useful for transactional operations, where you can make atomic modification of the document with checks.  For exmple, you could deduct a purchase from a user's balance... _unless_ they are broke.
 
 More in-depth method documentation can be found at [rdoc.info](http://rdoc.info/github/afeld/mongoid-locker/frames).  Enjoy!
-
-## Contributing
-
-Pull requests are welcome.  To run tests:
-
-    $ bundle install
-    $ rake
-
-To auto-run tests as you code:
-
-    $ bundle install
-    $ guard
