@@ -3,6 +3,7 @@
 ## HEAD ([diff](https://github.com/afeld/mongoid-locker/compare/v0.2.1...master?w=1))
 
 * change exception class to be `Mongoid::Locker::LockError` - #8
+* drop support for Rubinius 1.8-mode, since it seems to be [broken w/ Mongoid 2.6](https://travis-ci.org/mongoid/mongoid/jobs/4594000)
 
 Thanks to @mooremo, @yanowitz and @nchainani (#9):
 
