@@ -61,24 +61,32 @@ module Mongoid
     #
     # @param [Hash] opts for the locking mechanism
     # @option opts [Fixnum] :timeout The number of seconds until the lock is considered "expired" - defaults to the {ClassMethods#lock_timeout}
-    # @option opts [Boolean] :wait If the document is currently locked, wait until the lock expires and try again
+    # @option opts [Fixnum] :retries If the document is currently locked, the number of times to retry. Defaults to 0 (note: setting this to 1 is the equivalent of using :wait => true)
+    # @option opts [Float] :retry_sleep How long to sleep between attempts to acquire lock - defaults to time left until lock is available
+    # @option opts [Boolean] :wait If the document is currently locked, wait until the lock expires and try again - defaults to false. If set, :retries will be ignored
+    # @option opts [Boolean] :reload After acquiring the lock, reload the document - defaults to true
     # @return [void]
-    def with_lock opts={}, &block
-      # don't try to re-lock/unlock on recursive calls
-      had_lock = self.has_lock?
-      self.lock(opts) unless had_lock
+    def with_lock opts={}
+      have_lock = self.has_lock?
+
+      unless have_lock
+        if opts[:wait]
+          opts[:retries] = 1
+        end
+        self.lock(opts)
+      end
 
       begin
         yield
       ensure
-        self.unlock unless had_lock
+        self.unlock unless have_lock
       end
     end
 
 
     protected
 
-    def lock opts={}
+    def acquire_lock opts={}
       time = Time.now
       timeout = opts[:timeout] || self.class.lock_timeout
       expiration = time + timeout
@@ -107,23 +115,32 @@ module Mongoid
         # document successfully updated, meaning it was locked
         self.locked_at = time
         self.locked_until = expiration
+        self.reload unless opts[:reload] == false
         @has_lock = true
       else
-        # couldn't grab lock
+        @has_lock = false
+      end
+    end
 
-        if opts[:wait] && locked_until = Mongoid::Locker::Wrapper.locked_until(self)
-          # doc is locked - wait until it expires
-          wait_time = locked_until - Time.now
-          sleep wait_time if wait_time > 0
+    def lock opts={}
+      opts = {:retries => 0}.merge(opts)
 
-          # only wait once
-          opts.dup
-          opts.delete :wait
+      attempts_left = opts[:retries] + 1
+      retry_sleep = opts[:retry_sleep]
 
-          # reload to update with any new values
-          self.reload
-          # retry lock grab
-          self.lock opts
+      while true
+        return if acquire_lock(opts)
+
+        attempts_left -= 1
+
+        if attempts_left > 0
+          # if not passed a retry_sleep value, we sleep for the remaining life of the lock
+          unless opts[:retry_sleep]
+            locked_until = Mongoid::Locker::Wrapper.locked_until(self)
+            retry_sleep = locked_until - Time.now
+          end
+
+          sleep retry_sleep if retry_sleep > 0
         else
           raise LockError.new("could not get lock")
         end
