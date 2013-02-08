@@ -4,7 +4,7 @@
 
 Thanks to @mooremo, @yanowitz and @nchainani (#9):
 
-* add `:retries` option to attempt to grab a lock multiple times - #2
+* deprecate `:wait` in favor of `:retries` option, which can attempt to grab a lock multiple times - #2
 * add `:retry_sleep` to override duration between lock attempts
 * reload document after acquiring a lock by default, which can be disabled with `:reload => false`
 

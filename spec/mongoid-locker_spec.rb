@@ -223,7 +223,7 @@ describe Mongoid::Locker do
         @user.save!
 
         user_dup.account_balance.should eq(20)
-        user_dup.with_lock :wait => true do
+        user_dup.with_lock :retries => 1 do
           user_dup.account_balance.should eq(10)
         end
       end
