@@ -1,4 +1,4 @@
-# mongoid-locker [![Build Status](https://secure.travis-ci.org/afeld/mongoid-locker.png?branch=master)](http://travis-ci.org/afeld/mongoid-locker)
+# mongoid-locker [![Build Status](https://secure.travis-ci.org/afeld/mongoid-locker.png?branch=master)](http://travis-ci.org/afeld/mongoid-locker) [![Code Climate](https://codeclimate.com/github/afeld/mongoid-locker.png)](https://codeclimate.com/github/afeld/mongoid-locker)
 
 Document-level locking for MongoDB via Mongoid.  The need arose at [Jux](https://jux.com) from multiple processes on multiple servers trying to act upon the same document and stepping on each other's toes.  Mongoid-Locker is an easy way to ensure only one process can perform a certain operation on a document at a time.
 
@@ -35,10 +35,7 @@ queue_item.with_lock do
 end
 ```
 
-`#with_lock` takes a couple options as a hash:
-
-* `timeout`: The amount of time until a lock expires, in seconds.  Defaults to `5`.
-* `wait`: If a lock exists on the document, wait until that lock expires and try again.  Defaults to `false`.
+`#with_lock` takes an optional [handful of options around retrying](http://rdoc.info/github/afeld/mongoid-locker/Mongoid/Locker:with_lock), so make sure to take a look.
 
 The default timeout can also be set on a per-class basis:
 
