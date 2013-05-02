@@ -18,5 +18,5 @@ group :development, :test do
   gem 'bson_ext', :platforms => :ruby
 
   gem 'rake'
-  gem 'appraisal', '~> 0.5.0'
+  gem 'appraisal', git: 'git@github.com:thoughtbot/appraisal.git', ref: '55e158f894d4240c6e7d972b3af611f2f8bde26d'
 end
