@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'mongoid', '>= 2.4', '< 3.2'
+gem 'mongoid', '>= 2.4', '<= 4'
 
 
 # groups need to be copied to gemfiles/*.gemfile

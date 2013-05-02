@@ -80,7 +80,7 @@ DEPENDENCIES
   bundler (~> 1.1)
   guard-rspec
   jeweler (~> 1.8)
-  mongoid (>= 2.4, < 3.2)
+  mongoid (>= 2.4, <= 4)
   rake
   rb-fsevent (~> 0.9.1)
   rspec (~> 2.8)
