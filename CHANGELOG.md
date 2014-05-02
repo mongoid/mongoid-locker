@@ -5,6 +5,7 @@
 * added support for Mongoid 6
 * fix unlock already destroyed object - #38
 * remove use of Jeweler
+* allow unlock when process no longer owns the lock or the lock times out - #46
 * your contribution here
 
 ## 0.3.4 ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.3.4...master?w=1))
