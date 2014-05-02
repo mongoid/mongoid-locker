@@ -71,7 +71,9 @@ module Mongoid
       begin
         yield
       ensure
-        self.unlock unless had_lock
+        if !had_lock && locked?
+          self.unlock
+        end
       end
     end
 

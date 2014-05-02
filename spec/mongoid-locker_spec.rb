@@ -185,6 +185,19 @@ describe Mongoid::Locker do
 
       remove_class Admin
     end
+
+    it "should not unlock if the document is not locked anymore(occurs when the lock has timed out and some other process might own the lock)" do
+      User.timeout_lock_after 1
+      @user.should_not_receive(:unlock)
+      @user.with_lock do
+        @user.should be_locked
+        User.first.should be_locked
+        sleep 2
+      end
+
+      @user.should_not be_locked
+      @user.reload.should_not be_locked
+    end
   end
 
   describe ".timeout_lock_after" do
