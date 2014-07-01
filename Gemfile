@@ -1,9 +1,16 @@
 source 'http://rubygems.org'
 
-gem 'mongoid', '>= 2.4', '<= 4'
-
-
-# groups need to be copied to gemfiles/*.gemfile
+case version = ENV['MONGOID_VERSION'] || '~> 4.0'
+when /4/
+  gem 'mongoid', '~> 4.0'
+when /3/
+  gem 'mongoid', '~> 3.1'
+when /2/
+  gem 'bson_ext', :platforms => :ruby
+  gem 'mongoid', '~> 2.4'
+else
+  gem 'mongoid', version
+end
 
 group :development do
   gem 'rspec', '~> 2.8'
@@ -15,8 +22,5 @@ group :development do
 end
 
 group :development, :test do
-  gem 'bson_ext', :platforms => :ruby
-
   gem 'rake'
-  gem 'appraisal', git: 'git@github.com:thoughtbot/appraisal.git', ref: '55e158f894d4240c6e7d972b3af611f2f8bde26d'
 end

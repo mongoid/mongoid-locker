@@ -3,7 +3,6 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'rake'
-require 'appraisal'
 
 require 'jeweler'
 Jeweler::Tasks.new do |gem|

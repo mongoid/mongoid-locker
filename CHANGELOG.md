@@ -5,6 +5,9 @@
 * change exception class to be `Mongoid::Locker::LockError` - #8
 * drop support for Rubinius 1.8-mode, since it seems to be [broken w/ Mongoid 2.6](https://travis-ci.org/mongoid/mongoid/jobs/4594000)
 * relax dependency on Mongoid - #12
+* add Mongoid 4 support
+* drop support for Ruby 1.8.x
+* got rid of appraisal for testing multiple Mongoid versions
 
 Thanks to @mooremo, @yanowitz and @nchainani (#9):
 

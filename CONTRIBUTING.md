@@ -2,16 +2,18 @@
 
 Pull requests are welcome.  To set up:
 
-    $ ./setup.sh
+    $ bundle install
 
-To run tests for Mongoid 3:
+To run tests:
 
     $ rake
 
-To run tests for both Mongoid 2 *and* 3:
+To run tests for Mongoid 3:
 
-    $ rake appraisal spec
+    $ rm Gemfile.lock
+    $ MONGOID_VERSION=3 bundle install
+    $ MONGOID_VERSION=3 rake
 
-To auto-run Mongoid 3 tests as you code:
+To auto-run 3 tests as you code:
 
     $ bundle exec guard
