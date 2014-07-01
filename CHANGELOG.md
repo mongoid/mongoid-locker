@@ -8,6 +8,9 @@
 * add Mongoid 4 support
 * drop support for Ruby 1.8.x
 * got rid of appraisal for testing multiple Mongoid versions
+* added Rubocop, Ruby style linter
+* fixed `:has_lock?` to always return a boolean
+* upgraded RSpec to 3.x
 
 Thanks to @mooremo, @yanowitz and @nchainani (#9):
 
