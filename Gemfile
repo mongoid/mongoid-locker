@@ -13,7 +13,7 @@ else
 end
 
 group :development do
-  gem 'rspec', '~> 2.8'
+  gem 'rspec', '~> 3.0'
   gem 'bundler', '~> 1.1'
   gem 'jeweler', '~> 1.8'
 
@@ -23,4 +23,5 @@ end
 
 group :development, :test do
   gem 'rake'
+  gem 'rubocop', '0.24.0'
 end

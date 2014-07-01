@@ -1,0 +1,38 @@
+AllCops:
+  Excludes:
+    - vendor/**
+    - bin/**
+    - mongoid-locker.gemspec
+
+LineLength:
+  Enabled: false
+
+MethodLength:
+  Enabled: false
+
+ClassLength:
+  Enabled: false
+
+Documentation:
+  Enabled: false
+
+Encoding:
+  Enabled: false
+
+Blocks:
+  Enabled: false
+
+FileName:
+  Enabled: false
+
+RaiseArgs:
+  Enabled: false
+
+PredicateName:
+  Enabled: false
+
+DoubleNegation:
+  Enabled: false
+
+TrivialAccessors:
+  Enabled: false

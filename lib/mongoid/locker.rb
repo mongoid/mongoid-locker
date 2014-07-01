@@ -17,14 +17,14 @@ module Mongoid
       #
       # @return [Mongoid::Criteria]
       def unlocked
-        any_of({:locked_until => nil}, {:locked_until.lte => Time.now})
+        any_of({ locked_until: nil }, { :locked_until.lte => Time.now })
       end
 
       # Set the default lock timeout for this class.  Note this only applies to new locks.  Defaults to five seconds.
       #
       # @param [Fixnum] new_time the default number of seconds until a lock is considered "expired", in seconds
       # @return [void]
-      def timeout_lock_after new_time
+      def timeout_lock_after(new_time)
         @lock_timeout = new_time
       end
 
@@ -38,26 +38,25 @@ module Mongoid
     end
 
     # @api private
-    def self.included mod
+    def self.included(mod)
       mod.extend ClassMethods
 
-      mod.field :locked_at, :type => Time
-      mod.field :locked_until, :type => Time
+      mod.field :locked_at, type: Time
+      mod.field :locked_until, type: Time
     end
-
 
     # Returns whether the document is currently locked or not.
     #
     # @return [Boolean] true if locked, false otherwise
     def locked?
-      !!(self.locked_until && self.locked_until > Time.now)
+      !!(locked_until && locked_until > Time.now)
     end
 
     # Returns whether the current instance has the lock or not.
     #
     # @return [Boolean] true if locked, false otherwise
     def has_lock?
-      @has_lock && self.locked?
+      !!(@has_lock && self.locked?)
     end
 
     # Primary method of plugin: execute the provided code once the document has been successfully locked.
@@ -69,27 +68,24 @@ module Mongoid
     # @option opts [Boolean] :wait If the document is currently locked, wait until the lock expires and try again - defaults to false. If set, :retries will be ignored
     # @option opts [Boolean] :reload After acquiring the lock, reload the document - defaults to true
     # @return [void]
-    def with_lock opts={}
+    def with_lock(opts = {})
       have_lock = self.has_lock?
 
       unless have_lock
-        if opts[:wait]
-          opts[:retries] = 1
-        end
-        self.lock(opts)
+        opts[:retries] = 1 if opts[:wait]
+        lock(opts)
       end
 
       begin
         yield
       ensure
-        self.unlock unless have_lock
+        unlock unless have_lock
       end
     end
 
-
     protected
 
-    def acquire_lock opts={}
+    def acquire_lock(opts = {})
       time = Time.now
       timeout = opts[:timeout] || self.class.lock_timeout
       expiration = time + timeout
@@ -98,40 +94,40 @@ module Mongoid
       locked = Mongoid::Locker::Wrapper.update(
         self.class,
         {
-          :_id => self.id,
+          :_id => id,
           '$or' => [
             # not locked
-            {:locked_until => nil},
+            { locked_until: nil },
             # expired
-            {:locked_until => {'$lte' => time}}
+            { locked_until: { '$lte' => time } }
           ]
         },
-        {
-          '$set' => {
-            :locked_at => time,
-            :locked_until => expiration
-          }
+
+        '$set' => {
+          locked_at: time,
+          locked_until: expiration
         }
+
       )
 
       if locked
         # document successfully updated, meaning it was locked
         self.locked_at = time
         self.locked_until = expiration
-        self.reload unless opts[:reload] == false
+        reload unless opts[:reload] == false
         @has_lock = true
       else
         @has_lock = false
       end
     end
 
-    def lock opts={}
-      opts = {:retries => 0}.merge(opts)
+    def lock(opts = {})
+      opts = { retries: 0 }.merge(opts)
 
       attempts_left = opts[:retries] + 1
       retry_sleep = opts[:retry_sleep]
 
-      while true
+      loop do
         return if acquire_lock(opts)
 
         attempts_left -= 1
@@ -145,7 +141,7 @@ module Mongoid
 
           sleep retry_sleep if retry_sleep > 0
         else
-          raise LockError.new("could not get lock")
+          fail LockError.new('could not get lock')
         end
       end
     end
@@ -154,13 +150,13 @@ module Mongoid
       # unlock the document in the DB without persisting entire doc
       Mongoid::Locker::Wrapper.update(
         self.class,
-        {:_id => self.id},
-        {
-          '$set' => {
-            :locked_at => nil,
-            :locked_until => nil,
-          }
+        { _id: id },
+
+        '$set' => {
+          locked_at: nil,
+          locked_until: nil
         }
+
       )
 
       self.locked_at = nil
