@@ -14,6 +14,6 @@ To run tests for Mongoid 3:
     $ MONGOID_VERSION=3 bundle install
     $ MONGOID_VERSION=3 rake
 
-To auto-run 3 tests as you code:
+To auto-run tests as you code:
 
     $ bundle exec guard
