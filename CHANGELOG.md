@@ -1,5 +1,9 @@
 # Changelog
 
+## HEAD ([diff](https://github.com/afeld/mongoid-locker/compare/v0.3.0...master?w=1))
+
+* your contribution here
+
 ## 0.3.0 ([diff](https://github.com/afeld/mongoid-locker/compare/v0.2.1...v0.3.0?w=1))
 
 * change exception class to be `Mongoid::Locker::LockError` - #8
