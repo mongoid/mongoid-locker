@@ -17,9 +17,9 @@ module Mongoid
       # @param [Class] The model instance
       # @return [Time] The timestamp of when the document is locked until, nil if not locked.
       def self.locked_until(doc)
-        existing_query = { _id: doc.id, locked_until: { '$exists' => true } }
-        existing = doc.class.where(existing_query).limit(1).only(:locked_until).first
-        existing ? existing.locked_until : nil
+        existing_query = { _id: doc.id, mongoid_locker_locked_until: { '$exists' => true } }
+        existing = doc.class.where(existing_query).limit(1).only(:mongoid_locker_locked_until).first
+        existing ? existing.mongoid_locker_locked_until : nil
       end
     end
   end

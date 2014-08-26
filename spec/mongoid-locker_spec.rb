@@ -220,7 +220,7 @@ describe Mongoid::Locker do
 
       expiration = (Time.now + 3).to_i
       @user.with_lock timeout: 3 do
-        expect(@user.locked_until.to_i).to eq(expiration)
+        expect(@user.mongoid_locker_locked_until.to_i).to eq(expiration)
       end
     end
 
