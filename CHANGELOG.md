@@ -2,6 +2,7 @@
 
 ## HEAD ([diff](https://github.com/afeld/mongoid-locker/compare/v0.3.0...master?w=1))
 
+* fixed racecondition undefined method '-' for nil:NilClass - #18
 * your contribution here
 
 ## 0.3.0 ([diff](https://github.com/afeld/mongoid-locker/compare/v0.2.1...v0.3.0?w=1))

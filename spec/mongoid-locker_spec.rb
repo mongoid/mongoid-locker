@@ -180,6 +180,18 @@ describe Mongoid::Locker do
       }.to raise_error(Mongoid::Locker::LockError)
     end
 
+    it 'does not fail if the lock has been released between check and sleep time calculation' do
+      allow(@user).to receive(:acquire_lock).and_return(false)
+      allow(Mongoid::Locker::Wrapper).to receive(:locked_until).and_return(nil)
+
+      expect(@user).to receive(:acquire_lock).exactly(2).times
+      expect {
+        @user.with_lock retries: 1 do
+          # no-op
+        end
+      }.to raise_error(Mongoid::Locker::LockError)
+    end
+
     it 'should, by default, when retrying, sleep until the lock expires' do
       allow(@user).to receive(:acquire_lock).and_return(false)
       allow(Mongoid::Locker::Wrapper).to receive(:locked_until).and_return(Time.now + 5.seconds)
