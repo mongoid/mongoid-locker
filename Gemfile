@@ -6,8 +6,8 @@ when /4/
 when /3/
   gem 'mongoid', '~> 3.1'
 when /2/
-  gem 'bson_ext', :platforms => :ruby
-  gem 'mongoid', '~> 2.4'
+  gem 'bson_ext', platforms: :ruby
+  gem 'mongoid', '~> 2.8'
 else
   gem 'mongoid', version
 end
@@ -23,5 +23,5 @@ end
 
 group :development, :test do
   gem 'rake'
-  gem 'rubocop', '0.24.0'
+  gem 'rubocop', '0.29.1'
 end

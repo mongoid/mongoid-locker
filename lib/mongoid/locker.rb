@@ -17,7 +17,7 @@ module Mongoid
       #
       # @return [Mongoid::Criteria]
       def unlocked
-        any_of({ locked_until: nil }, { :locked_until.lte => Time.now })
+        any_of({ locked_until: nil }, :locked_until.lte => Time.now)
       end
 
       # Set the default lock timeout for this class.  Note this only applies to new locks.  Defaults to five seconds.
