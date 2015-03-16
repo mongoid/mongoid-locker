@@ -1,9 +1,8 @@
 # Changelog
 
-## HEAD ([diff](https://github.com/afeld/mongoid-locker/compare/v0.3.0...master?w=1))
+## 0.3.1 ([diff](https://github.com/afeld/mongoid-locker/compare/v0.3.0...v0.3.1?w=1))
 
-* fixed racecondition undefined method '-' for nil:NilClass - #18
-* your contribution here
+* fixed race condition, `undefined method '-' for nil:NilClass` - #18
 
 ## 0.3.0 ([diff](https://github.com/afeld/mongoid-locker/compare/v0.2.1...v0.3.0?w=1))
 
