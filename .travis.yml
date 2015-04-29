@@ -7,4 +7,3 @@ gemfile:
   - Gemfile
   - gemfiles/mongoid_2.gemfile
   - gemfiles/mongoid_3.gemfile
-cache: bundler
