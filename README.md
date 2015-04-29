@@ -2,7 +2,7 @@
 
 Document-level locking for MongoDB via Mongoid.  The need arose at [Jux](https://jux.com) from multiple processes on multiple servers trying to act upon the same document and stepping on each other's toes.  Mongoid-Locker is an easy way to ensure only one process can perform a certain operation on a document at a time.
 
-[Tested](http://travis-ci.org/afeld/mongoid-locker) against MRI 1.9.3, 2.0.0 and 2.1.2, Rubinius 2.x, and JRuby 1.9 with Mongoid 2, 3 and 4 ([where supported](http://travis-ci.org/#!/afeld/mongoid-locker)).
+[Tested](http://travis-ci.org/afeld/mongoid-locker) against Ruby 1.9 and 2.1, with Mongoid 2, 3 and 4.
 
 ## Usage
 

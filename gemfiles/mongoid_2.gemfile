@@ -1,0 +1,6 @@
+source 'http://rubygems.org'
+
+gem 'bson_ext', platforms: :ruby
+gem 'mongoid', '~> 2.8'
+
+gemspec

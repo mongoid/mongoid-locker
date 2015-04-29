@@ -1,3 +1,4 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'locker', 'version'))
 require File.expand_path(File.join(File.dirname(__FILE__), 'locker', 'wrapper'))
 
 module Mongoid
