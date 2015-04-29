@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-case version = ENV['MONGOID_VERSION'] || '~> 4.0'
+case ENV['MONGOID_VERSION']
 when /4/
   gem 'mongoid', '~> 4.0'
 when /3/
@@ -9,7 +9,7 @@ when /2/
   gem 'bson_ext', platforms: :ruby
   gem 'mongoid', '~> 2.8'
 else
-  gem 'mongoid', version
+  gem 'mongoid', '>= 2.8', '< 5.0'
 end
 
 group :development do
