@@ -3,8 +3,8 @@ rvm:
   - 1.9.3
   - 2.1.2
 services: mongodb
-env:
-  - MONGOID_VERSION=2
-  - MONGOID_VERSION=3
-  - MONGOID_VERSION=4
+gemfile:
+  - Gemfile
+  - gemfiles/mongoid_2.gemfile
+  - gemfiles/mongoid_3.gemfile
 cache: bundler
