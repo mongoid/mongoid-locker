@@ -1,8 +1,8 @@
 # Changelog
 
-## HEAD ([diff](https://github.com/afeld/mongoid-locker/compare/v0.3.2...master?w=1))
+## 0.3.3 ([diff](https://github.com/afeld/mongoid-locker/compare/v0.3.3...master?w=1))
 
-* your contribution here
+* support Mongoid 5 - #36
 
 ## 0.3.2 ([diff](https://github.com/afeld/mongoid-locker/compare/v0.3.1...v0.3.2?w=1))
 
