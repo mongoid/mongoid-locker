@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Aidan Feldman"]
-  s.date = "2015-04-29"
+  s.date = "2015-09-25"
   s.description = "Allows multiple processes to operate on individual documents in MongoDB while ensuring that only one can act at a time."
   s.email = "aidan.feldman@gmail.com"
   s.extra_rdoc_files = [
@@ -50,14 +50,15 @@ Gem::Specification.new do |s|
   ]
   s.homepage = "http://github.com/afeld/mongoid-locker"
   s.licenses = ["MIT"]
-  s.rubygems_version = "2.4.6"
+  s.rubygems_version = "2.2.2"
   s.summary = "Document-level locking for MongoDB via Mongoid"
 
   if s.respond_to? :specification_version then
     s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<mongoid>, ["< 5.0", ">= 2.8"])
+      s.add_runtime_dependency(%q<mongoid>, ["< 6.0", ">= 2.8"])
+      s.add_runtime_dependency(%q<mongoid-compatibility>, [">= 0"])
       s.add_development_dependency(%q<rspec>, ["~> 3.0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.1"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8"])
@@ -66,7 +67,8 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_development_dependency(%q<rubocop>, ["= 0.29.1"])
     else
-      s.add_dependency(%q<mongoid>, ["< 5.0", ">= 2.8"])
+      s.add_dependency(%q<mongoid>, ["< 6.0", ">= 2.8"])
+      s.add_dependency(%q<mongoid-compatibility>, [">= 0"])
       s.add_dependency(%q<rspec>, ["~> 3.0"])
       s.add_dependency(%q<bundler>, ["~> 1.1"])
       s.add_dependency(%q<jeweler>, ["~> 1.8"])
@@ -76,7 +78,8 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rubocop>, ["= 0.29.1"])
     end
   else
-    s.add_dependency(%q<mongoid>, ["< 5.0", ">= 2.8"])
+    s.add_dependency(%q<mongoid>, ["< 6.0", ">= 2.8"])
+    s.add_dependency(%q<mongoid-compatibility>, [">= 0"])
     s.add_dependency(%q<rspec>, ["~> 3.0"])
     s.add_dependency(%q<bundler>, ["~> 1.1"])
     s.add_dependency(%q<jeweler>, ["~> 1.8"])
