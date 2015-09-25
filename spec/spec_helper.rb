@@ -1,7 +1,9 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
+
 require 'rspec'
 require 'mongoid-locker'
+require 'mongoid/compatibility'
 
 ENV['RACK_ENV'] = 'test'
 
@@ -19,5 +21,11 @@ RSpec.configure do |config|
   if ENV['LOG']
     Mongoid.logger.level = Logger::DEBUG
     Moped.logger.level = Logger::DEBUG if defined? Moped
+  elsif Mongoid::Compatibility::Version.mongoid5?
+    Mongoid.logger.level = Logger::INFO
+    Mongo::Logger.logger.level = Logger::INFO
+  else
+    Mongoid.logger.level = Logger::INFO
+    Moped.logger.level = Logger::INFO if defined? Moped
   end
 end
