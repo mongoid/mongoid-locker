@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Aidan Feldman"]
-  s.date = "2015-09-25"
+  s.date = "2015-10-21"
   s.description = "Allows multiple processes to operate on individual documents in MongoDB while ensuring that only one can act at a time."
   s.email = "aidan.feldman@gmail.com"
   s.extra_rdoc_files = [
@@ -41,6 +41,10 @@ Gem::Specification.new do |s|
     "lib/mongoid-locker.rb",
     "lib/mongoid/locker.rb",
     "lib/mongoid/locker/wrapper.rb",
+    "lib/mongoid/locker/wrapper2.rb",
+    "lib/mongoid/locker/wrapper3.rb",
+    "lib/mongoid/locker/wrapper4.rb",
+    "lib/mongoid/locker/wrapper5.rb",
     "mongoid-locker.gemspec",
     "spec/database2.yml",
     "spec/database3.yml",
@@ -51,7 +55,7 @@ Gem::Specification.new do |s|
   ]
   s.homepage = "http://github.com/afeld/mongoid-locker"
   s.licenses = ["MIT"]
-  s.rubygems_version = "2.2.2"
+  s.rubygems_version = "2.4.5"
   s.summary = "Document-level locking for MongoDB via Mongoid"
 
   if s.respond_to? :specification_version then
