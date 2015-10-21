@@ -12,7 +12,7 @@ Document-level locking for MongoDB via Mongoid.  The need arose at [Jux](https:/
 Add to your `Gemfile`:
 
 ```ruby
-gem 'mongoid-locker', '~> 0.2'
+gem 'mongoid-locker'
 ```
 
 and run `bundle install`.  In the model you wish to lock, include `Mongoid::Locker` after `Mongoid::Document`.  For example:
