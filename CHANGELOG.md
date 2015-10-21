@@ -1,5 +1,9 @@
 # Changelog
 
+## Next ([diff](https://github.com/afeld/mongoid-locker/compare/v0.3.5...master?w=1))
+
+* your contribution here
+
 ## 0.3.4 ([diff](https://github.com/afeld/mongoid-locker/compare/v0.3.4...master?w=1))
 
 * fixed write concern for the lock record with Mongoid 5
