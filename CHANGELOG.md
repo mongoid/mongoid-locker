@@ -1,10 +1,9 @@
 # Changelog
 
-## HEAD ([diff](https://github.com/afeld/mongoid-locker/compare/v0.3.4...master?w=1))
+## 0.3.4 ([diff](https://github.com/afeld/mongoid-locker/compare/v0.3.4...master?w=1))
 
 * fixed write concern for the lock record with Mongoid 5
 * don't query the document in Mongoid 5, better performance when acquiring lock
-* your contribution here
 
 ## 0.3.3 ([diff](https://github.com/afeld/mongoid-locker/compare/v0.3.3...master?w=1))
 
