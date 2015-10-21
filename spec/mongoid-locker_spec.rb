@@ -101,7 +101,7 @@ describe Mongoid::Locker do
         @user.with_lock do
           fail 'booyah!'
         end
-      }.to raise_error
+      }.to raise_error 'booyah!'
 
       expect(@user.reload).to_not be_locked
     end
