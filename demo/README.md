@@ -1,6 +1,6 @@
 To view slides:
 
-    git clone git@github.com:afeld/mongoid-locker.git
+    git clone git@github.com:mongoid/mongoid-locker.git
     cd mongoid-locker/demo
     gem install gli -v 1.6.0
     gem install showoff
