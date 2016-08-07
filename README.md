@@ -1,11 +1,11 @@
 # mongoid-locker 
 [![Gem Version](https://badge.fury.io/rb/mongoid-locker.svg)](http://badge.fury.io/rb/mongoid-locker)
-[![Build Status](https://secure.travis-ci.org/afeld/mongoid-locker.svg?branch=master)](http://travis-ci.org/afeld/mongoid-locker) 
-[![Code Climate](https://codeclimate.com/github/afeld/mongoid-locker.svg)](https://codeclimate.com/github/afeld/mongoid-locker)
+[![Build Status](https://secure.travis-ci.org/mongoid/mongoid-locker.svg?branch=master)](http://travis-ci.org/mongoid/mongoid-locker)
+[![Code Climate](https://codeclimate.com/github/mongoid/mongoid-locker.svg)](https://codeclimate.com/github/mongoid/mongoid-locker)
 
 Document-level locking for MongoDB via Mongoid.  The need arose at [Jux](https://jux.com) from multiple processes on multiple servers trying to act upon the same document and stepping on each other's toes.  Mongoid-Locker is an easy way to ensure only one process can perform a certain operation on a document at a time.
 
-[Tested](http://travis-ci.org/afeld/mongoid-locker) against MRI 1.9.3, 2.0.0 and 2.1.2, Rubinius 2.x, and JRuby 1.9 with Mongoid 2, 3, 4 and 5 ([where supported](http://travis-ci.org/#!/afeld/mongoid-locker)).
+[Tested](http://travis-ci.org/mongoid/mongoid-locker) against MRI 1.9.3, 2.0.0 and 2.1.2, Rubinius 2.x, and JRuby 1.9 with Mongoid 2, 3, 4 and 5 ([where supported](http://travis-ci.org/#!/mongoid/mongoid-locker)).
 
 ## Usage
 
@@ -38,7 +38,7 @@ queue_item.with_lock do
 end
 ```
 
-`#with_lock` takes an optional [handful of options around retrying](http://rdoc.info/github/afeld/mongoid-locker/Mongoid/Locker:with_lock), so make sure to take a look.
+`#with_lock` takes an optional [handful of options around retrying](http://rdoc.info/github/mongoid/mongoid-locker/Mongoid/Locker:with_lock), so make sure to take a look.
 
 The default timeout can also be set on a per-class basis:
 
@@ -51,4 +51,4 @@ end
 
 Note that these locks are only enforced when using `#with_lock`, not at the database level.  It is useful for transactional operations, where you can make atomic modification of the document with checks.  For exmple, you could deduct a purchase from a user's balance... _unless_ they are broke.
 
-More in-depth method documentation can be found at [rdoc.info](http://rdoc.info/github/afeld/mongoid-locker/frames).  Enjoy!
+More in-depth method documentation can be found at [rdoc.info](http://rdoc.info/github/mongoid/mongoid-locker/frames).  Enjoy!

@@ -2,7 +2,7 @@
 
 # Mongoid-Locker
 
-[github.com/afeld/mongoid-locker](https://github.com/afeld/mongoid-locker)
+[github.com/mongoid/mongoid-locker](https://github.com/mongoid/mongoid-locker)
 
 ## Aidan Feldman, [Jux.com](https://jux.com)
 
@@ -59,7 +59,7 @@
     class User
       def purchase(amount)
         if amount > self.balance
-          raise "Can't have negative balance!" 
+          raise "Can't have negative balance!"
         else
           # deduct *atomically*
           self.inc(:balance, -1 * amount)
@@ -84,7 +84,7 @@
     class User
       def purchase(amount)
         if amount > self.balance
-          raise "Can't have negative balance!" 
+          raise "Can't have negative balance!"
         else
           # artificial delay
           print 'has enough money...waiting for ENTER > '
@@ -124,7 +124,7 @@
           # after the `wait`, will have updated `balance`
 
           if amount > self.balance
-            raise "Can't have negative balance!" 
+            raise "Can't have negative balance!"
           else
             print 'has enough money...waiting for ENTER > '
             gets
@@ -148,11 +148,11 @@
 
 # Fin.
 
-[afeld/mongoid-locker](https://github.com/afeld/mongoid-locker)
+[mongoid/mongoid-locker](https://github.com/mongoid/mongoid-locker)
 
 ----------------
 
-## Aidan Feldman, [Jux.com](https://jux.com)
+## Aidan Feldman
 
 [@aidanfeldman](https://twitter.com/aidanfeldman)
 

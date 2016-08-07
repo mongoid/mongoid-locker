@@ -53,7 +53,7 @@ Gem::Specification.new do |s|
     "spec/mongoid-locker_spec.rb",
     "spec/spec_helper.rb"
   ]
-  s.homepage = "http://github.com/afeld/mongoid-locker"
+  s.homepage = "http://github.com/mongoid/mongoid-locker"
   s.licenses = ["MIT"]
   s.rubygems_version = "2.4.5"
   s.summary = "Document-level locking for MongoDB via Mongoid"
