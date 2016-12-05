@@ -1,6 +1,8 @@
 source 'http://rubygems.org'
 
 case ENV['MONGOID_VERSION']
+when /^6/
+  gem 'mongoid', '~> 6.0'
 when /^5/
   gem 'mongoid', '~> 5.0'
 when /^4/
@@ -25,6 +27,6 @@ group :development, :test do
   gem 'rack', '~> 1.5'
   gem 'rspec', '~> 3.0'
   gem 'jeweler', '~> 1.8'
-  gem 'rake'
+  gem 'rake', '11.3.0'
   gem 'rubocop', '0.29.1'
 end
