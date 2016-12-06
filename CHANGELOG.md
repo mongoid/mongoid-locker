@@ -4,6 +4,7 @@
 
 * your contribution here
 * Added support for Mongoid 6.
+* Unlock already destroyed object - #38
 
 ## 0.3.4 ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.3.4...master?w=1))
 
