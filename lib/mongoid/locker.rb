@@ -161,8 +161,7 @@ module Mongoid
 
       )
 
-      self.locked_at = nil
-      self.locked_until = nil
+      self.attributes = { locked_at: nil, locked_until: nil } unless destroyed?
       @has_lock = false
     end
   end

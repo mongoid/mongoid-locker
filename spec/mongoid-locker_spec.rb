@@ -298,6 +298,14 @@ describe Mongoid::Locker do
         expect(User.locked.to_a).to eq([@user])
       end
     end
+
+    it 'shouldnt throw error while unlocking destroyed object' do
+      User.create!
+
+      @user.with_lock do
+        @user.destroy
+      end
+    end
   end
 
   describe '.unlocked' do
