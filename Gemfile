@@ -25,6 +25,6 @@ group :development, :test do
   gem 'rack', '~> 1.5'
   gem 'rspec', '~> 3.0'
   gem 'jeweler', '~> 1.8'
-  gem 'rake'
+  gem 'rake', '11.3.0'
   gem 'rubocop', '0.29.1'
 end

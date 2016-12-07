@@ -3,6 +3,7 @@
 ## Next ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.3.5...master?w=1))
 
 * your contribution here
+* Unlock already destroyed object - #38 
 
 ## 0.3.4 ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.3.4...master?w=1))
 
