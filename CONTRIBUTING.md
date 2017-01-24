@@ -1,18 +1,19 @@
 # Contributing
 
-Pull requests are welcome.  To set up:
+Pull requests are welcome. To set up:
 
     $ bundle install
 
 To run tests:
 
-    $ rake
+    $ bundle exec rake
 
-To run tests for Mongoid 3:
+To run tests for an older version of Mongoid:
 
     $ rm Gemfile.lock
-    $ MONGOID_VERSION=3 bundle install
-    $ MONGOID_VERSION=3 rake
+    $ export MONGOID_VERSION=4
+    $ bundle install
+    $ bundle exec rake
 
 To auto-run tests as you code:
 
