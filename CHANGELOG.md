@@ -1,6 +1,6 @@
 ## Changelog
 
-### Next
+### 0.3.5 (1/24/2017)
 
 * [#43](https://github.com/mongoid/mongoid-locker/pull/43): Added support for Mongoid 6 - [@sivagollapalli](https://github.com/sivagollapalli).
 * [#38](https://github.com/mongoid/mongoid-locker/issues/38): Fixed unlock already destroyed object - [@sivagollapalli](https://github.com/sivagollapalli).
@@ -8,7 +8,6 @@
 * [#46](https://github.com/mongoid/mongoid-locker/pull/46): Allow unlock when process no longer owns the lock or the lock times out - [@nchainani](https://github.com/nchainani).
 * Library moved to the mongoid organization - [@afeld](https://github.com/afeld), [@dblock](https://github.com/dblock).
 * [#48](https://github.com/mongoid/mongoid-locker/pull/48): Added Danger, PR linter - [@dblock](https://github.com/dblock).
-* Your contribution here.
 
 ### 0.3.4
 
