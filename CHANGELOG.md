@@ -1,63 +1,62 @@
-# Changelog
+## Changelog
 
-## Next ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.3.5...master?w=1))
+### Next
 
-* added support for Mongoid 6
-* fix unlock already destroyed object - #38
-* remove use of Jeweler
-* allow unlock when process no longer owns the lock or the lock times out - #46
-* your contribution here
+* [#43](https://github.com/mongoid/mongoid-locker/pull/43): Added support for Mongoid 6 - [@sivagollapalli](https://github.com/sivagollapalli).
+* [#38](https://github.com/mongoid/mongoid-locker/issues/38): Fixed unlock already destroyed object - [@sivagollapalli](https://github.com/sivagollapalli).
+* Removed Jeweler - [@afeld](https://github.com/afeld).
+* [#46](https://github.com/mongoid/mongoid-locker/pull/46): Allow unlock when process no longer owns the lock or the lock times out - [@nchainani](https://github.com/nchainani).
+* Library moved to the mongoid organization - [@afeld](https://github.com/afeld), [@dblock](https://github.com/dblock).
+* [#48](https://github.com/mongoid/mongoid-locker/pull/48): Added Danger, PR linter - [@dblock](https://github.com/dblock).
+* Your contribution here.
 
-## 0.3.4 ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.3.4...master?w=1))
+### 0.3.4
 
-* fixed write concern for the lock record with Mongoid 5
-* don't query the document in Mongoid 5, better performance when acquiring lock
+* [#37](https://github.com/mongoid/mongoid-locker/pull/37): Fixed write concern for the lock record with Mongoid 5 - [@dblock](https://github.com/dblock).
+* Don't query the document in Mongoid 5, better performance when acquiring lock - [@afeld](https://github.com/afeld).
 
-## 0.3.3 ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.3.3...master?w=1))
+### 0.3.3
 
-* support Mongoid 5 - #36
+* [#36](https://github.com/mongoid/mongoid-locker/pull/36): Added support for Mongoid 5 - [@dblock](https://github.com/dblock).
 
-## 0.3.2 ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.3.1...v0.3.2?w=1))
+### 0.3.2
 
-* loosen Mongoid dependency - #33
+* [#34](https://github.com/mongoid/mongoid-locker/issues/34): Loosened Mongoid dependency - [@afeld](https://github.com/afeld).
 
-## 0.3.1 ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.3.0...v0.3.1?w=1))
+### 0.3.1
 
-* fixed race condition, `undefined method '-' for nil:NilClass` - #18
+* [#32](https://github.com/mongoid/mongoid-locker/pull/32): Fixed race condition, `undefined method '-' for nil:NilClass` - [@pschrammel](https://github.com/pschrammel).
 
-## 0.3.0 ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.2.1...v0.3.0?w=1))
+### 0.3.0
 
-* change exception class to be `Mongoid::Locker::LockError` - #8
-* drop support for Rubinius 1.8-mode, since it seems to be [broken w/ Mongoid 2.6](https://travis-ci.org/mongoid/mongoid/jobs/4594000)
-* relax dependency on Mongoid - #12
-* add Mongoid 4 support
-* drop support for Ruby 1.8.x
-* got rid of appraisal for testing multiple Mongoid versions
-* added Rubocop, Ruby style linter
-* fixed `:has_lock?` to always return a boolean
-* upgraded RSpec to 3.x
+* [#8](https://github.com/mongoid/mongoid-locker/issues/8): Changed exception class to be `Mongoid::Locker::LockError` - [@afeld](https://github.com/afeld), [@tolsen](https://github.com/tolsen).
+* Dropped support for Rubinius 1.8-mode, since it seems to be broken w/ Mongoid 2.6 - [@afeld](https://github.com/afeld).
+* [#8](https://github.com/mongoid/mongoid-locker/issues/12): Relaxed dependency on Mongoid - [@afeld](https://github.com/afeld).
+* [#24](https://github.com/mongoid/mongoid-locker/pull/24): Added Mongoid 4 support - [@dblock](https://github.com/dblock).
+* [#24](https://github.com/mongoid/mongoid-locker/pull/24): Dropped support for Ruby 1.8.x - [@dblock](https://github.com/dblock).
+* Got rid of appraisal for testing multiple Mongoid versions - [@afeld](https://github.com/afeld).
+* [#25](https://github.com/mongoid/mongoid-locker/pull/25): Added Rubocop, Ruby style linter - [@dblock](https://github.com/dblock).
+* [#25](https://github.com/mongoid/mongoid-locker/pull/25): Fixed `:has_lock?` to always return a boolean - [@dblock](https://github.com/dblock).
+* [#25](https://github.com/mongoid/mongoid-locker/pull/25): Upgraded RSpec to 3.x - [@dblock](https://github.com/dblock).
+* [#9](https://github.com/mongoid/mongoid-locker/pull/9): Added `:retries` option to attempt to grab a lock multiple times - [@afeld](https://github.com/afeld), [@mooremo](https://github.com/mooremo).
+* Added `:retry_sleep` to override duration between lock attempts - [@afeld](https://github.com/afeld).
+* Reload document after acquiring a lock by default, which can be disabled with `:reload => false` - [@afeld](https://github.com/afeld).
 
-Thanks to @mooremo, @yanowitz and @nchainani (#9):
+### 0.2.1
 
-* add `:retries` option to attempt to grab a lock multiple times - #2
-* add `:retry_sleep` to override duration between lock attempts
-* reload document after acquiring a lock by default, which can be disabled with `:reload => false`
+* Fix for `update()` on Mongoid 3 - [@afeld](https://github.com/afeld).
+* [#1](https://github.com/mongoid/mongoid-locker/issues/1): Automatically reload model after waiting - [@afeld](https://github.com/afeld).
 
-## 0.2.1 ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.2.0...v0.2.1?w=1))
+### 0.2.0
 
-* fix for `update()` on Mongoid 3
-* automatically reload model after waiting - #1
+* [#7](https://github.com/mongoid/mongoid-locker/issues/7): Handle recursive calls to `#with_lock` - [@afeld](https://github.com/afeld).
+* Lock optimizations, particularly for large documents - [@afeld](https://github.com/afeld).
+* [#5](https://github.com/mongoid/mongoid-locker/issues/5): Added Mongoid 3 support - [@afeld](https://github.com/afeld).
 
-## 0.2.0 ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.1.1...v0.2.0?w=1))
+### 0.1.1
 
-* handle recursive calls to `#with_lock` - #7
-* lock optimizations, particularly for large documents
-* add Mongoid 3 support - #3
+* [#5](https://github.com/mongoid/mongoid-locker/issues/5): Fix for subclasses - [@afeld](https://github.com/afeld).
 
-## 0.1.1 ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.1.0...v0.1.1?w=1))
+### 0.1.0
 
-* fix for subclasses - #5
-
-## 0.1.0
-
-Initial release!
+* Initial public release - [@afeld](https://github.com/afeld).
