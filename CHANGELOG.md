@@ -1,5 +1,9 @@
 ## Changelog
 
+### 0.3.6 (Next)
+
+* Your contribution here.
+
 ### 0.3.5 (1/24/2017)
 
 * [#43](https://github.com/mongoid/mongoid-locker/pull/43): Added support for Mongoid 6 - [@sivagollapalli](https://github.com/sivagollapalli).

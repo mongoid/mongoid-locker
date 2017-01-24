@@ -38,7 +38,7 @@ queue_item.with_lock do
 end
 ```
 
-`#with_lock` takes an optional [handful of options around retrying](http://rdoc.info/github/mongoid/mongoid-locker/Mongoid/Locker:with_lock), so make sure to take a look.
+The `#with_lock` function takes an optional [handful of options around retrying](http://rdoc.info/github/mongoid/mongoid-locker/Mongoid/Locker:with_lock), so make sure to take a look.
 
 The default timeout can also be set on a per-class basis:
 
@@ -49,9 +49,9 @@ class QueueItem
 end
 ```
 
-Note that these locks are only enforced when using `#with_lock`, not at the database level.  It is useful for transactional operations, where you can make atomic modification of the document with checks.  For exmple, you could deduct a purchase from a user's balance... _unless_ they are broke.
+Note that these locks are only enforced when using `#with_lock`, not at the database level. It's useful for transactional operations, where you can make atomic modification of the document with checks.  For example, you could deduct a purchase from a user's balance ... _unless_ they are broke.
 
-More in-depth method documentation can be found at [rdoc.info](http://rdoc.info/github/mongoid/mongoid-locker/frames).  Enjoy!
+More in-depth method documentation can be found at [rdoc.info](http://rdoc.info/github/mongoid/mongoid-locker/frames).
 
 ## Copyright & License
 
