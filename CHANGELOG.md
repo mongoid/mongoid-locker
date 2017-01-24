@@ -3,6 +3,7 @@
 ## Next ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.3.5...master?w=1))
 
 * your contribution here
+* Added support for Mongoid 6.
 
 ## 0.3.4 ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.3.4...master?w=1))
 
