@@ -30,4 +30,5 @@ group :development, :test do
   gem 'rspec', '~> 3.0'
   gem 'rake', '11.3.0'
   gem 'rubocop', '0.29.1'
+  gem 'mongoid-danger', '~> 0.1.1'
 end

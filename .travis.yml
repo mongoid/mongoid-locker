@@ -21,6 +21,8 @@ matrix:
       env: MONGOID_VERSION=5
     - rvm: 2.3.1
       env: MONGOID_VERSION=6
+      before_script:
+        - bundle exec danger
     - rvm: rbx-2
     - rvm: ruby-head
     - rvm: jruby-head
