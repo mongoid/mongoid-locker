@@ -70,9 +70,9 @@ module Mongoid
     # @option opts [Boolean] :reload After acquiring the lock, reload the document - defaults to true
     # @return [void]
     def with_lock(opts = {})
-      have_lock = self.has_lock?
+      had_lock = self.has_lock?
 
-      unless have_lock
+      unless had_lock
         opts[:retries] = 1 if opts[:wait]
         lock(opts)
       end
@@ -80,7 +80,7 @@ module Mongoid
       begin
         yield
       ensure
-        unlock unless have_lock
+        unlock if locked? && !had_lock
       end
     end
 

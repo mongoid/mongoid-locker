@@ -256,6 +256,22 @@ describe Mongoid::Locker do
 
       remove_class Admin
     end
+
+    context 'when a lock has timed out' do
+      before do
+        User.timeout_lock_after 1
+        @user.with_lock do
+          expect(@user).to be_locked
+          expect(User.first).to be_locked
+          sleep 2
+        end
+      end
+      it 'should remain unlocked' do
+        expect(@user).to_not receive(:unlock)
+        expect(@user).to_not be_locked
+        expect(@user.reload).to_not be_locked
+      end
+    end
   end
 
   describe '.timeout_lock_after' do
