@@ -2,9 +2,10 @@
 
 ## Next ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.3.5...master?w=1))
 
+* added support for Mongoid 6
+* fix unlock already destroyed object - #38
+* remove use of Jeweler
 * your contribution here
-* Added support for Mongoid 6.
-* Unlock already destroyed object - #38
 
 ## 0.3.4 ([diff](https://github.com/mongoid/mongoid-locker/compare/v0.3.4...master?w=1))
 

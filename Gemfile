@@ -16,6 +16,8 @@ else
   gem 'mongoid', '>= 2.8', '< 6.0'
 end
 
+gemspec
+
 group :development do
   gem 'bundler', '~> 1.1'
   gem 'guard-rspec'
@@ -26,7 +28,6 @@ group :development, :test do
   gem 'mongoid-compatibility'
   gem 'rack', '~> 1.5'
   gem 'rspec', '~> 3.0'
-  gem 'jeweler', '~> 1.8'
   gem 'rake', '11.3.0'
   gem 'rubocop', '0.29.1'
 end
