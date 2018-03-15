@@ -15,7 +15,7 @@ when /^2/
   gem 'bson_ext', platforms: :ruby
   gem 'mongoid', '~> 2.8'
 else
-  gem 'mongoid', '>= 2.8', '< 7.0'
+  gem 'mongoid', '>= 4.0'
 end
 
 gemspec
