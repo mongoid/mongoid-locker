@@ -1,8 +1,7 @@
 ## Changelog
 
-### 0.3.6 (Next)
+### 0.3.6 (4/18/2018)
 
-* Your contribution here.
 * [#52](https://github.com/mongoid/mongoid-locker/pull/52): Added support for Mongoid 7 - [@wuhuizuo](https://github.com/wuhuizuo).
 
 ### 0.3.5 (1/24/2017)
