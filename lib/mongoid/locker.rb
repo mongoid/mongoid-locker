@@ -3,22 +3,26 @@ require File.expand_path(File.join(File.dirname(__FILE__), 'locker', 'wrapper'))
 
 module Mongoid
   module Locker
+    # The field names used by default.
+    @locked_at_field     = :locked_at
+    @locked_until_field  = :locked_until
+
     # Error thrown if document could not be successfully locked.
-    class LockError < Exception; end
+    class LockError < RuntimeError; end
 
     module ClassMethods
       # A scope to retrieve all locked documents in the collection.
       #
       # @return [Mongoid::Criteria]
       def locked
-        where :locked_until.gt => Time.now
+        where locked_until_field.gt => Time.now
       end
 
       # A scope to retrieve all unlocked documents in the collection.
       #
       # @return [Mongoid::Criteria]
       def unlocked
-        any_of({ locked_until: nil }, :locked_until.lte => Time.now)
+        any_of({ locked_until_field => nil }, locked_until_field.lte => Time.now)
       end
 
       # Set the default lock timeout for this class.  Note this only applies to new locks.  Defaults to five seconds.
@@ -36,28 +40,61 @@ module Mongoid
         # default timeout of five seconds
         @lock_timeout || 5
       end
+
+      # Set locked_at_field and locked_until_field names for this class
+      def locker(locked_at_field: nil, locked_until_field: nil)
+        class_variable_set(:@@locked_at_field, locked_at_field) if locked_at_field
+        class_variable_set(:@@locked_until_field, locked_until_field) if locked_until_field
+      end
+
+      # Returns field name used to set locked at time for this class.
+      def locked_at_field
+        class_variable_get(:@@locked_at_field)
+      end
+
+      # Returns field name used to set locked until time for this class.
+      def locked_until_field
+        class_variable_get(:@@locked_until_field)
+      end
     end
 
-    # @api private
-    def self.included(mod)
-      mod.extend ClassMethods
+    class << self
+      attr_accessor :locked_at_field, :locked_until_field
 
-      mod.field :locked_at, type: Time
-      mod.field :locked_until, type: Time
+      # @api private
+      def included(mod)
+        mod.extend ClassMethods
+
+        mod.class_variable_set(:@@locked_at_field, locked_at_field)
+        mod.class_variable_set(:@@locked_until_field, locked_until_field)
+
+        mod.send(:define_method, :locked_at_field) { mod.class_variable_get(:@@locked_at_field) }
+        mod.send(:define_method, :locked_until_field) { mod.class_variable_get(:@@locked_until_field) }
+      end
+
+      # Sets configuration using a block
+      #
+      # Mongoid::Locker.configure do |config|
+      #   config.locked_at_field = :mongoid_locker_locked_at
+      #   config.locked_until_field = :mongoid_locker_locked_until
+      # end
+      def configure
+        yield(self) if block_given?
+      end
     end
 
     # Returns whether the document is currently locked or not.
     #
     # @return [Boolean] true if locked, false otherwise
     def locked?
-      !!(locked_until && locked_until > Time.now)
+      !!(self[locked_until_field] && self[locked_until_field] > Time.now)
     end
 
     # Returns whether the current instance has the lock or not.
     #
     # @return [Boolean] true if locked, false otherwise
     def has_lock?
-      !!(@has_lock && self.locked?)
+      !!(@has_lock && locked?)
     end
 
     # Primary method of plugin: execute the provided code once the document has been successfully locked.
@@ -70,7 +107,7 @@ module Mongoid
     # @option opts [Boolean] :reload After acquiring the lock, reload the document - defaults to true
     # @return [void]
     def with_lock(opts = {})
-      had_lock = self.has_lock?
+      had_lock = has_lock?
 
       unless had_lock
         opts[:retries] = 1 if opts[:wait]
@@ -98,23 +135,21 @@ module Mongoid
           :_id => id,
           '$or' => [
             # not locked
-            { locked_until: nil },
+            { locked_until_field => nil },
             # expired
-            { locked_until: { '$lte' => time } }
+            { locked_until_field => { '$lte' => time } }
           ]
         },
-
         '$set' => {
-          locked_at: time,
-          locked_until: expiration
+          locked_at_field => time,
+          locked_until_field => expiration
         }
-
       )
 
       if locked
         # document successfully updated, meaning it was locked
-        self.locked_at = time
-        self.locked_until = expiration
+        self[locked_at_field] = time
+        self[locked_until_field] = expiration
         reload unless opts[:reload] == false
         @has_lock = true
       else
@@ -144,7 +179,7 @@ module Mongoid
 
           sleep retry_sleep if retry_sleep > 0
         else
-          fail LockError.new('could not get lock')
+          raise LockError.new('could not get lock')
         end
       end
     end
@@ -154,15 +189,13 @@ module Mongoid
       Mongoid::Locker::Wrapper.update(
         self.class,
         { _id: id },
-
         '$set' => {
-          locked_at: nil,
-          locked_until: nil
+          locked_at_field => nil,
+          locked_until_field => nil
         }
-
       )
 
-      self.attributes = { locked_at: nil, locked_until: nil } unless destroyed?
+      self.attributes = { locked_at_field => nil, locked_until_field => nil } unless destroyed?
       @has_lock = false
     end
   end

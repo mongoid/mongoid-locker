@@ -1,8 +1,9 @@
 ## Changelog
 
-### 0.3.7 (Next)
+### 1.0.0 (Next)
 
 * Your contribution here.
+* [#55](https://github.com/mongoid/mongoid-locker/pull/55): Customizable :locked_at and :locked_until fields - [@dks17](https://github.com/dks17).
 
 ### 0.3.6 (4/18/2018)
 

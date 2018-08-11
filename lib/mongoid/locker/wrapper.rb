@@ -13,5 +13,5 @@ elsif Mongoid::Compatibility::Version.mongoid3?
 elsif Mongoid::Compatibility::Version.mongoid2?
   require 'mongoid/locker/wrapper2'
 else
-  fail 'incompatible Mongoid version'
+  raise 'incompatible Mongoid version'
 end

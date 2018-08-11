@@ -27,10 +27,12 @@ group :development do
 end
 
 group :development, :test do
+  gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'mongoid-compatibility'
-  gem 'rack', '~> 1.5'
-  gem 'rspec', '~> 3.0'
-  gem 'rake', '11.3.0'
-  gem 'rubocop', '0.29.1'
   gem 'mongoid-danger', '~> 0.1.1'
+  gem 'pry-byebug'
+  gem 'rack', '~> 1.5'
+  gem 'rake', '11.3.0'
+  gem 'rspec', '~> 3.0'
+  gem 'rubocop'
 end
