@@ -4,6 +4,8 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'rspec'
 require 'mongoid-locker'
 require 'mongoid/compatibility'
+require 'byebug'
+require 'pry-byebug'
 
 ENV['RACK_ENV'] = 'test'
 
