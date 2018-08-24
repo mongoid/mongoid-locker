@@ -3,6 +3,7 @@
 ### 1.0.0 (Next)
 
 * Your contribution here.
+* [#57](https://github.com/mongoid/mongoid-locker/pull/57): `Time.now` replaced by `Time.now.utc` - [@dks17](https://github.com/dks17).
 * [#55](https://github.com/mongoid/mongoid-locker/pull/55): Customizable :locked_at and :locked_until fields - [@dks17](https://github.com/dks17).
 
 ### 0.3.6 (4/18/2018)

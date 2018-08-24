@@ -40,7 +40,7 @@ queue_item.with_lock do
 
   # do stuff
 
-  queue_item.completed_at = Time.now
+  queue_item.completed_at = Time.now.utc
   queue_item.save!
 end
 ```
