@@ -154,7 +154,7 @@ describe Mongoid::Locker do
 
       it 'should retry the number of times given, if desired' do
         allow(@user).to receive(:acquire_lock).and_return(false)
-        allow(Mongoid::Locker::Wrapper).to receive(:locked_until).and_return(Time.now)
+        allow(Mongoid::Locker::Wrapper).to receive(:locked_until).and_return(Time.now.utc)
 
         expect(@user).to receive(:acquire_lock).exactly(6).times
         expect do
@@ -178,7 +178,7 @@ describe Mongoid::Locker do
 
       it 'should, by default, when retrying, sleep until the lock expires' do
         allow(@user).to receive(:acquire_lock).and_return(false)
-        allow(Mongoid::Locker::Wrapper).to receive(:locked_until).and_return(Time.now + 5.seconds)
+        allow(Mongoid::Locker::Wrapper).to receive(:locked_until).and_return(Time.now.utc + 5.seconds)
         allow(@user).to receive(:sleep) { |time| expect(time).to be_within(0.1).of(5) }
 
         expect do
@@ -202,7 +202,7 @@ describe Mongoid::Locker do
       it 'should override the default timeout' do
         User.timeout_lock_after 1
 
-        expiration = (Time.now + 3).to_i
+        expiration = (Time.now.utc + 3).to_i
         @user.with_lock timeout: 3 do
           expect(@user[@user.locked_until_field].to_i).to eq(expiration)
         end

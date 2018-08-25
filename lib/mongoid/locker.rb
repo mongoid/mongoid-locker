@@ -15,14 +15,14 @@ module Mongoid
       #
       # @return [Mongoid::Criteria]
       def locked
-        where locked_until_field.gt => Time.now
+        where locked_until_field.gt => Time.now.utc
       end
 
       # A scope to retrieve all unlocked documents in the collection.
       #
       # @return [Mongoid::Criteria]
       def unlocked
-        any_of({ locked_until_field => nil }, locked_until_field.lte => Time.now)
+        any_of({ locked_until_field => nil }, locked_until_field.lte => Time.now.utc)
       end
 
       # Set the default lock timeout for this class.  Note this only applies to new locks.  Defaults to five seconds.
@@ -87,7 +87,7 @@ module Mongoid
     #
     # @return [Boolean] true if locked, false otherwise
     def locked?
-      !!(self[locked_until_field] && self[locked_until_field] > Time.now)
+      !!(self[locked_until_field] && self[locked_until_field] > Time.now.utc)
     end
 
     # Returns whether the current instance has the lock or not.
@@ -124,7 +124,7 @@ module Mongoid
     protected
 
     def acquire_lock(opts = {})
-      time = Time.now
+      time = Time.now.utc
       timeout = opts[:timeout] || self.class.lock_timeout
       expiration = time + timeout
 
@@ -174,7 +174,7 @@ module Mongoid
             locked_until = Mongoid::Locker::Wrapper.locked_until(self)
             # the lock might be released since the last check so make another attempt
             next unless locked_until
-            retry_sleep = locked_until - Time.now
+            retry_sleep = locked_until - Time.now.utc
           end
 
           sleep retry_sleep if retry_sleep > 0
