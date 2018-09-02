@@ -1,16 +1,15 @@
 ## Changelog
 
-### 1.0.0 (Next)
+### 1.0.0 (2018-09-02)
 
-* Your contribution here.
 * [#57](https://github.com/mongoid/mongoid-locker/pull/57): `Time.now` replaced by `Time.now.utc` - [@dks17](https://github.com/dks17).
 * [#55](https://github.com/mongoid/mongoid-locker/pull/55): Customizable :locked_at and :locked_until fields - [@dks17](https://github.com/dks17).
 
-### 0.3.6 (4/18/2018)
+### 0.3.6 (2018-04-18)
 
 * [#52](https://github.com/mongoid/mongoid-locker/pull/52): Added support for Mongoid 7 - [@wuhuizuo](https://github.com/wuhuizuo).
 
-### 0.3.5 (1/24/2017)
+### 0.3.5 (2017-01-24)
 
 * [#43](https://github.com/mongoid/mongoid-locker/pull/43): Added support for Mongoid 6 - [@sivagollapalli](https://github.com/sivagollapalli).
 * [#38](https://github.com/mongoid/mongoid-locker/issues/38): Fixed unlock already destroyed object - [@sivagollapalli](https://github.com/sivagollapalli).
