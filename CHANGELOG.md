@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.0.1 (Next)
+
+* Your contribution here.
+
 ### 1.0.0 (2018-09-02)
 
 * [#57](https://github.com/mongoid/mongoid-locker/pull/57): `Time.now` replaced by `Time.now.utc` - [@dks17](https://github.com/dks17).
