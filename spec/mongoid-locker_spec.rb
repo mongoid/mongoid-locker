@@ -483,6 +483,26 @@ describe Mongoid::Locker do
         end
       end
     end
+
+    describe '::reset!' do
+      it 'should reset to default configuration' do
+        locked_at    = :reset_locked_at
+        locked_until = :reset_locked_until
+
+        Mongoid::Locker.configure do |config|
+          config.locked_at_field = locked_at
+          config.locked_until_field = locked_until
+        end
+
+        expect(Mongoid::Locker.locked_at_field).to eq(locked_at)
+        expect(Mongoid::Locker.locked_until_field).to eq(locked_until)
+
+        Mongoid::Locker.reset!
+
+        expect(Mongoid::Locker.locked_at_field).to eq(:locked_at)
+        expect(Mongoid::Locker.locked_until_field).to eq(:locked_until)
+      end
+    end
   end
 
   context 'with default configuration' do

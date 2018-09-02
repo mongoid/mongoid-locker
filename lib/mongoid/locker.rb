@@ -81,6 +81,13 @@ module Mongoid
       def configure
         yield(self) if block_given?
       end
+
+      # Resets to default configuration.
+      def reset!
+        # The field names used by default.
+        @locked_at_field     = :locked_at
+        @locked_until_field  = :locked_until
+      end
     end
 
     # Returns whether the document is currently locked or not.

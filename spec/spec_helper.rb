@@ -17,6 +17,12 @@ RSpec.configure do |config|
 
   config.raise_errors_for_deprecations!
 
+  config.order = :random
+
+  config.before do
+    Mongoid::Locker.reset!
+  end
+
   # use to check the query conditions
   if ENV['LOG']
     Mongoid.logger.level = Logger::DEBUG
