@@ -9,7 +9,7 @@ Run tests, check that all tests succeed locally.
 
 ```
 bundle install
-rake
+bundle exec rake
 ```
 
 Check that the last build succeeded in [Travis CI](https://travis-ci.org/mongoid/mongoid-locker) for all supported platforms.
@@ -38,7 +38,7 @@ git push origin master
 Release.
 
 ```
-$ rake release
+$ bundle exec rake release
 
 mongoid-locker 0.4.0 built to pkg/mongoid-locker-0.4.0.gem.
 Tagged v0.4.0.

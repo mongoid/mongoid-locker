@@ -1,13 +1,14 @@
 # mongoid-locker
-[![Gem Version](https://badge.fury.io/rb/mongoid-locker.svg)](http://badge.fury.io/rb/mongoid-locker)
-[![Build Status](https://secure.travis-ci.org/mongoid/mongoid-locker.svg?branch=master)](http://travis-ci.org/mongoid/mongoid-locker)
-[![Code Climate](https://codeclimate.com/github/mongoid/mongoid-locker.svg)](https://codeclimate.com/github/mongoid/mongoid-locker)
+[![Gem Version](https://badge.fury.io/rb/mongoid-locker.svg)](https://badge.fury.io/rb/mongoid-locker)
+[![Build Status](https://travis-ci.org/mongoid/mongoid-locker.svg?branch=master)](https://travis-ci.org/mongoid/mongoid-locker)
+[![Maintainability](https://api.codeclimate.com/v1/badges/04ee4ee75ff54659300a/maintainability)](https://codeclimate.com/github/mongoid/mongoid-locker/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/04ee4ee75ff54659300a/test_coverage)](https://codeclimate.com/github/mongoid/mongoid-locker/test_coverage)
 
 Document-level locking for MongoDB via Mongoid. The need arose at [Jux](https://jux.com) from multiple processes on multiple servers trying to act upon the same document and stepping on each other's toes. Mongoid-Locker is an easy way to ensure only one process can perform a certain operation on a document at a time.
 
 [Tested](http://travis-ci.org/mongoid/mongoid-locker) against:
-- MRI: `2.3.6`, `2.4.3`, `2.5.0`
-- Mongoid: `2`, `3`, `4`, `5`, `6`, `7`
+- MRI: `2.3.7`, `2.4.4`, `2.5.1`
+- Mongoid: `4`, `5`, `6`, `7`
 
 See [.travis.yml](.travis.yml) for the latest test matrix.
 

@@ -11,26 +11,31 @@ before_install:
 
 matrix:
   include:
-    - rvm: 2.3.6
+    - rvm: 2.3.7
       env: MONGOID_VERSION=4
-    - rvm: 2.3.6
+    - rvm: 2.3.7
       env: MONGOID_VERSION=5
-    - rvm: 2.3.6
+    - rvm: 2.3.7
       env: MONGOID_VERSION=6
-    - rvm: 2.4.3
+    - rvm: 2.4.4
       env: MONGOID_VERSION=6
-    - rvm: 2.4.3
+    - rvm: 2.4.4
       env: MONGOID_VERSION=7
-    - rvm: 2.5.0
+    - rvm: 2.5.1
       env: MONGOID_VERSION=7
       before_script:
         - bundle exec danger
-    - rvm: rbx-2
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+        - ./cc-test-reporter before-build
+      after_success:
+        - ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.json coverage/.resultset.json
+        - ./cc-test-reporter upload-coverage
     - rvm: ruby-head
     - rvm: jruby-head
+  fast_finish: true
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: rbx-2
 
 bundler_args: --without development
