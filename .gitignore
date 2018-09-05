@@ -1,6 +1,5 @@
-# rcov
+# simplecov
 coverage
-coverage.data
 
 # rdoc
 rdoc

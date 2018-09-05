@@ -4,16 +4,11 @@ case ENV['MONGOID_VERSION']
 when /^7/
   gem 'mongoid', '~> 7.0'
 when /^6/
-  gem 'mongoid', '~> 6.0'
+  gem 'mongoid', '~> 6.4'
 when /^5/
-  gem 'mongoid', '~> 5.0'
+  gem 'mongoid', '~> 5.4'
 when /^4/
   gem 'mongoid', '~> 4.0'
-when /^3/
-  gem 'mongoid', '~> 3.1'
-when /^2/
-  gem 'bson_ext', platforms: :ruby
-  gem 'mongoid', '~> 2.8'
 else
   gem 'mongoid', '>= 4.0'
 end
@@ -32,4 +27,5 @@ group :development, :test do
   gem 'rake', '11.3.0'
   gem 'rspec', '~> 3.0'
   gem 'rubocop'
+  gem 'simplecov', require: false
 end

@@ -1,6 +1,12 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
+require 'simplecov'
+SimpleCov.start do
+  add_group 'Libraries', 'lib/'
+  track_files 'lib/**/*.rb'
+end
+
 require 'rspec'
 require 'mongoid-locker'
 require 'mongoid/compatibility'

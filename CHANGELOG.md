@@ -3,6 +3,8 @@
 ### 1.0.1 (Next)
 
 * Your contribution here.
+* [#60](https://github.com/mongoid/mongoid-locker/pull/60): Drop support for `mongoid` version `2` and `3` - [@dks17](https://github.com/dks17).
+* [#60](https://github.com/mongoid/mongoid-locker/pull/60): Add SimpleCov - [@dks17](https://github.com/dks17).
 
 ### 1.0.0 (2018-09-02)
 
