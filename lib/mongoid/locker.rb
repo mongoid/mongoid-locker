@@ -181,6 +181,7 @@ module Mongoid
             locked_until = Mongoid::Locker::Wrapper.locked_until(self)
             # the lock might be released since the last check so make another attempt
             next unless locked_until
+
             retry_sleep = locked_until - Time.now.utc
           end
 
