@@ -57,7 +57,7 @@ class QueueItem
 end
 ```
 
-Note that these locks are only enforced when using `#with_lock`, not at the database level. It's useful for transactional operations, where you can make atomic modification of the document with checks.  For example, you could deduct a purchase from a user's balance ... _unless_ they are broke.
+Note that these locks are only enforced when using `#with_lock`, not at the database level. It's useful for transactional operations, where you can make atomic modification of the document with checks. For example, you could deduct a purchase from a user's balance ... _unless_ they are broke.
 
 More in-depth method documentation can be found at [rdoc.info](http://rdoc.info/github/mongoid/mongoid-locker/frames).
 
