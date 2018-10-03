@@ -1,7 +1,1 @@
-AllCops:
-  Exclude:
-    - vendor/**/*
-    - bin/**/*
-    - mongoid-locker.gemspec
-
 inherit_from: .rubocop_todo.yml

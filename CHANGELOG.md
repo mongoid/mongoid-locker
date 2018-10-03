@@ -3,6 +3,7 @@
 ### 1.0.1 (Next)
 
 * Your contribution here.
+* [#64](https://github.com/mongoid/mongoid-locker/pull/64): Exclude demo files from the gem - [@dks17](https://github.com/dks17).
 * [#60](https://github.com/mongoid/mongoid-locker/pull/60): Drop support for `mongoid` version `2` and `3` - [@dks17](https://github.com/dks17).
 * [#60](https://github.com/mongoid/mongoid-locker/pull/60): Add SimpleCov - [@dks17](https://github.com/dks17).
 

@@ -187,7 +187,7 @@ module Mongoid
 
           sleep retry_sleep if retry_sleep > 0
         else
-          raise LockError.new('could not get lock')
+          raise LockError, 'could not get lock'
         end
       end
     end
