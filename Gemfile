@@ -21,7 +21,6 @@ group :development do
 end
 
 group :development, :test do
-  gem 'mongoid-compatibility'
   gem 'mongoid-danger', '~> 0.1.1'
   gem 'rack', '~> 1.5'
   gem 'rake', '11.3.0'

@@ -9,13 +9,8 @@ end
 
 require 'rspec'
 require 'mongoid-locker'
-require 'mongoid/compatibility'
 
 ENV['RACK_ENV'] = 'test'
-
-# Requires supporting files with custom matchers and macros, etc,
-# in ./support/ and its subdirectories.
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 RSpec.configure do |config|
   version = Mongoid::VERSION.split('.')[0]
@@ -33,7 +28,7 @@ RSpec.configure do |config|
   if ENV['LOG']
     Mongoid.logger.level = Logger::DEBUG
     Moped.logger.level = Logger::DEBUG if defined? Moped
-  elsif Mongoid::Compatibility::Version.mongoid5?
+  elsif version == '5'
     Mongoid.logger.level = Logger::INFO
     Mongo::Logger.logger.level = Logger::INFO
   else
