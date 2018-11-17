@@ -67,8 +67,8 @@ describe Mongoid::Locker do
           expect(User.first).to be_locked
         end
 
-        expect(@user).to_not be_locked
-        expect(@user.reload).to_not be_locked
+        expect(@user).not_to be_locked
+        expect(@user.reload).not_to be_locked
       end
 
       it "shouldn't save the full document" do
@@ -87,7 +87,7 @@ describe Mongoid::Locker do
           end
         end.to raise_error 'booyah!'
 
-        expect(@user.reload).to_not be_locked
+        expect(@user.reload).not_to be_locked
       end
 
       it 'should complain if trying to lock locked doc' do
@@ -135,7 +135,7 @@ describe Mongoid::Locker do
       end
 
       it 'should allow override of the default reload behavior' do
-        expect(@user).to_not receive(:reload)
+        expect(@user).not_to receive(:reload)
         @user.with_lock reload: false do
           # no-op
         end
@@ -168,7 +168,7 @@ describe Mongoid::Locker do
         allow(@user).to receive(:acquire_lock).and_return(false)
         allow(Mongoid::Locker::Wrapper).to receive(:locked_until).and_return(nil)
 
-        expect(@user).to receive(:acquire_lock).exactly(2).times
+        expect(@user).to receive(:acquire_lock).twice
         expect do
           @user.with_lock retries: 1 do
             # no-op
@@ -235,10 +235,21 @@ describe Mongoid::Locker do
           expect(Admin.first).to be_locked
         end
 
-        expect(admin).to_not be_locked
-        expect(admin.reload).to_not be_locked
+        expect(admin).not_to be_locked
+        expect(admin.reload).not_to be_locked
 
         remove_class Admin
+      end
+
+      it 'not fail if document is not persisted' do
+        user = User.new
+
+        expect(user.persisted?).to be_falsey
+        expect do
+          user.with_lock retries: 1 do
+            # no-op
+          end
+        end.not_to raise_error
       end
 
       context 'when a lock has timed out' do
@@ -250,10 +261,11 @@ describe Mongoid::Locker do
             sleep 2
           end
         end
+
         it 'should remain unlocked' do
-          expect(@user).to_not receive(:unlock)
-          expect(@user).to_not be_locked
-          expect(@user.reload).to_not be_locked
+          expect(@user).not_to receive(:unlock)
+          expect(@user).not_to be_locked
+          expect(@user.reload).not_to be_locked
         end
       end
 
@@ -399,14 +411,14 @@ describe Mongoid::Locker do
         User.locker(locked_at_field: :locker_locked_at)
 
         expect(User.locked_at_field).to eq(:locker_locked_at)
-        expect(User.locked_at_field).to_not eq(Mongoid::Locker.locked_at_field)
+        expect(User.locked_at_field).not_to eq(Mongoid::Locker.locked_at_field)
       end
 
       it 'should set locked_until_field name' do
         User.locker(locked_until_field: :locker_locked_until)
 
         expect(User.locked_until_field).to eq(:locker_locked_until)
-        expect(User.locked_until_field).to_not eq(Mongoid::Locker.locked_until_field)
+        expect(User.locked_until_field).not_to eq(Mongoid::Locker.locked_until_field)
       end
     end
 
