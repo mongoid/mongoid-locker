@@ -108,14 +108,18 @@ module Mongoid
     #
     # @param [Hash] opts for the locking mechanism
     # @option opts [Fixnum] :timeout The number of seconds until the lock is considered "expired" - defaults to the {ClassMethods#lock_timeout}
-    # @option opts [Fixnum] :retries If the document is currently locked, the number of times to retry. Defaults to 0 (note: setting this to 1 is the equivalent of using :wait => true)
+    # @option opts [Fixnum] :retries If the document is currently locked, the number of times to retry - defaults to 0
     # @option opts [Float] :retry_sleep How long to sleep between attempts to acquire lock - defaults to time left until lock is available
-    # @option opts [Boolean] :wait If the document is currently locked, wait until the lock expires and try again - defaults to false. If set, :retries will be ignored
+    # @option opts [Boolean] :wait (deprecated) If the document is currently locked, wait until the lock expires and try again - defaults to false. If set, :retries will be ignored
     # @option opts [Boolean] :reload After acquiring the lock, reload the document - defaults to true
     # @return [void]
     def with_lock(opts = {})
       unless !persisted? || (had_lock = has_lock?)
-        opts[:retries] = 1 if opts[:wait]
+        if opts[:wait]
+          opts[:retries] = 1
+          warn 'WARN: `:wait` option for Mongoid::Locker is deprecated - use `retries: 1` instead.'
+        end
+
         lock(opts)
       end
 

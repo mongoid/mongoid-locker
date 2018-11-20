@@ -118,7 +118,7 @@ describe Mongoid::Locker do
         @user.with_lock do
           user_dup = User.first
 
-          user_dup.with_lock wait: true do
+          user_dup.with_lock retries: 1 do
             user_dup.account_balance = 10
             user_dup.save!
           end
@@ -218,7 +218,7 @@ describe Mongoid::Locker do
           @user.save!
 
           expect(user_dup.account_balance).to eq(20)
-          user_dup.with_lock wait: true do
+          user_dup.with_lock retries: 1 do
             expect(user_dup.account_balance).to eq(10)
           end
         end
@@ -303,6 +303,14 @@ describe Mongoid::Locker do
             end
           end.to raise_error(Mongoid::Errors::UnknownAttribute)
         end
+      end
+
+      it 'outputs warn when using :wait' do
+        expect do
+          @user.with_lock wait: true do
+            # no-op
+          end
+        end.to output.to_stderr
       end
     end
 
