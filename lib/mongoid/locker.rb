@@ -177,20 +177,18 @@ module Mongoid
 
         attempts_left -= 1
 
-        if attempts_left > 0
-          # if not passed a retry_sleep value, we sleep for the remaining life of the lock
-          unless retry_sleep
-            locked_until = Mongoid::Locker::Wrapper.locked_until(self)
-            # the lock might be released since the last check so make another attempt
-            next unless locked_until
+        raise LockError, 'could not get lock' unless attempts_left > 0
 
-            retry_sleep = locked_until - Time.now.utc
-          end
+        # if not passed a retry_sleep value, we sleep for the remaining life of the lock
+        unless retry_sleep
+          locked_until = Mongoid::Locker::Wrapper.locked_until(self)
+          # the lock might be released since the last check so make another attempt
+          next unless locked_until
 
-          sleep retry_sleep if retry_sleep > 0
-        else
-          raise LockError, 'could not get lock'
+          retry_sleep = locked_until - Time.now.utc
         end
+
+        sleep retry_sleep if retry_sleep > 0
       end
     end
 
