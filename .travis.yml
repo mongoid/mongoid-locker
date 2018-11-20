@@ -11,26 +11,35 @@ before_install:
 
 matrix:
   include:
-    - rvm: 2.3.7
+    - rvm: 2.3.8
       env: MONGOID_VERSION=4
-    - rvm: 2.3.7
+    - rvm: 2.3.8
       env: MONGOID_VERSION=5
-    - rvm: 2.3.7
+    - rvm: 2.3.8
       env: MONGOID_VERSION=6
-    - rvm: 2.4.4
+    - rvm: 2.4.5
       env: MONGOID_VERSION=6
-    - rvm: 2.4.4
+    - rvm: 2.4.5
       env: MONGOID_VERSION=7
-    - rvm: 2.5.1
+    - rvm: 2.5.3
       env: MONGOID_VERSION=7
-      before_script:
-        - bundle exec danger
+      before_script: bundle exec danger
+    - name: Code Climate Test Coverage
+      rvm: 2.3.8
+      env: COVERAGE=true
+      script:
         - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
         - chmod +x ./cc-test-reporter
         - ./cc-test-reporter before-build
-      after_success:
-        - ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.json coverage/.resultset.json
-        - ./cc-test-reporter upload-coverage
+        - for version in 4 5 6 7; do
+            MONGOID_VERSION=$version bundle update;
+            bundle exec rake;
+            ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.mongoid${version}.json;
+          done
+        - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then
+            ./cc-test-reporter sum-coverage coverage/codeclimate.mongoid*.json -p 4;
+            ./cc-test-reporter upload-coverage;
+          fi
     - rvm: ruby-head
     - rvm: jruby-head
   fast_finish: true

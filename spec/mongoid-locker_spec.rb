@@ -7,91 +7,91 @@ describe Mongoid::Locker do
 
   shared_examples 'Mongoid::Locker is included' do
     describe '#locked?' do
-      it "shouldn't be locked when created" do
-        expect(@user.locked?).to be false
+      it 'is not locked when created' do
+        expect(user.locked?).to be false
       end
 
-      it 'should be true when locked' do
-        @user.with_lock do
-          expect(@user.locked?).to be true
+      it 'is true when locked' do
+        user.with_lock do
+          expect(user.locked?).to be true
         end
       end
 
-      it 'should respect the expiration' do
+      it 'respects the expiration' do
         User.timeout_lock_after 1
 
-        @user.with_lock do
+        user.with_lock do
           sleep 2
-          expect(@user.locked?).to be false
+          expect(user.locked?).to be false
         end
       end
 
-      it 'should be true for a different instance' do
-        @user.with_lock do
+      it 'is true for a different instance' do
+        user.with_lock do
           expect(User.first.locked?).to be true
         end
       end
     end
 
     describe '#has_lock?' do
-      it "shouldn't be has_lock when created" do
-        expect(@user.has_lock?).to be false
+      it 'is not has_lock when created' do
+        expect(user.has_lock?).to be false
       end
 
-      it 'should be true when has_lock' do
-        @user.with_lock do
-          expect(@user.has_lock?).to be true
+      it 'is true when has_lock' do
+        user.with_lock do
+          expect(user.has_lock?).to be true
         end
       end
 
-      it 'should respect the expiration' do
+      it 'respects the expiration' do
         User.timeout_lock_after 1
 
-        @user.with_lock do
+        user.with_lock do
           sleep 2
-          expect(@user.has_lock?).to be false
+          expect(user.has_lock?).to be false
         end
       end
 
-      it 'should be false for a different instance' do
-        @user.with_lock do
+      it 'is false for a different instance' do
+        user.with_lock do
           expect(User.first.has_lock?).to be false
         end
       end
     end
 
     describe '#with_lock' do
-      it 'should lock and unlock the user' do
-        @user.with_lock do
-          expect(@user).to be_locked
+      it 'locks and unlocks the user' do
+        user.with_lock do
+          expect(user).to be_locked
           expect(User.first).to be_locked
         end
 
-        expect(@user).not_to be_locked
-        expect(@user.reload).not_to be_locked
+        expect(user).not_to be_locked
+        expect(user.reload).not_to be_locked
       end
 
-      it "shouldn't save the full document" do
-        @user.with_lock do
-          @user.account_balance = 10
+      it 'does not save the full document' do
+        user.with_lock do
+          user.account_balance = 10
         end
 
-        expect(@user.account_balance).to eq(10)
+        expect(user.account_balance).to eq(10)
         expect(User.first.account_balance).to eq(20)
       end
 
-      it 'should handle errors gracefully' do
+      it 'handles errors gracefully' do
         expect do
-          @user.with_lock do
+          user.with_lock do
             raise 'booyah!'
           end
         end.to raise_error 'booyah!'
 
-        expect(@user.reload).not_to be_locked
+        expect(user.reload).not_to be_locked
       end
 
-      it 'should complain if trying to lock locked doc' do
-        @user.with_lock do
+      it 'complains if trying to lock locked doc' do
+        user.with_lock do
           user_dup = User.first
 
           expect do
@@ -102,20 +102,20 @@ describe Mongoid::Locker do
         end
       end
 
-      it 'should handle recursive calls' do
-        @user.with_lock do
-          @user.with_lock do
-            @user.account_balance = 10
+      it 'handles recursive calls' do
+        user.with_lock do
+          user.with_lock do
+            user.account_balance = 10
           end
         end
 
-        expect(@user.account_balance).to eq(10)
+        expect(user.account_balance).to eq(10)
       end
 
-      it 'should wait until the lock times out, if desired' do
+      it 'waits until the lock times out, if desired' do
         User.timeout_lock_after 1
 
-        @user.with_lock do
+        user.with_lock do
           user_dup = User.first
 
           user_dup.with_lock retries: 1 do
@@ -124,26 +124,26 @@ describe Mongoid::Locker do
           end
         end
 
-        expect(@user.reload.account_balance).to eq(10)
+        expect(user.reload.account_balance).to eq(10)
       end
 
-      it 'should, by default, reload the row after acquiring the lock' do
-        expect(@user).to receive(:reload)
-        @user.with_lock do
+      it 'by default, reloads the row after acquiring the lock' do
+        expect(user).to receive(:reload)
+        user.with_lock do
           # no-op
         end
       end
 
-      it 'should allow override of the default reload behavior' do
-        expect(@user).not_to receive(:reload)
-        @user.with_lock reload: false do
+      it 'allows override of the default reload behavior' do
+        expect(user).not_to receive(:reload)
+        user.with_lock reload: false do
           # no-op
         end
       end
 
-      it 'should, by default, not retry' do
-        expect(@user).to receive(:acquire_lock).once.and_return(true)
-        @user.with_lock do
+      it 'by default, does not retry' do
+        expect(user).to receive(:acquire_lock).once.and_return(true)
+        user.with_lock do
           user_dup = User.first
 
           user_dup.with_lock do
@@ -152,70 +152,70 @@ describe Mongoid::Locker do
         end
       end
 
-      it 'should retry the number of times given, if desired' do
-        allow(@user).to receive(:acquire_lock).and_return(false)
+      it 'retries the number of times given, if desired' do
+        allow(user).to receive(:acquire_lock).and_return(false)
         allow(Mongoid::Locker::Wrapper).to receive(:locked_until).and_return(Time.now.utc)
 
-        expect(@user).to receive(:acquire_lock).exactly(6).times
+        expect(user).to receive(:acquire_lock).exactly(6).times
         expect do
-          @user.with_lock retries: 5 do
+          user.with_lock retries: 5 do
             # no-op
           end
         end.to raise_error(Mongoid::Locker::LockError)
       end
 
       it 'does not fail if the lock has been released between check and sleep time calculation' do
-        allow(@user).to receive(:acquire_lock).and_return(false)
+        allow(user).to receive(:acquire_lock).and_return(false)
         allow(Mongoid::Locker::Wrapper).to receive(:locked_until).and_return(nil)
 
-        expect(@user).to receive(:acquire_lock).twice
+        expect(user).to receive(:acquire_lock).twice
         expect do
-          @user.with_lock retries: 1 do
+          user.with_lock retries: 1 do
             # no-op
           end
         end.to raise_error(Mongoid::Locker::LockError)
       end
 
-      it 'should, by default, when retrying, sleep until the lock expires' do
-        allow(@user).to receive(:acquire_lock).and_return(false)
+      it 'by default, when retrying, sleeps until the lock expires' do
+        allow(user).to receive(:acquire_lock).and_return(false)
         allow(Mongoid::Locker::Wrapper).to receive(:locked_until).and_return(Time.now.utc + 5.seconds)
-        allow(@user).to receive(:sleep) { |time| expect(time).to be_within(0.1).of(5) }
+        allow(user).to receive(:sleep) { |time| expect(time).to be_within(0.1).of(5) }
 
         expect do
-          @user.with_lock retries: 1 do
+          user.with_lock retries: 1 do
             # no-op
           end
         end.to raise_error(Mongoid::Locker::LockError)
       end
 
-      it 'should sleep for the time given, if desired' do
-        allow(@user).to receive(:acquire_lock).and_return(false)
-        allow(@user).to receive(:sleep) { |time| expect(time).to be_within(0.1).of(3) }
+      it 'sleeps for the time given, if desired' do
+        allow(user).to receive(:acquire_lock).and_return(false)
+        allow(user).to receive(:sleep) { |time| expect(time).to be_within(0.1).of(3) }
 
         expect do
-          @user.with_lock(retries: 1, retry_sleep: 3) do
+          user.with_lock(retries: 1, retry_sleep: 3) do
             # no-op
           end
         end.to raise_error(Mongoid::Locker::LockError)
       end
 
-      it 'should override the default timeout' do
+      it 'overrides the default timeout' do
         User.timeout_lock_after 1
 
         expiration = (Time.now.utc + 3).to_i
-        @user.with_lock timeout: 3 do
-          expect(@user[@user.locked_until_field].to_i).to eq(expiration)
+        user.with_lock timeout: 3 do
+          expect(user[user.locked_until_field].to_i).to eq(expiration)
         end
       end
 
-      it 'should reload the document if it needs to wait for a lock' do
+      it 'reloads the document if it needs to wait for a lock' do
         User.timeout_lock_after 1
 
-        @user.with_lock do
+        user.with_lock do
           user_dup = User.first
 
-          @user.account_balance = 10
-          @user.save!
+          user.account_balance = 10
+          user.save!
 
           expect(user_dup.account_balance).to eq(20)
           user_dup.with_lock retries: 1 do
@@ -224,7 +224,7 @@ describe Mongoid::Locker do
         end
       end
 
-      it 'should succeed for subclasses' do
+      it 'succeeds for subclasses' do
         class Admin < User
         end
 
@@ -241,10 +241,10 @@ describe Mongoid::Locker do
         remove_class Admin
       end
 
-      it 'not fail if document is not persisted' do
+      it 'does not fail if document is not persisted' do
         user = User.new
 
-        expect(user.persisted?).to be_falsey
+        expect(user).not_to be_persisted
         expect do
           user.with_lock retries: 1 do
             # no-op
@@ -255,17 +255,18 @@ describe Mongoid::Locker do
       context 'when a lock has timed out' do
         before do
           User.timeout_lock_after 1
-          @user.with_lock do
-            expect(@user).to be_locked
+        end
+
+        it 'remains unlocked' do
+          user.with_lock do
+            expect(user).to be_locked
             expect(User.first).to be_locked
             sleep 2
           end
-        end
 
-        it 'should remain unlocked' do
-          expect(@user).not_to receive(:unlock)
-          expect(@user).not_to be_locked
-          expect(@user.reload).not_to be_locked
+          expect(user).not_to receive(:unlock)
+          expect(user).not_to be_locked
+          expect(user.reload).not_to be_locked
         end
       end
 
@@ -282,7 +283,7 @@ describe Mongoid::Locker do
           remove_class Admin
         end
 
-        it 'should return error if locked_at field is not defined' do
+        it 'returns error if locked_at field is not defined' do
           Admin.field(:locked_until, type: Time)
           admin = Admin.create!
 
@@ -293,7 +294,7 @@ describe Mongoid::Locker do
           end.to raise_error(Mongoid::Errors::UnknownAttribute)
         end
 
-        it 'should return error if locked_until field is not defined' do
+        it 'returns error if locked_until field is not defined' do
           Admin.field(:locked_at, type: Time)
           admin = Admin.create!
 
@@ -307,7 +308,7 @@ describe Mongoid::Locker do
 
       it 'outputs warn when using :wait' do
         expect do
-          @user.with_lock wait: true do
+          user.with_lock wait: true do
             # no-op
           end
         end.to output.to_stderr
@@ -315,30 +316,30 @@ describe Mongoid::Locker do
     end
 
     describe '#locked_at_field' do
-      it 'should be defined' do
-        expect(User.public_method_defined?(:locked_at_field)).to be_truthy
+      it 'is defined' do
+        expect(User).to be_public_method_defined(:locked_at_field)
       end
 
-      it 'should return @@locked_at_field variable value' do
-        expect(@user.locked_at_field).to eq(User.class_variable_get(:@@locked_at_field))
+      it 'returns @@locked_at_field variable value' do
+        expect(user.locked_at_field).to eq(User.class_variable_get(:@@locked_at_field))
       end
     end
 
     describe '#locked_until_field' do
-      it 'should be defined' do
-        expect(User.public_method_defined?(:locked_until_field)).to be_truthy
+      it 'is defined' do
+        expect(User).to be_public_method_defined(:locked_until_field)
       end
 
-      it 'should return @@locked_until_field variable value' do
-        expect(@user.locked_until_field).to eq(User.class_variable_get(:@@locked_until_field))
+      it 'returns @@locked_until_field variable value' do
+        expect(user.locked_until_field).to eq(User.class_variable_get(:@@locked_until_field))
       end
     end
 
     describe '.timeout_lock_after' do
-      it 'should ignore the lock if it has timed out' do
+      it 'ignores the lock if it has timed out' do
         User.timeout_lock_after 1
 
-        @user.with_lock do
+        user.with_lock do
           user_dup = User.first
           sleep 2
 
@@ -348,10 +349,10 @@ describe Mongoid::Locker do
           end
         end
 
-        expect(@user.reload.account_balance).to eq(10)
+        expect(user.reload.account_balance).to eq(10)
       end
 
-      it 'should be independent for different classes' do
+      it 'is independent for different classes' do
         class Account
           include Mongoid::Document
           include Mongoid::Locker
@@ -367,62 +368,62 @@ describe Mongoid::Locker do
     end
 
     describe '.locked' do
-      it 'should return the locked documents' do
+      it 'returns the locked documents' do
         User.create!
 
-        @user.with_lock do
-          expect(User.locked.to_a).to eq([@user])
+        user.with_lock do
+          expect(User.locked.to_a).to eq([user])
         end
       end
 
-      it 'shouldnt throw error while unlocking destroyed object' do
+      it 'does not throw error while unlocking destroyed object' do
         User.create!
 
-        @user.with_lock do
-          @user.destroy
+        user.with_lock do
+          user.destroy
         end
       end
     end
 
     describe '.unlocked' do
-      it 'should return the unlocked documents' do
+      it 'returns the unlocked documents' do
         user2 = User.create!
 
-        @user.with_lock do
+        user.with_lock do
           expect(User.unlocked.to_a).to eq([user2])
         end
       end
     end
 
     describe '.locked_at_field' do
-      it 'should be defined' do
+      it 'is defined' do
         expect(User.singleton_methods).to include(:locked_at_field)
       end
 
-      it 'should return @@locked_at_field variable value' do
+      it 'returns @@locked_at_field variable value' do
         expect(User.locked_at_field).to eq(User.class_variable_get(:@@locked_at_field))
       end
     end
 
     describe '.locked_until_field' do
-      it 'should be defined' do
+      it 'is defined' do
         expect(User.singleton_methods).to include(:locked_until_field)
       end
 
-      it 'should return @@locked_until_field variable value' do
+      it 'returns @@locked_until_field variable value' do
         expect(User.locked_until_field).to eq(User.class_variable_get(:@@locked_until_field))
       end
     end
 
     describe '.locker' do
-      it 'should set locked_at_field name' do
+      it 'sets locked_at_field name' do
         User.locker(locked_at_field: :locker_locked_at)
 
         expect(User.locked_at_field).to eq(:locker_locked_at)
         expect(User.locked_at_field).not_to eq(Mongoid::Locker.locked_at_field)
       end
 
-      it 'should set locked_until_field name' do
+      it 'sets locked_until_field name' do
         User.locker(locked_until_field: :locker_locked_until)
 
         expect(User.locked_until_field).to eq(:locker_locked_until)
@@ -431,12 +432,12 @@ describe Mongoid::Locker do
     end
 
     describe '::locked_at_field' do
-      it 'should be defined' do
+      it 'is defined' do
         expect(Mongoid::Locker.singleton_methods).to include(:locked_at_field)
       end
 
-      it '@locked_at_field variable should be defined' do
-        expect(Mongoid::Locker.instance_variable_defined?(:@locked_at_field)).to be_truthy
+      it '@locked_at_field variable is defined' do
+        expect(Mongoid::Locker).to be_instance_variable_defined(:@locked_at_field)
       end
     end
 
@@ -449,11 +450,11 @@ describe Mongoid::Locker do
         Mongoid::Locker.locked_at_field = @field_name
       end
 
-      it 'should be defined' do
+      it 'is defined' do
         expect(Mongoid::Locker.singleton_methods).to include(:locked_at_field=)
       end
 
-      it 'should assign the value' do
+      it 'assigns the value' do
         Mongoid::Locker.locked_at_field = :dks17_locked_at
 
         expect(Mongoid::Locker.locked_at_field).to eq(:dks17_locked_at)
@@ -462,12 +463,12 @@ describe Mongoid::Locker do
     end
 
     describe '::locked_until_field' do
-      it 'should be defined' do
+      it 'is defined' do
         expect(Mongoid::Locker.singleton_methods).to include(:locked_until_field)
       end
 
-      it '@locked_until_field variable should be defined' do
-        expect(Mongoid::Locker.instance_variable_defined?(:@locked_until_field)).to be_truthy
+      it '@locked_until_field variable is defined' do
+        expect(Mongoid::Locker).to be_instance_variable_defined(:@locked_until_field)
       end
     end
 
@@ -480,11 +481,11 @@ describe Mongoid::Locker do
         Mongoid::Locker.locked_until_field = @field_name
       end
 
-      it 'should be defined' do
+      it 'is defined' do
         expect(Mongoid::Locker.singleton_methods).to include(:locked_until_field=)
       end
 
-      it 'should assign the value' do
+      it 'assigns the value' do
         Mongoid::Locker.locked_until_field = :dks17_locked_until
 
         expect(Mongoid::Locker.locked_until_field).to eq(:dks17_locked_until)
@@ -493,11 +494,11 @@ describe Mongoid::Locker do
     end
 
     describe '::configure' do
-      it 'should be defined' do
+      it 'is defined' do
         expect(Mongoid::Locker.singleton_methods).to include(:configure)
       end
 
-      it 'should pass module name into block' do
+      it 'passes module name into block' do
         Mongoid::Locker.configure do |config|
           expect(config).to eq(Mongoid::Locker)
         end
@@ -505,7 +506,7 @@ describe Mongoid::Locker do
     end
 
     describe '::reset!' do
-      it 'should reset to default configuration' do
+      it 'resets to default configuration' do
         locked_at    = :reset_locked_at
         locked_until = :reset_locked_until
 
@@ -536,14 +537,14 @@ describe Mongoid::Locker do
         field :locked_until, type: Time
         field :account_balance, type: Integer # easier to test than Float
       end
-
-      @user = User.create! account_balance: 20
     end
 
     after do
       User.delete_all
       remove_class User
     end
+
+    let(:user) { User.create! account_balance: 20 }
 
     it_behaves_like 'Mongoid::Locker is included'
   end
@@ -563,8 +564,6 @@ describe Mongoid::Locker do
         field :global_locked_until, type: Time
         field :account_balance, type: Integer # easier to test than Float
       end
-
-      @user = User.create! account_balance: 20
     end
 
     after do
@@ -572,13 +571,15 @@ describe Mongoid::Locker do
       remove_class User
     end
 
+    let(:user) { User.create! account_balance: 20 }
+
     it_behaves_like 'Mongoid::Locker is included'
 
-    it '.locked_at_field should return global value' do
+    it '.locked_at_field returns global value' do
       expect(User.locked_at_field).to eq(Mongoid::Locker.locked_at_field)
     end
 
-    it '.locked_until_field should return global value' do
+    it '.locked_until_field returns global value' do
       expect(User.locked_until_field).to eq(Mongoid::Locker.locked_until_field)
     end
   end
@@ -609,9 +610,6 @@ describe Mongoid::Locker do
         field :global_locked_at, type: Time
         field :global_locked_until, type: Time
       end
-
-      @user = User.create! account_balance: 20
-      @item = Item.create!
     end
 
     after do
@@ -622,38 +620,41 @@ describe Mongoid::Locker do
       remove_class Item
     end
 
+    let(:user) { User.create! account_balance: 20 }
+    let(:item) { Item.create! }
+
     it_behaves_like 'Mongoid::Locker is included'
 
-    it '.locked_at_field should return locker value' do
+    it '.locked_at_field returns locker value' do
       expect(User.locked_at_field).to eq(:locker_locked_at)
     end
 
-    it '.locked_until_field should return locker value' do
+    it '.locked_until_field returns locker value' do
       expect(User.locked_until_field).to eq(:locker_locked_until)
     end
 
-    it '#locked_at_field should return locker value' do
-      expect(@user.locked_at_field).to eq(:locker_locked_at)
+    it '#locked_at_field returns locker value' do
+      expect(user.locked_at_field).to eq(:locker_locked_at)
     end
 
-    it '#locked_until_field should return locker value' do
-      expect(@user.locked_until_field).to eq(:locker_locked_until)
+    it '#locked_until_field returns locker value' do
+      expect(user.locked_until_field).to eq(:locker_locked_until)
     end
 
-    it '.locked_at_field should return global value for other class' do
+    it '.locked_at_field returns global value for other class' do
       expect(Item.locked_at_field).to eq(Mongoid::Locker.locked_at_field)
     end
 
-    it '.locked_until_field should return global value for other class' do
+    it '.locked_until_field returns global value for other class' do
       expect(Item.locked_until_field).to eq(Mongoid::Locker.locked_until_field)
     end
 
-    it '#locked_at_field should return global value for other class' do
-      expect(@item.locked_at_field).to eq(Mongoid::Locker.locked_at_field)
+    it '#locked_at_field returns global value for other class' do
+      expect(item.locked_at_field).to eq(Mongoid::Locker.locked_at_field)
     end
 
-    it '#locked_until_field should return global value for other class' do
-      expect(@item.locked_until_field).to eq(Mongoid::Locker.locked_until_field)
+    it '#locked_until_field returns global value for other class' do
+      expect(item.locked_until_field).to eq(Mongoid::Locker.locked_until_field)
     end
   end
 end
