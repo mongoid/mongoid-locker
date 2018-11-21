@@ -4,7 +4,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/04ee4ee75ff54659300a/maintainability)](https://codeclimate.com/github/mongoid/mongoid-locker/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/04ee4ee75ff54659300a/test_coverage)](https://codeclimate.com/github/mongoid/mongoid-locker/test_coverage)
 
-Document-level locking for MongoDB via Mongoid. The need arose at [Jux](https://jux.com) from multiple processes on multiple servers trying to act upon the same document and stepping on each other's toes. Mongoid-Locker is an easy way to ensure only one process can perform a certain operation on a document at a time.
+Document-level locking for MongoDB via Mongoid. Mongoid-Locker is an easy way to ensure only one process can perform a certain operation on a document at a time.
 
 [Tested](http://travis-ci.org/mongoid/mongoid-locker) against:
 - MRI: `2.3.8`, `2.4.5`, `2.5.3`
