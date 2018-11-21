@@ -442,12 +442,12 @@ describe Mongoid::Locker do
     end
 
     describe '::locked_at_field=' do
-      before do
-        @field_name = Mongoid::Locker.locked_at_field
-      end
+      around do |example|
+        field_name = Mongoid::Locker.locked_until_field
 
-      after do
-        Mongoid::Locker.locked_at_field = @field_name
+        example.run
+
+        Mongoid::Locker.locked_until_field = field_name
       end
 
       it 'is defined' do
@@ -473,12 +473,12 @@ describe Mongoid::Locker do
     end
 
     describe '::locked_until_field=' do
-      before do
-        @field_name = Mongoid::Locker.locked_until_field
-      end
+      around do |example|
+        field_name = Mongoid::Locker.locked_until_field
 
-      after do
-        Mongoid::Locker.locked_until_field = @field_name
+        example.run
+
+        Mongoid::Locker.locked_until_field = field_name
       end
 
       it 'is defined' do
