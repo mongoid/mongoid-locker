@@ -27,14 +27,8 @@ RSpec.configure do |config|
   end
 
   # use to check the query conditions
-  if ENV['LOG']
-    Mongoid.logger.level = Logger::DEBUG
-    Moped.logger.level = Logger::DEBUG if defined? Moped
-  elsif version == '5'
-    Mongoid.logger.level = Logger::INFO
-    Mongo::Logger.logger.level = Logger::INFO
-  else
-    Mongoid.logger.level = Logger::INFO
-    Moped.logger.level = Logger::INFO if defined? Moped
-  end
+  log_level = ENV['LOG'].nil? ? 'INFO' : 'DEBUG'
+  Mongoid.logger.level = Logger.const_get(log_level)
+  Mongo::Logger.logger.level = Logger.const_get(log_level) if defined? Mongo
+  Moped.logger.level = Logger.const_get(log_level) if defined? Moped
 end

@@ -6,8 +6,9 @@
 
 Document-level locking for MongoDB via Mongoid. Mongoid-Locker is an easy way to ensure only one process can perform a certain operation on a document at a time.
 
-[Tested](http://travis-ci.org/mongoid/mongoid-locker) against:
+[Tested](https://travis-ci.org/mongoid/mongoid-locker) against:
 - MRI: `2.3.8`, `2.4.5`, `2.5.3`
+- JRuby `9.1.17.0`, `9.2.4.0`
 - Mongoid: `4`, `5`, `6`, `7`
 
 See [.travis.yml](.travis.yml) for the latest test matrix.
