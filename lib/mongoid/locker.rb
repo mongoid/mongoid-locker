@@ -185,7 +185,7 @@ module Mongoid
           # the lock might be released since the last check so make another attempt
           next unless locked_until
 
-          retry_sleep = (locked_until - Time.now.utc + 0.0009).round(4)
+          retry_sleep = locked_until - Time.now.utc
         end
 
         sleep retry_sleep if retry_sleep > 0
