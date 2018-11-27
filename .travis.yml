@@ -24,16 +24,6 @@ matrix:
     - rvm: 2.5.3
       env: MONGOID_VERSION=7
       before_script: bundle exec danger
-    - rvm: jruby-9.1.17.0
-      env: MONGOID_VERSION=4
-    - rvm: jruby-9.1.17.0
-      env: MONGOID_VERSION=5
-    - rvm: jruby-9.1.17.0
-      env: MONGOID_VERSION=6
-    - rvm: jruby-9.2.4.0
-      env: MONGOID_VERSION=6
-    - rvm: jruby-9.2.4.0
-      env: MONGOID_VERSION=7
     - name: Code Climate Test Coverage
       rvm: 2.3.8
       env: COVERAGE=true
