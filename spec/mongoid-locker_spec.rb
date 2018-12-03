@@ -252,6 +252,99 @@ describe Mongoid::Locker do
         end.not_to raise_error
       end
 
+      describe 'locked_at_field' do
+        it 'has appropriate type' do
+          user.with_lock do
+            expect(user[user.locked_at_field]).to be_instance_of(Time)
+          end
+        end
+
+        it 'is less than locked_until_field' do
+          user.with_lock do
+            expect(user[user.locked_at_field]).to be < user[user.locked_until_field]
+          end
+        end
+      end
+
+      describe 'locked_until_field' do
+        it 'has appropriate type' do
+          user.with_lock do
+            expect(user[user.locked_until_field]).to be_instance_of(Time)
+          end
+        end
+
+        it 'is more than locked_at_field' do
+          user.with_lock do
+            expect(user[user.locked_until_field]).to be > user[user.locked_at_field]
+          end
+        end
+      end
+
+      describe 'locked_name_field' do
+        let(:locked_name_regexp) { /^\h{8,}#\d{1,}$/ }
+        let(:iteration_regexp) { /^\h{8,}#(\d+)$/ }
+        let(:name_regexp) { /^(\h{8,})#\d{1,}$/ }
+
+        it 'has appropriate type' do
+          user.with_lock do
+            expect(user[user.locked_name_field]).to be_instance_of(String)
+          end
+        end
+
+        it 'has appropriate format' do
+          user.with_lock do
+            expect(user[user.locked_name_field]).to match(locked_name_regexp)
+          end
+        end
+
+        it 'has the same name for each attempt' do
+          user.with_lock do
+            user_dup = User.first
+            first_time = true
+            origin_name = nil
+
+            allow(user_dup).to receive(:acquire_lock).and_wrap_original do |method, opts|
+              origin_name = name_regexp.match(opts[:locked_name])[1] if first_time
+              name = name_regexp.match(opts[:locked_name])[1]
+
+              expect(name).to eq(origin_name)
+              first_time = false
+
+              method.call(opts)
+            end
+
+            # Wrapped to catch the error when retries end.
+            expect do
+              user_dup.with_lock retries: 3, retry_sleep: 0 do
+                # no-op
+              end
+            end.to raise_error(Mongoid::Locker::LockError)
+          end
+        end
+
+        it 'increases iteration each attempt' do
+          user.with_lock do
+            user_dup = User.first
+            attempt = 0
+
+            allow(user_dup).to receive(:acquire_lock).and_wrap_original do |method, opts|
+              iteration = iteration_regexp.match(opts[:locked_name])[1].to_i
+              expect(iteration).to eq(attempt)
+
+              attempt += 1
+              method.call(opts)
+            end
+
+            # Wrapped to catch the error when retries end.
+            expect do
+              user_dup.with_lock retries: 3, retry_sleep: 0 do
+                # no-op
+              end
+            end.to raise_error(Mongoid::Locker::LockError)
+          end
+        end
+      end
+
       context 'when a lock has timed out' do
         before do
           User.timeout_lock_after 1
@@ -285,6 +378,7 @@ describe Mongoid::Locker do
 
         it 'returns error if locked_at field is not defined' do
           Admin.field(:locked_until, type: Time)
+          Admin.field(:locked_name, type: String)
           admin = Admin.create!
 
           expect do
@@ -296,6 +390,19 @@ describe Mongoid::Locker do
 
         it 'returns error if locked_until field is not defined' do
           Admin.field(:locked_at, type: Time)
+          Admin.field(:locked_name, type: String)
+          admin = Admin.create!
+
+          expect do
+            admin.with_lock do
+              # no-op
+            end
+          end.to raise_error(Mongoid::Errors::UnknownAttribute)
+        end
+
+        it 'returns error if locked_name field is not defined' do
+          Admin.field(:locked_at, type: Time)
+          Admin.field(:locked_until, type: Time)
           admin = Admin.create!
 
           expect do
@@ -332,6 +439,16 @@ describe Mongoid::Locker do
 
       it 'returns @@locked_until_field variable value' do
         expect(user.locked_until_field).to eq(User.class_variable_get(:@@locked_until_field))
+      end
+    end
+
+    describe '#locked_name_field' do
+      it 'is defined' do
+        expect(User).to be_public_method_defined(:locked_name_field)
+      end
+
+      it 'returns @@locked_name_field variable value' do
+        expect(user.locked_name_field).to eq(User.class_variable_get(:@@locked_name_field))
       end
     end
 
@@ -415,7 +532,21 @@ describe Mongoid::Locker do
       end
     end
 
+    describe '.locked_name_field' do
+      it 'is defined' do
+        expect(User.singleton_methods).to include(:locked_name_field)
+      end
+
+      it 'returns @@locked_name_field variable value' do
+        expect(User.locked_name_field).to eq(User.class_variable_get(:@@locked_name_field))
+      end
+    end
+
     describe '.locker' do
+      it 'is defined' do
+        expect(User.singleton_methods).to include(:locker)
+      end
+
       it 'sets locked_at_field name' do
         User.locker(locked_at_field: :locker_locked_at)
 
@@ -428,6 +559,28 @@ describe Mongoid::Locker do
 
         expect(User.locked_until_field).to eq(:locker_locked_until)
         expect(User.locked_until_field).not_to eq(Mongoid::Locker.locked_until_field)
+      end
+
+      it 'sets locked_name_field name' do
+        User.locker(locked_name_field: :locker_name_until)
+
+        expect(User.locked_name_field).to eq(:locker_name_until)
+        expect(User.locked_name_field).not_to eq(Mongoid::Locker.locked_name_field)
+      end
+    end
+
+    describe '.random_lock_name' do
+      let(:random_string) { User.random_lock_name }
+
+      it 'is defined' do
+        expect(User.singleton_methods).to include(:random_lock_name)
+      end
+
+      it 'uses Mongoid::Locker.random_lock_name by default' do
+        sub_string = random_string
+        allow(Mongoid::Locker).to receive(:random_lock_name).and_return(sub_string)
+
+        expect(sub_string).to match(random_string)
       end
     end
 
@@ -493,6 +646,37 @@ describe Mongoid::Locker do
       end
     end
 
+    describe '::locked_name_field' do
+      it 'is defined' do
+        expect(Mongoid::Locker.singleton_methods).to include(:locked_name_field)
+      end
+
+      it '@locked_name_field variable is defined' do
+        expect(Mongoid::Locker).to be_instance_variable_defined(:@locked_name_field)
+      end
+    end
+
+    describe '::locked_name_field=' do
+      around do |example|
+        field_name = Mongoid::Locker.locked_name_field
+
+        example.run
+
+        Mongoid::Locker.locked_name_field = field_name
+      end
+
+      it 'is defined' do
+        expect(Mongoid::Locker.singleton_methods).to include(:locked_name_field=)
+      end
+
+      it 'assigns the value' do
+        Mongoid::Locker.locked_name_field = :dks17_locked_name
+
+        expect(Mongoid::Locker.locked_name_field).to eq(:dks17_locked_name)
+        expect(Mongoid::Locker.locked_name_field).to eq(Mongoid::Locker.instance_variable_get(:@locked_name_field))
+      end
+    end
+
     describe '::configure' do
       it 'is defined' do
         expect(Mongoid::Locker.singleton_methods).to include(:configure)
@@ -506,6 +690,10 @@ describe Mongoid::Locker do
     end
 
     describe '::reset!' do
+      it 'is defined' do
+        expect(Mongoid::Locker.singleton_methods).to include(:reset!)
+      end
+
       it 'resets to default configuration' do
         locked_at    = :reset_locked_at
         locked_until = :reset_locked_until
@@ -524,6 +712,19 @@ describe Mongoid::Locker do
         expect(Mongoid::Locker.locked_until_field).to eq(:locked_until)
       end
     end
+
+    describe '::random_lock_name' do
+      let(:random_string) { Mongoid::Locker.random_lock_name }
+      let(:hex_regexp) { /^\h{8,}$/ }
+
+      it 'is defined' do
+        expect(Mongoid::Locker.singleton_methods).to include(:random_lock_name)
+      end
+
+      it 'returns random hexadecimal string' do
+        expect(random_string).to match(hex_regexp)
+      end
+    end
   end
 
   context 'with default configuration' do
@@ -535,7 +736,8 @@ describe Mongoid::Locker do
 
         field :locked_at, type: Time
         field :locked_until, type: Time
-        field :account_balance, type: Integer # easier to test than Float
+        field :locked_name, type: String
+        field :account_balance, type: Integer
       end
     end
 
@@ -554,6 +756,7 @@ describe Mongoid::Locker do
       Mongoid::Locker.configure do |config|
         config.locked_at_field = :global_locked_at
         config.locked_until_field = :global_locked_until
+        config.locked_name_field = :global_locked_name
       end
 
       class User
@@ -562,7 +765,8 @@ describe Mongoid::Locker do
 
         field :global_locked_at, type: Time
         field :global_locked_until, type: Time
-        field :account_balance, type: Integer # easier to test than Float
+        field :global_locked_name, type: String
+        field :account_balance, type: Integer
       end
     end
 
@@ -582,6 +786,10 @@ describe Mongoid::Locker do
     it '.locked_until_field returns global value' do
       expect(User.locked_until_field).to eq(Mongoid::Locker.locked_until_field)
     end
+
+    it '.locked_name_field returns global value' do
+      expect(User.locked_name_field).to eq(Mongoid::Locker.locked_name_field)
+    end
   end
 
   context 'with locker configuration' do
@@ -589,6 +797,7 @@ describe Mongoid::Locker do
       Mongoid::Locker.configure do |config|
         config.locked_at_field = :global_locked_at
         config.locked_until_field = :global_locked_until
+        config.locked_name_field = :global_locked_name
       end
 
       class User
@@ -597,10 +806,12 @@ describe Mongoid::Locker do
 
         field :locker_locked_at, type: Time
         field :locker_locked_until, type: Time
-        field :account_balance, type: Integer # easier to test than Float
+        field :locker_locked_name, type: String
+        field :account_balance, type: Integer
 
         locker locked_at_field: :locker_locked_at,
-               locked_until_field: :locker_locked_until
+               locked_until_field: :locker_locked_until,
+               locked_name_field: :locker_locked_name
       end
 
       class Item
@@ -609,6 +820,7 @@ describe Mongoid::Locker do
 
         field :global_locked_at, type: Time
         field :global_locked_until, type: Time
+        field :global_locked_name, type: Time
       end
     end
 
@@ -633,12 +845,20 @@ describe Mongoid::Locker do
       expect(User.locked_until_field).to eq(:locker_locked_until)
     end
 
+    it '.locked_name_field returns locker value' do
+      expect(User.locked_name_field).to eq(:locker_locked_name)
+    end
+
     it '#locked_at_field returns locker value' do
       expect(user.locked_at_field).to eq(:locker_locked_at)
     end
 
     it '#locked_until_field returns locker value' do
       expect(user.locked_until_field).to eq(:locker_locked_until)
+    end
+
+    it '#locked_name_field returns locker value' do
+      expect(user.locked_name_field).to eq(:locker_locked_name)
     end
 
     it '.locked_at_field returns global value for other class' do
@@ -649,12 +869,20 @@ describe Mongoid::Locker do
       expect(Item.locked_until_field).to eq(Mongoid::Locker.locked_until_field)
     end
 
+    it '.locked_name_field returns global value for other class' do
+      expect(Item.locked_name_field).to eq(Mongoid::Locker.locked_name_field)
+    end
+
     it '#locked_at_field returns global value for other class' do
       expect(item.locked_at_field).to eq(Mongoid::Locker.locked_at_field)
     end
 
     it '#locked_until_field returns global value for other class' do
       expect(item.locked_until_field).to eq(Mongoid::Locker.locked_until_field)
+    end
+
+    it '#locked_name_field returns global value for other class' do
+      expect(item.locked_name_field).to eq(Mongoid::Locker.locked_name_field)
     end
   end
 end
