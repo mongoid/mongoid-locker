@@ -5,49 +5,37 @@ language: ruby
 
 cache: bundler
 
-before_install:
-  - gem update --system
-  - gem install bundler
+script:
+  - bundle exec rspec
+
+rvm:
+  - 2.3.8
+  - 2.4.5
+  - 2.5.4
+  - 2.6.2
+  - jruby-9.1.17.0
+  - jruby-9.2.6.0
+
+env:
+  - MONGOID_VERSION=5
+  - MONGOID_VERSION=6
+  - MONGOID_VERSION=7
 
 matrix:
   include:
-    - rvm: 2.3.8
-      env: MONGOID_VERSION=4
-    - rvm: 2.3.8
-      env: MONGOID_VERSION=5
-    - rvm: 2.3.8
-      env: MONGOID_VERSION=6
-    - rvm: 2.4.5
-      env: MONGOID_VERSION=6
-    - rvm: 2.4.5
-      env: MONGOID_VERSION=7
-    - rvm: 2.5.3
-      env: MONGOID_VERSION=7
-      before_script: bundle exec danger
-    - rvm: jruby-9.1.17.0
-      env: MONGOID_VERSION=4
-    - rvm: jruby-9.1.17.0
-      env: MONGOID_VERSION=5
-    - rvm: jruby-9.1.17.0
-      env: MONGOID_VERSION=6
-    - rvm: jruby-9.2.4.0
-      env: MONGOID_VERSION=6
-    - rvm: jruby-9.2.4.0
-      env: MONGOID_VERSION=7
-    - name: Code Climate Test Coverage
-      rvm: 2.3.8
-      env: COVERAGE=true
-      script:
-        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-        - chmod +x ./cc-test-reporter
-        - ./cc-test-reporter before-build
-        - for version in 4 5 6 7; do
-            MONGOID_VERSION=$version bundle update;
-            bundle exec rake;
-            ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.mongoid${version}.json;
-          done
+    - rvm: 2.6.2
+      env:
+        - MONGOID_VERSION=7
+        - COVERAGE=true
+      before_script:
+        - bundle exec rubocop
+        - bundle exec danger
+      after_script:
         - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then
-            ./cc-test-reporter sum-coverage coverage/codeclimate.mongoid*.json -p 4;
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter;
+            chmod +x ./cc-test-reporter;
+            ./cc-test-reporter before-build;
+            ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.json coverage/.resultset.json;
             ./cc-test-reporter upload-coverage;
           fi
     - rvm: ruby-head
@@ -55,8 +43,6 @@ matrix:
   fast_finish: true
   allow_failures:
     - rvm: ruby-head
-    - rvm: jruby-9.1.17.0
-    - rvm: jruby-9.2.4.0
     - rvm: jruby-head
 
 bundler_args: --without development

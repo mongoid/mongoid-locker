@@ -1,0 +1,7 @@
+en:
+  mongoid:
+    locker:
+      errors:
+        messages:
+          document_could_not_get_lock:
+            message: "Document could not get lock for class %{klass} with id %{id}."

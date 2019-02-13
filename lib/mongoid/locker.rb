@@ -1,209 +1,300 @@
-require File.expand_path(File.join(File.dirname(__FILE__), 'locker', 'version'))
-require File.expand_path(File.join(File.dirname(__FILE__), 'locker', 'wrapper'))
+require 'securerandom'
 
 module Mongoid
   module Locker
-    # The field names used by default.
-    @locked_at_field     = :locked_at
-    @locked_until_field  = :locked_until
-
-    # Error thrown if document could not be successfully locked.
-    class LockError < RuntimeError; end
-
-    module ClassMethods
-      # A scope to retrieve all locked documents in the collection.
-      #
-      # @return [Mongoid::Criteria]
-      def locked
-        where locked_until_field.gt => Time.now.utc
-      end
-
-      # A scope to retrieve all unlocked documents in the collection.
-      #
-      # @return [Mongoid::Criteria]
-      def unlocked
-        any_of({ locked_until_field => nil }, locked_until_field.lte => Time.now.utc)
-      end
-
-      # Set the default lock timeout for this class.  Note this only applies to new locks.  Defaults to five seconds.
-      #
-      # @param [Fixnum] new_time the default number of seconds until a lock is considered "expired", in seconds
-      # @return [void]
-      def timeout_lock_after(new_time)
-        @lock_timeout = new_time
-      end
-
-      # Retrieve the lock timeout default for this class.
-      #
-      # @return [Fixnum] the default number of seconds until a lock is considered "expired", in seconds
-      def lock_timeout
-        # default timeout of five seconds
-        @lock_timeout || 5
-      end
-
-      # Set locked_at_field and locked_until_field names for this class
-      def locker(locked_at_field: nil, locked_until_field: nil)
-        class_variable_set(:@@locked_at_field, locked_at_field) if locked_at_field
-        class_variable_set(:@@locked_until_field, locked_until_field) if locked_until_field
-      end
-
-      # Returns field name used to set locked at time for this class.
-      def locked_at_field
-        class_variable_get(:@@locked_at_field)
-      end
-
-      # Returns field name used to set locked until time for this class.
-      def locked_until_field
-        class_variable_get(:@@locked_until_field)
-      end
-    end
-
     class << self
-      attr_accessor :locked_at_field, :locked_until_field
+      # Available parameters for +Mongoid::Locker+ module, a class where the module is included and it's instances.
+      MODULE_METHODS = %i[
+        locking_name_field
+        locked_at_field
+        locking_name_length
+        maximum_backoff
+        lock_timeout
+        locker_write_concern
+        backoff_algorithm
+        locking_name_generator
+      ].freeze
 
-      # @api private
-      def included(mod)
-        mod.extend ClassMethods
+      attr_accessor(*MODULE_METHODS)
 
-        mod.class_variable_set(:@@locked_at_field, locked_at_field)
-        mod.class_variable_set(:@@locked_until_field, locked_until_field)
-
-        mod.send(:define_method, :locked_at_field) { mod.class_variable_get(:@@locked_at_field) }
-        mod.send(:define_method, :locked_until_field) { mod.class_variable_get(:@@locked_until_field) }
+      # Generates secure random string of +name#attempt+ format.
+      #
+      # @example
+      #   Mongoid::Locker.secure_locking_name(doc, { attempt: 1 })
+      #   #=> "zLmulhOy9yn_NE886OWNYw#1"
+      #
+      # @param doc [Mongoid::Document]
+      # @param opts [Hash] (see #with_lock)
+      # @return [String]
+      def secure_locking_name(doc, opts)
+        name = SecureRandom.urlsafe_base64(doc.locking_name_length)
+        "#{name}##{opts[:attempt]}"
       end
 
-      # Sets configuration using a block
+      # Returns random number of seconds depend on passed options.
       #
-      # Mongoid::Locker.configure do |config|
-      #   config.locked_at_field = :mongoid_locker_locked_at
-      #   config.locked_until_field = :mongoid_locker_locked_until
-      # end
+      # @example
+      #   Mongoid::Locker.exponential_backoff(doc, { attempt: 0 })
+      #   #=> 1.2280675023095662
+      #   Mongoid::Locker.exponential_backoff(doc, { attempt: 1 })
+      #   #=> 2.901641863236713
+      #   Mongoid::Locker.exponential_backoff(doc, { attempt: 2 })
+      #   #=> 4.375030664612267
+      #
+      # @param _doc [Mongoid::Document]
+      # @param opts [Hash] (see #with_lock)
+      # @return [Float]
+      def exponential_backoff(_doc, opts)
+        2**opts[:attempt] + rand
+      end
+
+      # Returns time in seconds remaining to complete the lock of the provided document. Makes requests to the database.
+      #
+      # @example
+      #   Mongoid::Locker.locked_at_backoff(doc, opts)
+      #   #=> 2.32422359
+      #
+      # @param doc [Mongoid::Document]
+      # @param opts [Hash] (see #with_lock)
+      # @return [Float | Integer]
+      # @return [0] if the provided document is not locked
+      def locked_at_backoff(doc, opts)
+        return doc.maximum_backoff if opts[:attempt] * doc.lock_timeout >= doc.maximum_backoff
+
+        locked_at = Wrapper.locked_at(doc).to_f
+        return 0 unless locked_at > 0
+
+        current_time = Wrapper.current_mongodb_time(doc.class).to_f
+        delay = doc.lock_timeout - (current_time - locked_at)
+
+        delay < 0 ? 0 : delay + rand
+      end
+
+      # Sets configuration using a block.
+      #
+      # @example
+      #   Mongoid::Locker.configure do |config|
+      #     config.locking_name_field     = :locking_name
+      #     config.locked_at_field        = :locked_at
+      #     config.lock_timeout           = 5
+      #     config.locker_write_concern   = { w: 1 }
+      #     config.locking_name_length    = nil
+      #     config.maximum_backoff        = 60.0
+      #     config.backoff_algorithm      = :exponential_backoff
+      #     config.locking_name_generator = :secure_locking_name
+      #   end
       def configure
         yield(self) if block_given?
       end
 
       # Resets to default configuration.
+      #
+      # @example
+      #   Mongoid::Locker.reset!
       def reset!
-        # The field names used by default.
-        @locked_at_field     = :locked_at
-        @locked_until_field  = :locked_until
+        # The parameters used by default.
+        self.locking_name_field     = :locking_name
+        self.locked_at_field        = :locked_at
+        self.lock_timeout           = 5
+        self.locker_write_concern   = { w: 1 }
+        self.locking_name_length    = nil
+        self.maximum_backoff        = 60.0
+        self.backoff_algorithm      = :exponential_backoff
+        self.locking_name_generator = :secure_locking_name
+      end
+
+      # @api private
+      def included(klass)
+        klass.extend ClassMethods
+        klass.singleton_class.instance_eval { attr_accessor(*MODULE_METHODS) }
+
+        klass.locking_name_field = locking_name_field
+        klass.locked_at_field = locked_at_field
+        klass.lock_timeout = lock_timeout
+        klass.locker_write_concern = locker_write_concern
+        klass.locking_name_length = locking_name_length
+        klass.maximum_backoff = maximum_backoff
+        klass.backoff_algorithm = backoff_algorithm
+        klass.locking_name_generator = locking_name_generator
+
+        klass.delegate(*MODULE_METHODS, to: :class)
+        klass.singleton_class.delegate(*(methods(false) - MODULE_METHODS.flat_map { |method| [method, "#{method}=".to_sym] } - %i[included reset! configure]), to: self)
       end
     end
 
-    # Returns whether the document is currently locked or not.
+    reset!
+
+    module ClassMethods
+      # A scope to retrieve all locked documents in the collection.
+      #
+      # @example
+      #   Account.count
+      #   #=> 1717
+      #   Account.locked.count
+      #   #=> 17
+      #
+      # @return [Mongoid::Criteria]
+      def locked
+        where(
+          '$and': [
+            { locking_name_field => { '$exists': true, '$ne': nil } },
+            { locked_at_field => { '$exists': true, '$ne': nil } },
+            { '$where': "new Date() - this.#{locked_at_field} < #{lock_timeout * 1000}" }
+          ]
+        )
+      end
+
+      # A scope to retrieve all unlocked documents in the collection.
+      #
+      # @example
+      #   Account.count
+      #   #=> 1717
+      #   Account.unlocked.count
+      #   #=> 1700
+      #
+      # @return [Mongoid::Criteria]
+      def unlocked
+        where(
+          '$or': [
+            { locking_name_field => { '$exists': false } },
+            { locked_at_field => { '$exists': false } },
+            { '$where': "new Date() - this.#{locked_at_field} >= #{lock_timeout * 1000}" }
+          ]
+        )
+      end
+
+      # Unlock all locked documents in the collection. Sets locking_name_field and locked_at_field fields to nil. Returns number of unlocked documents.
+      #
+      # @example
+      #   Account.unlock_all
+      #   #=> 17
+      #   Account.locked.unlock_all
+      #   #=> 0
+      #
+      # @return [Integer]
+      def unlock_all
+        update_all('$set': { locking_name_field => nil, locked_at_field => nil }).modified_count
+      end
+
+      # Sets configuration for this class.
+      #
+      # @example
+      #   locker locking_name_field: :locker_locking_name,
+      #          locked_at_field: :locker_locked_at,
+      #          lock_timeout: 3,
+      #          locker_write_concern: { w: 1 },
+      #          locking_name_length: 3,
+      #          maximum_backoff: 30.0,
+      #          backoff_algorithm: :locked_at_backoff,
+      #          locking_name_generator: :custom_locking_name
+      #
+      # @param locking_name_field [Symbol]
+      # @param locked_at_field [Symbol]
+      # @param locking_name_length [Integer, nil]
+      # @param maximum_backoff [Float, Integer]
+      # @param lock_timeout [Float, Integer]
+      # @param locker_write_concern [Hash]
+      # @param backoff_algorithm [Symbol]
+      # @param locking_name_generator [Symbol]
+      def locker(**params)
+        params.each_pair do |key, value|
+          send("#{key}=", value)
+        end
+      end
+    end
+
+    # Returns whether the document is currently locked in the database or not.
+    #
+    # @example
+    #   document.locked?
+    #   #=> false
     #
     # @return [Boolean] true if locked, false otherwise
     def locked?
-      !!(self[locked_until_field] && self[locked_until_field] > Time.now.utc)
+      persisted? && self.class.where(_id: id).locked.limit(1).count == 1
     end
 
     # Returns whether the current instance has the lock or not.
     #
+    # @example
+    #   document.has_lock?
+    #   #=> false
+    #
     # @return [Boolean] true if locked, false otherwise
     def has_lock?
-      !!(@has_lock && locked?)
+      @has_lock || false
     end
 
-    # Primary method of plugin: execute the provided code once the document has been successfully locked.
+    # Executes the provided code once the document has been successfully locked. Otherwise, raises error after the number of retries to lock the document is exhausted or it is reached {ClassMethods#maximum_backoff} limit (depending what comes first).
+    #
+    # @example
+    #   document.with_lock(reload: true, retries: 3) do
+    #     document.quantity = 17
+    #     document.save!
+    #   end
     #
     # @param [Hash] opts for the locking mechanism
-    # @option opts [Fixnum] :timeout The number of seconds until the lock is considered "expired" - defaults to the {ClassMethods#lock_timeout}
-    # @option opts [Fixnum] :retries If the document is currently locked, the number of times to retry - defaults to 0
-    # @option opts [Float] :retry_sleep How long to sleep between attempts to acquire lock - defaults to time left until lock is available
-    # @option opts [Boolean] :wait (deprecated) If the document is currently locked, wait until the lock expires and try again - defaults to false. If set, :retries will be ignored
-    # @option opts [Boolean] :reload After acquiring the lock, reload the document - defaults to true
-    # @return [void]
-    def with_lock(opts = {})
-      unless !persisted? || (had_lock = has_lock?)
-        if opts[:wait]
-          opts[:retries] = 1
-          warn 'WARN: `:wait` option for Mongoid::Locker is deprecated - use `retries: 1` instead.'
-        end
+    # @option opts [Fixnum] :retries (INFINITY) If the document is currently locked, the number of times to retry
+    # @option opts [Boolean] :reload (true) After acquiring the lock, reload the document
+    # @option opts [Integer] :attempt (0) Increment with each retry (not accepted by the method)
+    # @option opts [String] :locking_name Generate with each retry (not accepted by the method)
+    def with_lock(**opts)
+      opts = opts.dup
+      opts[:retries] ||= Float::INFINITY
+      opts[:reload] = opts[:reload] != false
 
-        lock(opts)
-      end
+      acquire_lock(opts) if persisted? && (had_lock = !has_lock?)
 
       begin
         yield
       ensure
-        unlock if !had_lock && locked?
+        unlock! if had_lock
       end
     end
 
     protected
 
-    def acquire_lock(opts = {})
-      time = Time.now.utc
-      timeout = opts[:timeout] || self.class.lock_timeout
-      expiration = time + timeout
+    def acquire_lock(opts)
+      opts[:attempt] = 0
 
-      # lock the document atomically in the DB without persisting entire doc
-      locked = Mongoid::Locker::Wrapper.update(
-        self.class,
-        {
-          :_id => id,
-          '$or' => [
-            # not locked
-            { locked_until_field => nil },
-            # expired
-            { locked_until_field => { '$lte' => time } }
-          ]
-        },
-        '$set' => {
-          locked_at_field => time,
-          locked_until_field => expiration
-        }
-      )
+      loop do
+        opts[:locking_name] = self.class.send(locking_name_generator, self, opts)
+        return if lock!(opts)
 
-      if locked
-        # document successfully updated, meaning it was locked
-        self[locked_at_field] = time
-        self[locked_until_field] = expiration
-        reload unless opts[:reload] == false
+        opts[:attempt] += 1
+        delay = self.class.send(backoff_algorithm, self, opts)
+
+        raise Errors::DocumentCouldNotGetLock.new(self.class, id) if delay >= maximum_backoff || opts[:attempt] >= opts[:retries]
+
+        sleep delay
+      end
+    end
+
+    def lock!(opts)
+      result = Mongoid::Locker::Wrapper.find_and_lock(self, opts)
+
+      if result
+        if opts[:reload]
+          reload
+        else
+          self[locking_name_field] = result[locking_name_field.to_s]
+          self[locked_at_field] = result[locked_at_field.to_s]
+        end
+
         @has_lock = true
       else
         @has_lock = false
       end
     end
 
-    def lock(opts = {})
-      opts = { retries: 0 }.merge(opts)
+    def unlock!
+      Mongoid::Locker::Wrapper.find_and_unlock(self)
 
-      attempts_left = opts[:retries] + 1
-      retry_sleep = opts[:retry_sleep]
-
-      loop do
-        return if acquire_lock(opts)
-
-        attempts_left -= 1
-
-        raise LockError, 'could not get lock' unless attempts_left > 0
-
-        # if not passed a retry_sleep value, we sleep for the remaining life of the lock
-        unless retry_sleep
-          locked_until = Mongoid::Locker::Wrapper.locked_until(self)
-          # the lock might be released since the last check so make another attempt
-          next unless locked_until
-
-          retry_sleep = locked_until - Time.now.utc
-        end
-
-        sleep retry_sleep if retry_sleep > 0
+      unless destroyed?
+        self[locking_name_field] = nil
+        self[locked_at_field] = nil
       end
-    end
 
-    def unlock
-      # unlock the document in the DB without persisting entire doc
-      Mongoid::Locker::Wrapper.update(
-        self.class,
-        { _id: id },
-        '$set' => {
-          locked_at_field => nil,
-          locked_until_field => nil
-        }
-      )
-
-      self.attributes = { locked_at_field => nil, locked_until_field => nil } unless destroyed?
       @has_lock = false
     end
   end

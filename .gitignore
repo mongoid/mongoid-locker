@@ -1,19 +1,14 @@
 # simplecov
 coverage
 
-# rdoc
-rdoc
-
 # yard
 doc
 .yardoc
 
 # bundler
-.bundle
 pkg
+.bundle
+Gemfile.lock
 
 # guard
 tmp
-
-# bundler
-Gemfile.lock

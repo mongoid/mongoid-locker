@@ -1,34 +1,41 @@
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-$LOAD_PATH.unshift(File.dirname(__FILE__))
+ENV['RACK_ENV'] = 'test'
 
-if ENV['COVERAGE'] == 'true'
+if ENV['COVERAGE']
   require 'simplecov'
   SimpleCov.start do
     add_group 'Libraries', 'lib/'
     track_files 'lib/**/*.rb'
+    add_filter '/spec/'
   end
 end
 
-require 'rspec'
 require 'mongoid-locker'
+Mongoid.load! File.join(File.dirname(__FILE__), 'database.yml')
 
-ENV['RACK_ENV'] = 'test'
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 RSpec.configure do |config|
-  version = Mongoid::VERSION.split('.')[0]
-  Mongoid.load! File.join(File.dirname(__FILE__), "database#{version}.yml")
+  config.include LockerHelpers
 
+  config.expect_with :rspec do |expectations|
+    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
+  end
+
+  config.mock_with :rspec do |mocks|
+    mocks.verify_partial_doubles = true
+  end
+
+  config.shared_context_metadata_behavior = :apply_to_host_groups
+
+  config.filter_run_when_matching :focus
+  config.disable_monkey_patching!
   config.raise_errors_for_deprecations!
 
   config.order = :random
-
-  config.before do
-    Mongoid::Locker.reset!
-  end
-
-  # use to check the query conditions
-  log_level = ENV['LOG'].nil? ? 'INFO' : 'DEBUG'
-  Mongoid.logger.level = Logger.const_get(log_level)
-  Mongo::Logger.logger.level = Logger.const_get(log_level) if defined? Mongo
-  Moped.logger.level = Logger.const_get(log_level) if defined? Moped
+  Kernel.srand config.seed
 end
+
+# Use to check the query conditions
+log_level = ENV['LOG'].nil? ? 'INFO' : 'DEBUG'
+Mongoid.logger.level = Logger.const_get(log_level)
+Mongo::Logger.logger.level = Logger.const_get(log_level)

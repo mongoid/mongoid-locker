@@ -1,4 +1,5 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
+gemspec
 
 case ENV['MONGOID_VERSION']
 when /^7/
@@ -7,24 +8,21 @@ when /^6/
   gem 'mongoid', '~> 6.4'
 when /^5/
   gem 'mongoid', '~> 5.4'
-when /^4/
-  gem 'mongoid', '~> 4.0'
 else
-  gem 'mongoid', '>= 4.0'
+  gem 'mongoid', '>= 5.0'
 end
 
-gemspec
+gem 'rake'
 
 group :development do
   gem 'guard-rspec'
-  gem 'rb-fsevent', '~> 0.9.1'
 end
 
 group :development, :test do
+  gem 'pry-byebug', platforms: :mri
+
   gem 'mongoid-danger', '~> 0.1.1'
-  gem 'rack', '~> 1.5'
-  gem 'rake', '11.3.0'
-  gem 'rspec', '~> 3.0'
+  gem 'rspec', '~> 3.8'
   gem 'rubocop'
   gem 'rubocop-rspec'
   gem 'simplecov', require: false
