@@ -1,8 +1,7 @@
 ## Changelog
 
-### 1.0.1 (Next)
+### 1.0.1 (2019-03-23)
 
-* Your contribution here.
 * [#74](https://github.com/mongoid/mongoid-locker/pull/74): Add JRuby tests - [@dks17](https://github.com/dks17).
 * [#68](https://github.com/mongoid/mongoid-locker/pull/68): Fix Rubocop offenses, refactoring, update `ruby` versions, add `COVERAGE` test env, update `.travis.yml` matrix - [@dks17](https://github.com/dks17).
 * [#67](https://github.com/mongoid/mongoid-locker/pull/67): Deprecate `:wait` in favor of `:retries` option, which can attempt to grab a lock multiple times - [@afeld](https://github.com/afeld), [@dks17](https://github.com/dks17).
