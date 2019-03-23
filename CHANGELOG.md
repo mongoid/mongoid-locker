@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.0.2 (Next)
+
+* Your contribution here.
+
 ### 1.0.1 (2019-03-23)
 
 * [#74](https://github.com/mongoid/mongoid-locker/pull/74): Add JRuby tests - [@dks17](https://github.com/dks17).
