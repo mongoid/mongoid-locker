@@ -101,7 +101,7 @@ end
 
 ### Available parameters for Mongoid::Locker, a class where it's included
 | parameter | default | options | description |
-|---|---|---|
+|---|---|---|---|
 | locking_name_field | `:locking_name` | any field name | field where name of locking is storing, must be of type `String` |
 | locked_at_field | `:locked_at` | any field name | field where it is storing the time of beginning a lock of a document, must be of type `Time` |
 | lock_timeout | `5` | | within this time (in seconds) a document is considered as locked |
