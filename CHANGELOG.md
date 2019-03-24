@@ -1,8 +1,9 @@
 ## Changelog
 
-### 1.0.2 (Next)
+### 2.0.0 (Next)
 
 * Your contribution here.
+* [#78](https://github.com/mongoid/mongoid-locker/pull/78): Upgrade to v2.0 - [@dks17](https://github.com/dks17).
 
 ### 1.0.1 (2019-03-23)
 

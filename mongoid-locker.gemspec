@@ -1,20 +1,20 @@
-lib = File.expand_path('lib', __dir__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+$LOAD_PATH.push File.expand_path('lib', __dir__)
+
 require 'mongoid/locker/version'
 
-Gem::Specification.new do |spec|
-  spec.name = 'mongoid-locker'
-  spec.version = Mongoid::Locker::VERSION
-  spec.authors = ['Aidan Feldman']
-  spec.email = ['aidan.feldman@gmail.com']
+Gem::Specification.new do |s|
+  s.name = 'mongoid-locker'
+  s.version = Mongoid::Locker::VERSION
+  s.authors = ['Aidan Feldman']
+  s.email = ['aidan.feldman@gmail.com']
 
-  spec.summary = 'Document-level locking for MongoDB via Mongoid.'
-  spec.description = 'Allows multiple processes to operate on individual documents in MongoDB while ensuring that only one can act at a time.'
-  spec.homepage = 'https://github.com/mongoid/mongoid-locker'
-  spec.license = 'MIT'
+  s.summary = 'Document-level optimistic locking for MongoDB via Mongoid.'
+  s.description = 'Allows multiple processes to operate on individual documents in MongoDB while ensuring that only one can act at a time.'
+  s.homepage = 'https://github.com/mongoid/mongoid-locker'
+  s.license = 'MIT'
 
-  spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec|demo)/}) }
-  spec.require_paths = ['lib']
+  s.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }
+  s.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'mongoid', '>= 4.0', '< 8'
+  s.add_dependency 'mongoid', '>= 5.0', '< 8'
 end

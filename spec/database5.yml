@@ -1,7 +1,0 @@
-test:
-  # for Mongoid 5
-  clients:
-    default:
-      database: mongoid_locker_test
-      hosts:
-        - localhost:27017

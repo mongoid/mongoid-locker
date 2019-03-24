@@ -1,5 +1,4 @@
 test:
-  # for Mongoid 6
   clients:
     default:
       database: mongoid_locker_test
