@@ -10,7 +10,11 @@ RSpec.shared_context 'default configuration' do
       field :locked_at, type: Time
 
       field :age, type: Integer
+
+      index({ _id: 1, locking_name: 1 }, name: 'mongoid_locker_index', sparse: true, unique: true, expire_after_seconds: lock_timeout)
     end
+
+    User.create_indexes
   end
 
   after(:context) do
@@ -25,7 +29,6 @@ RSpec.shared_context 'global configuration' do
   let(:default_locked_at_field) { :global_locked_at }
   let(:default_lock_timeout) { 4 }
   let(:default_locker_write_concern) { { w: 1 } }
-  let(:default_locking_name_length) { 4 }
   let(:default_maximum_backoff) { 40.0 }
   let(:default_backoff_algorithm) { :custom_backoff }
   let(:default_locking_name_generator) { :secure_locking_name }
@@ -37,7 +40,6 @@ RSpec.shared_context 'global configuration' do
       config.locked_at_field        = :global_locked_at
       config.lock_timeout           =  4
       config.locker_write_concern   =  { w: 1 }
-      config.locking_name_length    =  4
       config.maximum_backoff        = 40.0
       config.backoff_algorithm      = :custom_backoff
       config.locking_name_generator = :secure_locking_name
@@ -74,7 +76,6 @@ RSpec.shared_context 'locker configuration' do
   let(:default_locked_at_field) { :locker_locked_at }
   let(:default_lock_timeout) { 3 }
   let(:default_locker_write_concern) { { w: 1 } }
-  let(:default_locking_name_length) { 3 }
   let(:default_maximum_backoff) { 30.0 }
   let(:default_backoff_algorithm) { :locked_at_backoff }
   let(:default_locking_name_generator) { :custom_locking_name }
@@ -89,7 +90,6 @@ RSpec.shared_context 'locker configuration' do
              locked_at_field: :locker_locked_at,
              lock_timeout: 3,
              locker_write_concern: { w: 1 },
-             locking_name_length: 3,
              maximum_backoff: 30.0,
              backoff_algorithm: :locked_at_backoff,
              locking_name_generator: :custom_locking_name

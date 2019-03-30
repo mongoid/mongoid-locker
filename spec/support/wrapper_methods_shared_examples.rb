@@ -2,8 +2,9 @@ RSpec.shared_examples 'wrapper methods' do
   include_context 'default configuration'
 
   describe '::find_and_lock' do
+    let(:opts) { { locking_name: 'locked' } }
+
     it 'locks and returns locking_name_field and locked_at_field values', :document do
-      opts = { locking_field: document[model.locking_name_field] }
       result = wrapper.find_and_lock(document, opts)
 
       expect(result).to match(
@@ -13,35 +14,33 @@ RSpec.shared_examples 'wrapper methods' do
     end
 
     it 'does not lock locked document', :locked do
-      opts = { locking_field: locked[model.locking_name_field] }
-      expect(wrapper.find_and_lock(locked, opts)).to be_nil
+      result = wrapper.find_and_lock(locked, opts)
+      expect(result).to be_nil
     end
 
     it 'locks locked document if lock time is elapsed', :unlocked do
-      opts = { locking_field: unlocked[model.locking_name_field] }
       result = wrapper.find_and_lock(unlocked, opts)
+      locking_name = result[model.locking_name_field.to_s]
 
-      expect(result[model.locking_name_field.to_s]).to eq(opts[:locking_name])
+      expect(locking_name).to eq(opts[:locking_name])
     end
   end
 
-  describe '::find_and_unlock' do
-    it 'unlocks locked document', :locked do
-      expect(wrapper.find_and_unlock(locked)).to be_truthy
-
-      locked.reload
-      expect(locked).to have_attributes(
-        model.locking_name_field => be_nil,
-        model.locked_at_field => be_nil
-      )
+  describe '::find_and_unlock', :locked do
+    it 'unlocks locked document' do
+      opts = { locking_name: locked[model.locking_name_field] }
+      expect(wrapper.find_and_unlock(locked, opts)).to be_truthy
     end
 
-    it 'returns false if unlocked document was found', :document do
-      expect(wrapper.find_and_unlock(document)).to be_falsy
+    it 'returns false if locked document was not found' do
+      expect(wrapper.find_and_unlock(model.new, {})).to be_falsy
     end
 
-    it 'returns false if the document it not found' do
-      expect(wrapper.find_and_unlock(model.new)).to be_falsy
+    it 'tolerates to empty locking_name_field' do
+      opts = { locking_name: locked[model.locking_name_field] }
+      locked[model.locking_name_field] = nil
+
+      expect(wrapper.find_and_unlock(locked, opts)).to be_truthy
     end
   end
 

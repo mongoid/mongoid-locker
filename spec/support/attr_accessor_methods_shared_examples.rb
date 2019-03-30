@@ -2,7 +2,6 @@ RSpec.shared_examples 'attr_accessor methods' do
   module_methods = %i[
     locking_name_field
     locked_at_field
-    locking_name_length
     maximum_backoff
     lock_timeout
     locker_write_concern

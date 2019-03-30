@@ -2,7 +2,6 @@ RSpec.describe Mongoid::Locker do
   let(:default_locking_name_field) { :locking_name }
   let(:default_locked_at_field) { :locked_at }
   let(:default_locker_write_concern) { { w: 1 } }
-  let(:default_locking_name_length) { nil }
   let(:default_maximum_backoff) { 60.0 }
   let(:default_lock_timeout) { 5 }
   let(:default_backoff_algorithm) { :exponential_backoff }
@@ -12,7 +11,6 @@ RSpec.describe Mongoid::Locker do
     %i[
       locking_name_field
       locked_at_field
-      locking_name_length
       maximum_backoff
       lock_timeout
       locker_write_concern

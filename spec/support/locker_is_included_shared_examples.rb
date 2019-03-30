@@ -73,6 +73,7 @@ RSpec.shared_examples 'Mongoid::Locker is included' do
 
   describe '::locker' do
     let(:locker_field) { :locker_field }
+    let(:param_error) { Mongoid::Locker::Errors::InvalidParameter }
 
     around(:example, :restore) do |example|
       values = Hash[parameters.map { |param| [param, model.send(param)] }]
@@ -88,7 +89,6 @@ RSpec.shared_examples 'Mongoid::Locker is included' do
                locking_name_field: context.locker_field,
                locked_at_field: context.locker_field,
                locker_write_concern: context.locker_field,
-               locking_name_length: context.locker_field,
                maximum_backoff: context.locker_field,
                backoff_algorithm: context.locker_field,
                locking_name_generator: context.locker_field
@@ -99,7 +99,7 @@ RSpec.shared_examples 'Mongoid::Locker is included' do
     end
 
     it 'raises error for undefined parameter' do
-      expect { model.locker(bad_param: :bad_field) }.to raise_error(NoMethodError)
+      expect { model.locker(bad_param: :bad_field) }.to raise_error(param_error)
     end
   end
 
