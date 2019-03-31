@@ -21,9 +21,21 @@ module Mongoid
         filter = {
           _id: doc.id,
           '$or': [
-            { model.locking_name_field => { '$exists': false } },
-            { model.locked_at_field => { '$exists': false } },
-            { '$where': "new Date() - this.#{model.locked_at_field} >= #{model.lock_timeout * 1000}" }
+            {
+              '$or': [
+                { model.locking_name_field => { '$exists': false } },
+                { model.locked_at_field => { '$exists': false } }
+              ]
+            },
+            {
+              '$or': [
+                { model.locking_name_field => { '$eq': nil } },
+                { model.locked_at_field => { '$eq': nil } }
+              ]
+            },
+            {
+              '$where': "new Date() - this.#{model.locked_at_field} >= #{model.lock_timeout * 1000}"
+            }
           ]
         }
         update = {
@@ -48,14 +60,15 @@ module Mongoid
       #   #=> false
       #
       # @param doc [Mongoid::Document]
+      # @param opts [Hash] (see #with_lock)
       # @return [Boolean]
       # @return [true] if the document was unlocked
       # @return [false] if the document was not found, was not unlocked
-      def self.find_and_unlock(doc)
+      def self.find_and_unlock(doc, opts)
         model = doc.class
         filter = {
           _id: doc.id,
-          model.locking_name_field => { '$ne': nil, '$eq': doc[model.locking_name_field] }
+          model.locking_name_field => opts[:locking_name]
         }
         update = {
           '$set': {

@@ -37,8 +37,7 @@ class User
 
   field :age, type: Integer
 
-  # optional
-  # index({ _id: 1, locking_name: 1 }, { name: 'mongoid_locker_index', sparse: true, unique: true })
+  index({ _id: 1, locking_name: 1 }, name: 'mongoid_locker_index', sparse: true, unique: true, expire_after_seconds: lock_timeout)
 end
 ```
 
@@ -106,7 +105,6 @@ end
 | locked_at_field | `:locked_at` | any field name | field where it is storing the time of beginning a lock of a document, must be of type `Time` |
 | lock_timeout | `5` | | within this time (in seconds) a document is considered as locked |
 | locker_write_concern | `{ w: 1 }` | see [MongoDB Write Concern](https://docs.mongodb.com/manual/reference/write-concern/#write-concern-specification)| a write concern only used for lock and unlock operations |
-| locking_name_length | `nil` | accepts `n` option for [SecureRandom.urlsafe_base64](https://ruby-doc.org/stdlib-2.2.3/libdoc/securerandom/rdoc/SecureRandom.html#method-c-urlsafe_base64) | the length, in bytes, of the random number to be generated |
 | maximum_backoff | `60.0` | | the highest timeout (in seconds) between retires to lock a document, reaching that value `#with_lock` method raises `Mongoid::Locker::Errors::DocumentCouldNotGetLock` |
 | backoff_algorithm | `:exponential_backoff` | `:locked_at_backoff` or [custom algorithm](#custom-backoff_algorithm-and-locking_name_generator) | algorithm used for timeout calculating between retries to lock a document|
 | locking_name_generator | `:secure_locking_name` | [custom generator](#custom-backoff_algorithm-and-locking_name_generator) | generator used to generate unique name of a lock |

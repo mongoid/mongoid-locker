@@ -7,7 +7,6 @@ module Mongoid
       MODULE_METHODS = %i[
         locking_name_field
         locked_at_field
-        locking_name_length
         maximum_backoff
         lock_timeout
         locker_write_concern
@@ -26,9 +25,8 @@ module Mongoid
       # @param doc [Mongoid::Document]
       # @param opts [Hash] (see #with_lock)
       # @return [String]
-      def secure_locking_name(doc, opts)
-        name = SecureRandom.urlsafe_base64(doc.locking_name_length)
-        "#{name}##{opts[:attempt]}"
+      def secure_locking_name(_doc, opts)
+        "#{SecureRandom.urlsafe_base64}##{opts[:attempt]}"
       end
 
       # Returns random number of seconds depend on passed options.
@@ -78,7 +76,6 @@ module Mongoid
       #     config.locked_at_field        = :locked_at
       #     config.lock_timeout           = 5
       #     config.locker_write_concern   = { w: 1 }
-      #     config.locking_name_length    = nil
       #     config.maximum_backoff        = 60.0
       #     config.backoff_algorithm      = :exponential_backoff
       #     config.locking_name_generator = :secure_locking_name
@@ -97,7 +94,6 @@ module Mongoid
         self.locked_at_field        = :locked_at
         self.lock_timeout           = 5
         self.locker_write_concern   = { w: 1 }
-        self.locking_name_length    = nil
         self.maximum_backoff        = 60.0
         self.backoff_algorithm      = :exponential_backoff
         self.locking_name_generator = :secure_locking_name
@@ -112,7 +108,6 @@ module Mongoid
         klass.locked_at_field = locked_at_field
         klass.lock_timeout = lock_timeout
         klass.locker_write_concern = locker_write_concern
-        klass.locking_name_length = locking_name_length
         klass.maximum_backoff = maximum_backoff
         klass.backoff_algorithm = backoff_algorithm
         klass.locking_name_generator = locking_name_generator
@@ -156,9 +151,21 @@ module Mongoid
       def unlocked
         where(
           '$or': [
-            { locking_name_field => { '$exists': false } },
-            { locked_at_field => { '$exists': false } },
-            { '$where': "new Date() - this.#{locked_at_field} >= #{lock_timeout * 1000}" }
+            {
+              '$or': [
+                { locking_name_field => { '$exists': false } },
+                { locked_at_field => { '$exists': false } }
+              ]
+            },
+            {
+              '$or': [
+                { locking_name_field => { '$eq': nil } },
+                { locked_at_field => { '$eq': nil } }
+              ]
+            },
+            {
+              '$where': "new Date() - this.#{locked_at_field} >= #{lock_timeout * 1000}"
+            }
           ]
         )
       end
@@ -183,20 +190,21 @@ module Mongoid
       #          locked_at_field: :locker_locked_at,
       #          lock_timeout: 3,
       #          locker_write_concern: { w: 1 },
-      #          locking_name_length: 3,
       #          maximum_backoff: 30.0,
       #          backoff_algorithm: :locked_at_backoff,
       #          locking_name_generator: :custom_locking_name
       #
       # @param locking_name_field [Symbol]
       # @param locked_at_field [Symbol]
-      # @param locking_name_length [Integer, nil]
       # @param maximum_backoff [Float, Integer]
       # @param lock_timeout [Float, Integer]
       # @param locker_write_concern [Hash]
       # @param backoff_algorithm [Symbol]
       # @param locking_name_generator [Symbol]
       def locker(**params)
+        invalid_parameters = params.keys - Mongoid::Locker.singleton_class.const_get('MODULE_METHODS')
+        raise Mongoid::Locker::Errors::InvalidParameter.new(self.class, invalid_parameters.first) unless invalid_parameters.empty?
+
         params.each_pair do |key, value|
           send("#{key}=", value)
         end
@@ -248,7 +256,7 @@ module Mongoid
       begin
         yield
       ensure
-        unlock! if had_lock
+        unlock!(opts) if had_lock
       end
     end
 
@@ -287,8 +295,8 @@ module Mongoid
       end
     end
 
-    def unlock!
-      Mongoid::Locker::Wrapper.find_and_unlock(self)
+    def unlock!(opts)
+      Mongoid::Locker::Wrapper.find_and_unlock(self, opts)
 
       unless destroyed?
         self[locking_name_field] = nil
