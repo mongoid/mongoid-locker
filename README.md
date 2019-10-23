@@ -1,4 +1,5 @@
 # Mongoid-Locker
+
 [![Gem Version](https://badge.fury.io/rb/mongoid-locker.svg)](https://badge.fury.io/rb/mongoid-locker)
 [![Build Status](https://travis-ci.org/mongoid/mongoid-locker.svg?branch=master)](https://travis-ci.org/mongoid/mongoid-locker)
 [![Maintainability](https://api.codeclimate.com/v1/badges/04ee4ee75ff54659300a/maintainability)](https://codeclimate.com/github/mongoid/mongoid-locker/maintainability)
@@ -8,7 +9,7 @@ Document-level optimistic locking for MongoDB via Mongoid. Mongoid-Locker is an 
 
 **NOTE:** Since version `2` Mongoid-Locker relies on MongoDB server time and not current client time, and does not perform any time calculation to get lock or release it. The basis of the current version are unique name of locking and time is set by MongoDB.
 
-**NOTE:** The master branch now hosts the code for `2.x.x`. Please refer to [1-x-stable](https://github.com/mongoid/mongoid-locker/tree/1-x-stable) branch for `1.x.x` documentation. See the [UPGRADING](UPGRADING.md) guide and [CHANGELOG](CHANGELOG.md) for an overview of the changes.
+**NOTE:** Please refer to [1-x-stable](https://github.com/mongoid/mongoid-locker/tree/1-x-stable) branch for `1.x.x` documentation. See the [UPGRADING](UPGRADING.md) guide and [CHANGELOG](CHANGELOG.md) for an overview of the changes.
 
 [Tested](https://travis-ci.org/mongoid/mongoid-locker) against:
 - MRI: `2.3.8`, `2.4.5`, `2.5.4`, `2.6.2`

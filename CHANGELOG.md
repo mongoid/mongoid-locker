@@ -1,11 +1,10 @@
 ## Changelog
 
-### 2.0.0 (Next)
+### 2.0.0 (2019-10-23)
 
 * [#79](https://github.com/mongoid/mongoid-locker/pull/79): Update find_and_lock and find_and_unlock methods - [@dks17](https://github.com/dks17).
 * [#78](https://github.com/mongoid/mongoid-locker/pull/78): Upgrade to v2.0 - [@dks17](https://github.com/dks17).
 * [#83](https://github.com/mongoid/mongoid-locker/pull/83): Upgraded to RuboCop 0.75.1 - [@dblock](https://github.com/dblock).
-* Your contribution here.
 
 ### 1.0.1 (2019-03-23)
 
