@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'attr_accessor methods' do
   module_methods = %i[
     locking_name_field

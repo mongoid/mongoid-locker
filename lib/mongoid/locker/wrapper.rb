@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Locker
     # Set of methods to interact with the database.

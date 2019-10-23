@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Locker
     module Errors
       # Default parent Mongoid::Locker error for all custom errors.
       class MongoidLockerError < StandardError
-        BASE_KEY = 'mongoid.locker.errors.messages'.freeze
+        BASE_KEY = 'mongoid.locker.errors.messages'
 
         def initialize(key, **params)
           message = I18n.translate("#{BASE_KEY}.#{key}.message", params)
@@ -14,7 +16,7 @@ module Mongoid
 
       # Raised when a document could not be successfully locked in the database.
       class DocumentCouldNotGetLock < MongoidLockerError
-        KEY = 'document_could_not_get_lock'.freeze
+        KEY = 'document_could_not_get_lock'
 
         # @example Create new error.
         #   DocumentCouldNotGetLock.new(Account, '1234')
@@ -28,7 +30,7 @@ module Mongoid
 
       # Raised when trying to pass an invalid parameter to locker method by a class.
       class InvalidParameter < MongoidLockerError
-        KEY = 'invalid_parameter'.freeze
+        KEY = 'invalid_parameter'
 
         # @example Create new error.
         #   InvalidParameter.new(User, :lock_timeout)

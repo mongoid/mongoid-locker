@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_context 'clear database' do
   after do |example|
     unless example.metadata[:delete_all] == false

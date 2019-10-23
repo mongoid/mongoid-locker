@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'locker errors' do
   let(:base_key) { 'mongoid.locker.errors.messages' }
   let(:klass) { subject }

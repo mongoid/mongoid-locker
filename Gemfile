@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 gemspec
 
@@ -23,7 +25,7 @@ group :development, :test do
 
   gem 'mongoid-danger', '~> 0.1.1'
   gem 'rspec', '~> 3.8'
-  gem 'rubocop'
+  gem 'rubocop', '0.75.1'
   gem 'rubocop-rspec'
   gem 'simplecov', require: false
 end
