@@ -1,5 +1,9 @@
 ## Changelog
 
+### 2.0.1 (Next)
+
+* Your contribution here.
+
 ### 2.0.0 (2019-10-23)
 
 * [#79](https://github.com/mongoid/mongoid-locker/pull/79): Update find_and_lock and find_and_unlock methods - [@dks17](https://github.com/dks17).
