@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_context 'reset module parameters', :reset do
   before do
     Mongoid::Locker.reset!

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'locker methods' do
   include_examples 'attr_accessor methods'
 

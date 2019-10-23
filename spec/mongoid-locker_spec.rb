@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Mongoid::Locker do
   let(:default_locking_name_field) { :locking_name }
   let(:default_locked_at_field) { :locked_at }

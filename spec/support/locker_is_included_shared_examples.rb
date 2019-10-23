@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'Mongoid::Locker is included' do
   include_examples 'delegated methods'
   it_behaves_like 'attr_accessor methods' do

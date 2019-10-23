@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'wrapper methods' do
   include_context 'default configuration'
 

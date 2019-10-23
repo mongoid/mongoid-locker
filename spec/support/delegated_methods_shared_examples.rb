@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'delegated methods' do
   let(:document) { model.new }
 
