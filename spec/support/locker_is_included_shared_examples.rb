@@ -111,10 +111,8 @@ RSpec.shared_examples 'Mongoid::Locker is included' do
     end
 
     it 'is chainable' do
-      expect do
-        criteria = model.where(_id: 1).locked.where(_id: 2)
-        expect(criteria.selector['_id']).to eq(2)
-      end.not_to raise_error
+      criteria = model.where(_id: 1).locked.where(_id: 2)
+      expect(criteria).to be_a(Mongoid::Criteria)
     end
 
     it 'selects locked document', :populate do
