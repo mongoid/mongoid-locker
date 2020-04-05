@@ -14,7 +14,7 @@ end
 require 'mongoid-locker'
 Mongoid.load! File.join(File.dirname(__FILE__), 'database.yml')
 
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
 
 RSpec.configure do |config|
   config.include LockerHelpers

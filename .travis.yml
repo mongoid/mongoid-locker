@@ -10,11 +10,12 @@ script:
 
 rvm:
   - 2.3.8
-  - 2.4.5
-  - 2.5.4
-  - 2.6.2
+  - 2.4.7
+  - 2.5.7
+  - 2.6.6
+  - 2.7.1
   - jruby-9.1.17.0
-  - jruby-9.2.6.0
+  - jruby-9.2.11.1
 
 env:
   - MONGOID_VERSION=5
@@ -23,7 +24,7 @@ env:
 
 matrix:
   include:
-    - rvm: 2.6.2
+    - rvm: 2.6.6
       env:
         - MONGOID_VERSION=7
         - COVERAGE=true
@@ -39,7 +40,12 @@ matrix:
             ./cc-test-reporter upload-coverage;
           fi
     - rvm: ruby-head
+      env: MONGOID_VERSION=7
     - rvm: jruby-head
+      env: MONGOID_VERSION=7
+  exclude:
+    - rvm: 2.7.1
+      env: MONGOID_VERSION=5
   fast_finish: true
   allow_failures:
     - rvm: ruby-head
