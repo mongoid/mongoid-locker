@@ -5,6 +5,7 @@
 * [#86](https://github.com/mongoid/mongoid-locker/pull/86): Upgraded to RuboCop 0.81.0 - [@dks17](https://github.com/dks17).
 * [#86](https://github.com/mongoid/mongoid-locker/pull/86): Fixed issue with `ruby` `delegate` method - [@dks17](https://github.com/dks17).
 * [#86](https://github.com/mongoid/mongoid-locker/pull/86): Update Ruby and JRUby versions for Travis config - [@dks17](https://github.com/dks17).
+* [#88](https://github.com/mongoid/mongoid-locker/pull/88): Add RSpec test examples - [@dks17](https://github.com/dks17).
 * Your contribution here.
 
 ### 2.0.0 (2019-10-23)

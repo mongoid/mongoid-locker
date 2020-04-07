@@ -155,8 +155,11 @@ class User
   end
 ```
 
+## Testing with RSpec
+Please see examples in [test_examples_spec.rb](spec/test_examples_spec.rb) file.
+
 ## Copyright & License
 
-Copyright (c) 2012-2019 Aidan Feldman & Contributors
+Copyright (c) 2012-2020 Aidan Feldman & Contributors
 
 MIT License, see [LICENSE](LICENSE.txt) for more information.
