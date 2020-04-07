@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'default configuration' do
+RSpec.shared_context 'with default configuration' do
   before(:context) do
     Mongoid::Locker.reset!
 
@@ -26,7 +26,7 @@ RSpec.shared_context 'default configuration' do
   let(:model) { User }
 end
 
-RSpec.shared_context 'global configuration' do
+RSpec.shared_context 'with global configuration' do
   let(:default_locking_name_field) { :global_locking_name }
   let(:default_locked_at_field) { :global_locked_at }
   let(:default_lock_timeout) { 4 }
@@ -73,7 +73,7 @@ RSpec.shared_context 'global configuration' do
   let(:model) { User }
 end
 
-RSpec.shared_context 'locker configuration' do
+RSpec.shared_context 'with locker configuration' do
   let(:default_locking_name_field) { :locker_locking_name }
   let(:default_locked_at_field) { :locker_locked_at }
   let(:default_lock_timeout) { 3 }
