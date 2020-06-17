@@ -1,5 +1,9 @@
 ## Changelog
 
+### 2.0.2 (Next)
+
+* Your contribution here.
+
 ### 2.0.1 (2020-06-17)
 
 * [#86](https://github.com/mongoid/mongoid-locker/pull/86): Upgraded to RuboCop 0.81.0 - [@dks17](https://github.com/dks17).
