@@ -2,6 +2,7 @@
 
 ### 2.0.2 (Next)
 
+* [#92](https://github.com/mongoid/mongoid-locker/pull/92): Remove TTL and update unique index definitions - [@cesarizu](https://github.com/cesarizu).
 * Your contribution here.
 
 ### 2.0.1 (2020-06-17)

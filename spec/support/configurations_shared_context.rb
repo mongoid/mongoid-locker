@@ -12,11 +12,7 @@ RSpec.shared_context 'default configuration' do
       field :locked_at, type: Time
 
       field :age, type: Integer
-
-      index({ _id: 1, locking_name: 1 }, name: 'mongoid_locker_index', sparse: true, unique: true, expire_after_seconds: lock_timeout)
     end
-
-    User.create_indexes
   end
 
   after(:context) do
