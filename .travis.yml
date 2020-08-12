@@ -1,54 +1,16 @@
-services:
-  - mongodb
-
 language: ruby
 
 cache: bundler
 
-script:
-  - bundle exec rspec
-
 rvm:
-  - 2.3.8
-  - 2.4.7
-  - 2.5.7
   - 2.6.6
-  - 2.7.1
-  - jruby-9.1.17.0
-  - jruby-9.2.11.1
 
 env:
-  - MONGOID_VERSION=5
-  - MONGOID_VERSION=6
   - MONGOID_VERSION=7
 
-matrix:
-  include:
-    - rvm: 2.6.6
-      env:
-        - MONGOID_VERSION=7
-        - COVERAGE=true
-      before_script:
-        - bundle exec rubocop
-        - bundle exec danger
-      after_script:
-        - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter;
-            chmod +x ./cc-test-reporter;
-            ./cc-test-reporter before-build;
-            ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.json coverage/.resultset.json;
-            ./cc-test-reporter upload-coverage;
-          fi
-    - rvm: ruby-head
-      env: MONGOID_VERSION=7
-    - rvm: jruby-head
-      env: MONGOID_VERSION=7
-  exclude:
-    - rvm: 2.7.1
-      env: MONGOID_VERSION=5
-  fast_finish: true
-  allow_failures:
-    - rvm: ruby-head
-    - rvm: jruby-head
+before_script:
+  - bundle exec danger
 
-bundler_args: --without development
+script:
+  - echo SKIP
+

@@ -1,0 +1,82 @@
+name: Test
+
+on:
+  push:
+    branches: [ master, github-actions ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        mongo: ["mongo:3.6", "mongo:4.2"]
+        mongoid: ["5", "6", "7"]
+        ruby:
+        - 2.3.8
+        - 2.4.7
+        - 2.5.7
+        - 2.6.6
+        - 2.7.1
+        - jruby-9.1.17.0
+        - jruby-9.2.11.1
+        experimental: [false]
+        include:
+          - mongoid: "7"
+            ruby: "2.6.6"
+            coverage: "true"
+          - mongo: "mongo:4.2"
+            mongoid: "7"
+            ruby: "ruby-head"
+            experimental: true
+          - mongo: "mongo:4.2"
+            mongoid: "7"
+            ruby: "jruby-head"
+            experimental: true
+        exclude:
+          - ruby: "2.7.1"
+            mongoid: "5"
+
+    runs-on: ubuntu-latest
+
+    continue-on-error: ${{ matrix.experimental }}
+
+    services:
+      mongo:
+        image: ${{ matrix.mongo }}
+        ports: ["27017:27017"]
+
+    env:
+      MONGOID_VERSION: ${{ matrix.mongoid }}
+      COVERAGE: ${{ matrix.coverage }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true
+
+    - name: Checks
+      if: ${{ matrix.coverage == 'true' }}
+      run: |
+        bundle exec rubocop
+        # Disabled until mongoid-danger is updated to support Github Actions
+        # bundle exec danger
+
+    - name: Run tests
+      run: bundle exec rspec
+
+    - name: Code Climate
+      if: ${{ success() && matrix.coverage == 'true' }}
+      run: |
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter;
+        chmod +x ./cc-test-reporter;
+        ./cc-test-reporter before-build;
+        ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.json coverage/.resultset.json;
+        ./cc-test-reporter upload-coverage;
+
