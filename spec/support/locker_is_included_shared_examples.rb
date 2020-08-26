@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'mongoid/compatibility'
+
 RSpec.shared_examples 'Mongoid::Locker is included' do
   include_examples 'delegated methods'
   it_behaves_like 'attr_accessor methods' do
@@ -128,7 +130,7 @@ RSpec.shared_examples 'Mongoid::Locker is included' do
     it 'is chainable' do
       expect do
         criteria = model.where(_id: 1).unlocked.where(_id: 2)
-        expect(criteria.selector['_id']).to eq(2)
+        expect(criteria.selector['_id']).to eq(Mongoid::Compatibility::Version.mongoid6_or_older? ? 2 : 1)
       end.not_to raise_error
     end
 
