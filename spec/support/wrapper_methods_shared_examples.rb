@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'wrapper methods' do
-  include_context 'default configuration'
+  include_context 'with default configuration'
 
   describe '::find_and_lock' do
     let(:opts) { { locking_name: 'locked' } }
