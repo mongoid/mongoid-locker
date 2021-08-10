@@ -40,17 +40,17 @@ RSpec.describe Mongoid::Locker do
 
   describe 'usage scenarios' do
     context 'when set default configuration' do
-      include_context 'default configuration'
+      include_context 'with default configuration'
       it_behaves_like 'Mongoid::Locker is included'
     end
 
     context 'when set global configuration' do
-      include_context 'global configuration'
+      include_context 'with global configuration'
       it_behaves_like 'Mongoid::Locker is included'
     end
 
     context 'when set locker configuration' do
-      include_context 'locker configuration'
+      include_context 'with locker configuration'
       it_behaves_like 'Mongoid::Locker is included'
     end
   end
