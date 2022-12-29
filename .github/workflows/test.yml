@@ -1,82 +1,80 @@
-name: Test
+name: CI RSpec Test
 
-on:
-  push:
-    branches: [ master, github-actions ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
-  test:
-
-    strategy:
-      fail-fast: false
-      matrix:
-        mongo: ["mongo:3.6", "mongo:4.2"]
-        mongoid: ["5", "6", "7"]
-        ruby:
-        - 2.3.8
-        - 2.4.7
-        - 2.5.7
-        - 2.6.6
-        - 2.7.1
-        - jruby-9.1.17.0
-        - jruby-9.2.11.1
-        experimental: [false]
-        include:
-          - mongoid: "7"
-            ruby: "2.6.6"
-            coverage: "true"
-          - mongo: "mongo:4.2"
-            mongoid: "7"
-            ruby: "ruby-head"
-            experimental: true
-          - mongo: "mongo:4.2"
-            mongoid: "7"
-            ruby: "jruby-head"
-            experimental: true
-        exclude:
-          - ruby: "2.7.1"
-            mongoid: "5"
-
-    runs-on: ubuntu-latest
-
-    continue-on-error: ${{ matrix.experimental }}
-
-    services:
-      mongo:
-        image: ${{ matrix.mongo }}
-        ports: ["27017:27017"]
-
+  build:
+    name: >-
+      Mongoid ${{ matrix.entry.mongoid }} - Ruby ${{ matrix.entry.ruby }} - MongoDB ${{ matrix.entry.mongodb }}
     env:
-      MONGOID_VERSION: ${{ matrix.mongoid }}
-      COVERAGE: ${{ matrix.coverage }}
-
+      CI: true
+      TESTOPTS: -v
+    runs-on: ubuntu-latest
+    continue-on-error: false
+    strategy:
+      matrix:
+        entry:
+          - { ruby: "2.1", mongoid: "3",   bundler: "1", mongodb: "3.6" }
+          - { ruby: "2.1", mongoid: "4",   bundler: "1", mongodb: "3.6" }
+          - { ruby: "2.2", mongoid: "4",   bundler: "2", mongodb: "3.6" }
+          - { ruby: "2.2", mongoid: "5",   bundler: "2", mongodb: "3.6" }
+          - { ruby: "2.3", mongoid: "5",   bundler: "2", mongodb: "3.6" }
+          - { ruby: "2.4", mongoid: "6.1", bundler: "2", mongodb: "3.6" }
+          - { ruby: "2.5", mongoid: "6.2", bundler: "2", mongodb: "3.6" }
+          - { ruby: "2.5", mongoid: "6.4", bundler: "2", mongodb: "3.6" }
+          - { ruby: "2.6", mongoid: "7.4", bundler: "2", mongodb: "3.6" }
+          - { ruby: "2.6", mongoid: "7.5", bundler: "2", mongodb: "3.6" }
+          - { ruby: "2.7", mongoid: "7.5", bundler: "2", mongodb: "3.6" }
+          - { ruby: "3.0", mongoid: "8.0", bundler: "2", mongodb: "3.6" }
+          - { ruby: "3.1", mongoid: "8.0", bundler: "2", mongodb: "3.6" }
+          - { ruby: "2.5", mongoid: "6.4", bundler: "2", mongodb: "4.0" }
+          - { ruby: "2.6", mongoid: "7.4", bundler: "2", mongodb: "4.0" }
+          - { ruby: "2.6", mongoid: "7.5", bundler: "2", mongodb: "4.0" }
+          - { ruby: "2.7", mongoid: "7.5", bundler: "2", mongodb: "4.0" }
+          - { ruby: "3.0", mongoid: "8.0", bundler: "2", mongodb: "4.0" }
+          - { ruby: "3.1", mongoid: "8.0", bundler: "2", mongodb: "4.0" }
+          - { ruby: "2.5", mongoid: "6.4", bundler: "2", mongodb: "4.2" }
+          - { ruby: "2.6", mongoid: "7.4", bundler: "2", mongodb: "4.2" }
+          - { ruby: "2.6", mongoid: "7.5", bundler: "2", mongodb: "4.2" }
+          - { ruby: "2.7", mongoid: "7.5", bundler: "2", mongodb: "4.2" }
+          - { ruby: "3.0", mongoid: "8.0", bundler: "2", mongodb: "4.2" }
+          - { ruby: "3.1", mongoid: "8.0", bundler: "2", mongodb: "4.2" }
+          - { ruby: "2.5", mongoid: "6.4", bundler: "2", mongodb: "4.4" }
+          - { ruby: "2.6", mongoid: "7.4", bundler: "2", mongodb: "4.4" }
+          - { ruby: "2.6", mongoid: "7.5", bundler: "2", mongodb: "4.4" }
+          - { ruby: "2.7", mongoid: "7.5", bundler: "2", mongodb: "4.4" }
+          - { ruby: "3.0", mongoid: "8.0", bundler: "2", mongodb: "4.4" }
+          - { ruby: "3.1", mongoid: "8.0", bundler: "2", mongodb: "4.4" }
+          - { ruby: "2.5", mongoid: "6.4", bundler: "2", mongodb: "5.0" }
+          - { ruby: "2.6", mongoid: "7.4", bundler: "2", mongodb: "5.0" }
+          - { ruby: "2.6", mongoid: "7.5", bundler: "2", mongodb: "5.0" }
+          - { ruby: "2.7", mongoid: "7.5", bundler: "2", mongodb: "5.0" }
+          - { ruby: "3.0", mongoid: "8.0", bundler: "2", mongodb: "5.0" }
+          - { ruby: "3.1", mongoid: "8.0", bundler: "2", mongodb: "5.0" }
     steps:
-    - uses: actions/checkout@v2
+      - name: repo checkout
+        uses: actions/checkout@v2
 
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true
+      - name: start mongodb
+        uses: supercharge/mongodb-github-action@1.6.0
+        with:
+          mongodb-version: ${{ matrix.entry.mongodb }}
+          mongodb-replica-set: rs0
 
-    - name: Checks
-      if: ${{ matrix.coverage == 'true' }}
-      run: |
-        bundle exec rubocop
-        # Disabled until mongoid-danger is updated to support Github Actions
-        # bundle exec danger
+      - name: load ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.entry.ruby }}
+          bundler: ${{ matrix.entry.bundler }}
 
-    - name: Run tests
-      run: bundle exec rspec
+      - name: bundle install
+        run:  bundle install --jobs 4 --retry 3
+        env:
+          MONGOID_VERSION: ${{ matrix.entry.mongoid }}
 
-    - name: Code Climate
-      if: ${{ success() && matrix.coverage == 'true' }}
-      run: |
-        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter;
-        chmod +x ./cc-test-reporter;
-        ./cc-test-reporter before-build;
-        ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.json coverage/.resultset.json;
-        ./cc-test-reporter upload-coverage;
-
+      - name: test
+        timeout-minutes: 10
+        run: bundle exec rspec spec
+        continue-on-error: false
+        env:
+          MONGOID_VERSION: ${{ matrix.entry.mongoid }}
