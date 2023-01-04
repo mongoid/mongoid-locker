@@ -71,12 +71,13 @@ jobs:
     - name: Run tests
       run: bundle exec rspec
 
-    - name: Code Climate
-      if: ${{ success() && matrix.coverage == 'true' }}
-      run: |
-        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter;
-        chmod +x ./cc-test-reporter;
-        ./cc-test-reporter before-build;
-        ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.json coverage/.resultset.json;
-        ./cc-test-reporter upload-coverage;
+# Disabled: you must supply a CC_TEST_REPORTER_ID ENV variable or pass it via the -r flag
+#    - name: Code Climate
+#      if: ${{ success() && matrix.coverage == 'true' }}
+#      run: |
+#        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter;
+#        chmod +x ./cc-test-reporter;
+#        ./cc-test-reporter before-build;
+#        ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.json coverage/.resultset.json;
+#        ./cc-test-reporter upload-coverage;
 

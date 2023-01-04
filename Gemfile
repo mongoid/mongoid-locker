@@ -28,5 +28,5 @@ group :development, :test do
   gem 'rspec', '~> 3.9'
   gem 'rubocop', '0.81.0'
   gem 'rubocop-rspec', '1.38.1'
-  gem 'simplecov', '0.17', require: false
+  gem 'simplecov', require: false
 end
