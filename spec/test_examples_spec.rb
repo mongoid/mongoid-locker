@@ -57,7 +57,7 @@ RSpec.describe 'Test examples' do
 
       expect do
         CustomerService.new(customer).add_amount!(7)
-      end.not_to change(customer.reload.amount)
+      end.not_to change(customer.reload, :amount)
     end
 
     it 'does not add amount to customer 2' do
@@ -69,7 +69,7 @@ RSpec.describe 'Test examples' do
 
       expect do
         CustomerService.new(customer).add_amount!(7)
-      end.not_to change(customer.reload.amount)
+      end.not_to change(customer.reload, :amount)
     end
   end
 end
