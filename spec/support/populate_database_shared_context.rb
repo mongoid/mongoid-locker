@@ -42,6 +42,6 @@ end
 
 RSpec.shared_context 'with a populated database', :populate do
   include_context 'with a document'
-  include_context 'With a locked document'
-  include_context 'With an unlocked document'
+  include_context 'with a locked document'
+  include_context 'with an unlocked document'
 end
