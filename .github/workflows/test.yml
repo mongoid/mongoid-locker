@@ -40,7 +40,7 @@ jobs:
 
     env:
       MONGOID_VERSION: ${{ matrix.entry.mongoid }}
-      COVERAGE: ${{ matrix.coverage }}
+      COVERAGE: ${{ matrix.entry.coverage }}
 
     steps:
     - uses: actions/checkout@v2
@@ -52,7 +52,7 @@ jobs:
         bundler-cache: true
 
     - name: Checks
-      if: ${{ matrix.coverage == 'true' }}
+      if: ${{ matrix.entry.coverage == 'true' }}
       run: |
         bundle exec rubocop
         # Disabled until mongoid-danger is updated to support Github Actions
@@ -62,7 +62,7 @@ jobs:
       run: bundle exec rspec
 
     - name: Code Climate
-      if: ${{ env.CC_TEST_REPORTER_ID != '' && success() && matrix.coverage == 'true' }}
+      if: ${{ env.CC_TEST_REPORTER_ID != '' && success() && matrix.entry.coverage == 'true' }}
       run: |
         curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter;
         chmod +x ./cc-test-reporter;
