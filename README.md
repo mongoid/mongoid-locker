@@ -13,9 +13,9 @@ Document-level optimistic locking for MongoDB via Mongoid. Mongoid-Locker is an 
 **NOTE:** Please refer to [1-x-stable](https://github.com/mongoid/mongoid-locker/tree/1-x-stable) branch for `1.x.x` documentation. See the [UPGRADING](UPGRADING.md) guide and [CHANGELOG](CHANGELOG.md) for an overview of the changes.
 
 [Tested](https://travis-ci.org/mongoid/mongoid-locker) against:
-- MRI: `2.3.8`, `2.4.7`, `2.5.7`, `2.6.6`, `2.7.1`
+- MRI: `2.3.8`, `2.4.7`, `2.5.7`, `2.6.6`, `2.7.1`, `3.0.5`, `3.1.3`
 - JRuby `9.1.17.0`, `9.2.11.1`
-- Mongoid: `5`, `6`, `7`
+- Mongoid: `5`, `6`, `7`, `8`
 
 See [.travis.yml](.travis.yml) for the latest test matrix.
 

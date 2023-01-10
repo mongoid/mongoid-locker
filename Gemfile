@@ -3,7 +3,9 @@
 source 'https://rubygems.org'
 gemspec
 
-case ENV['MONGOID_VERSION']
+case ENV['MONGOID_VERSION'] || '8.0.3'
+when /^8/
+  gem 'mongoid', '~> 8.0'
 when /^7/
   gem 'mongoid', '~> 7.0'
 when /^6/

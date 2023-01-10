@@ -8,7 +8,7 @@ module Mongoid
         BASE_KEY = 'mongoid.locker.errors.messages'
 
         def initialize(key, **params)
-          message = I18n.translate("#{BASE_KEY}.#{key}.message", params)
+          message = I18n.translate("#{BASE_KEY}.#{key}.message", **params)
 
           super("\nmessage:\n  #{message}")
         end
