@@ -18,5 +18,5 @@ Gem::Specification.new do |s|
   s.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }
   s.require_paths = ['lib']
 
-  s.add_dependency 'mongoid', '>= 5.0', '< 8'
+  s.add_dependency 'mongoid', '>= 5.0', '< 9'
 end
