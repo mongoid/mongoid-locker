@@ -12,7 +12,7 @@ bundle install
 bundle exec rake
 ```
 
-Check that the last build succeeded in [Travis CI](https://travis-ci.org/mongoid/mongoid-locker) for all supported platforms.
+Check that the last build succeeded in [GitHub Actions](https://github.com/mongoid/mongoid-locker/actions) for all supported platforms.
 
 Check the version, if needed modify [lib/mongoid/locker/version.rb](lib/mongoid/locker/version.rb).
 
