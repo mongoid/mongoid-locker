@@ -3,7 +3,7 @@
 ### 2.0.2 (Next)
 
 * [#92](https://github.com/mongoid/mongoid-locker/pull/92): Removed TTL and updated unique index definitions - [@cesarizu](https://github.com/cesarizu).
-* [#92](https://github.com/mongoid/mongoid-locker/pull/97): Added support for mongoid 8.0.x versions - [@randikabanura](https://github.com/randikabanura).
+* [#97](https://github.com/mongoid/mongoid-locker/pull/97): Added support for mongoid 8.0.x versions - [@randikabanura](https://github.com/randikabanura).
 * Your contribution here.
 
 ### 2.0.1 (2020-06-17)
