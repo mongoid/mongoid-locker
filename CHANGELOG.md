@@ -3,6 +3,8 @@
 ### 2.0.2 (Next)
 
 * [#92](https://github.com/mongoid/mongoid-locker/pull/92): Removed TTL and updated unique index definitions - [@cesarizu](https://github.com/cesarizu).
+* [#96](https://github.com/mongoid/mongoid-locker/pull/96): `new Date()` replaced by `Time.now.utc` - [@rsosag](https://github.com/rsosag).
+* [#96](https://github.com/mongoid/mongoid-locker/pull/96): Update the use of the `change` method in tests - [@rsosag](https://github.com/rsosag).
 * [#97](https://github.com/mongoid/mongoid-locker/pull/97): Added support for mongoid 8.0.x versions - [@randikabanura](https://github.com/randikabanura).
 * Your contribution here.
 
