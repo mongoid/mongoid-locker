@@ -1,5 +1,10 @@
 ## Changelog
 
+Next Release
+============
+
+* Your contribution here.
+
 ### 2.0.2 (2023-01-24)
 
 * [#92](https://github.com/mongoid/mongoid-locker/pull/92): Removed TTL and updated unique index definitions - [@cesarizu](https://github.com/cesarizu).
