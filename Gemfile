@@ -26,7 +26,7 @@ group :development, :test do
   gem 'pry-byebug', platforms: :mri
 
   gem 'mongoid-compatibility'
-  gem 'mongoid-danger', '~> 0.1.1'
+  gem 'mongoid-danger', '~> 0.2.0'
   gem 'rspec', '~> 3.9'
   gem 'rubocop', '0.81.0'
   gem 'rubocop-rspec', '1.38.1'

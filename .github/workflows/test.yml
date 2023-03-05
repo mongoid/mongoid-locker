@@ -43,20 +43,13 @@ jobs:
       COVERAGE: ${{ matrix.entry.coverage }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.entry.ruby }}
         bundler-cache: true
-
-    - name: Checks
-      if: ${{ matrix.entry.coverage == 'true' }}
-      run: |
-        bundle exec rubocop
-        # Disabled until mongoid-danger is updated to support Github Actions
-        # bundle exec danger
 
     - name: Run tests
       run: bundle exec rspec
