@@ -41,6 +41,7 @@ jobs:
     env:
       MONGOID_VERSION: ${{ matrix.entry.mongoid }}
       COVERAGE: ${{ matrix.entry.coverage }}
+      CC_TEST_REPORTER_ID: ${{ vars.CC_TEST_REPORTER_ID }}
 
     steps:
     - uses: actions/checkout@v3
