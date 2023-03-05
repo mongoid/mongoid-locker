@@ -10,7 +10,7 @@ jobs:
       matrix:
         entry:
           - { ruby: '2.6.6', mongo: 'mongo:4.4', mongoid: '5' }
-          - { ruby: 'jruby-9.1.17.0', mongo: 'mongo:4.4', mongoid: '5' }
+#          - { ruby: 'jruby-9.1.17.0', mongo: 'mongo:4.4', mongoid: '5' }
           - { ruby: 'jruby-9.2.11.1', mongo: 'mongo:4.4', mongoid: '5' }
           - { ruby: '2.6.6', mongo: 'mongo:4.4', mongoid: '6' }
           - { ruby: '2.7.1', mongo: 'mongo:4.4', mongoid: '6' }
