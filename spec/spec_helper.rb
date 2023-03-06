@@ -4,6 +4,8 @@ ENV['RACK_ENV'] = 'test'
 
 if ENV['COVERAGE']
   require 'simplecov'
+  require 'simplecov_json_formatter'
+  SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
   SimpleCov.start do
     add_group 'Libraries', 'lib/'
     track_files 'lib/**/*.rb'

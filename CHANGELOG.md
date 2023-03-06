@@ -1,8 +1,9 @@
 ## Changelog
 
-Next Release
-============
+### 2.0.3 (Next)
 
+* [#102](https://github.com/mongoid/mongoid-locker/pull/102): Re-added danger, removed Travis-CI config, extracted RuboCop - [@dblock](https://github.com/dblock).
+* [#104](https://github.com/mongoid/mongoid-locker/pull/104): Fixed code coverage - [@dblock](https://github.com/dblock).
 * Your contribution here.
 
 ### 2.0.2 (2023-01-24)
