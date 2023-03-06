@@ -35,8 +35,8 @@ module Mongoid
                 { model.locked_at_field => { '$eq': nil } }
               ]
             },
-            { # The expr equals to "Time.now.utc >= model.locked_at_field + model.lock_timeout * 1000"
-              '$expr': { '$gte': ['$$NOW', { '$add': ["$#{model.locked_at_field}", model.lock_timeout * 1000] }] }
+            {
+              '$expr': { '$gte': ['$$NOW', { '$add': ["$#{model.locked_at_field}", model.lock_timeout * 1000] }] } # The expr means "Time.now.utc >= model.locked_at_field + model.lock_timeout * 1000"
             }
           ]
         }
