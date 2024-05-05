@@ -14,7 +14,7 @@ Document-level optimistic locking for MongoDB via Mongoid. Mongoid-Locker is an 
 [Tested](https://github.com/mongoid/mongoid-locker/actions) against:
 - MRI: `2.3.8`, `2.4.7`, `2.5.7`, `2.6.6`, `2.7.1`, `3.0.5`, `3.1.3`
 - JRuby `9.1.17.0`, `9.2.11.1`
-- Mongoid: `5`, `6`, `7`, `8`
+- Mongoid: `5`, `6`, `7`, `8`, '9'
 
 See [.github/workflows/test.yml](.github/workflows/test.yml) for the latest test matrix.
 
