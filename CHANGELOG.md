@@ -1,10 +1,10 @@
 ## Changelog
 
-### 2.0.3 (Next)
+### 2.1.0 (Next)
 * [#101](https://github.com/mongoid/mongoid-locker/pull/101): Replace the $where operator with the $expr operator - [@amanfrinati](https://github.com/amanfrinati).
 * [#102](https://github.com/mongoid/mongoid-locker/pull/102): Re-added danger, removed Travis-CI config, extracted RuboCop - [@dblock](https://github.com/dblock).
 * [#104](https://github.com/mongoid/mongoid-locker/pull/104): Fixed code coverage - [@dblock](https://github.com/dblock).
-* [#105](https://github.com/mongoid/mongoid-locker/pull/105): Upgraded supported mongoid version to version 9.0 - [@saisrinivasan](https://github.com/SairamSrinivasan)
+* [#105](https://github.com/mongoid/mongoid-locker/pull/105): Added support for Mongoid 9.0 - [@saisrinivasan](https://github.com/SairamSrinivasan).
 * Your contribution here
 
 ### 2.0.2 (2023-01-24)
