@@ -1,5 +1,9 @@
 ## Changelog
 
+### 2.1.1 (Next)
+
+* Your contribution here.
+
 ### 2.1.0 (2024-05-07)
 
 * [#101](https://github.com/mongoid/mongoid-locker/pull/101): Replace the $where operator with the $expr operator - [@amanfrinati](https://github.com/amanfrinati).
