@@ -1,7 +1,7 @@
 # Mongoid-Locker
 
 [![Gem Version](https://badge.fury.io/rb/mongoid-locker.svg)](https://badge.fury.io/rb/mongoid-locker)
-[![Test Status](https://github.com/mongoid/mongoid-locker/workflows/Test/badge.svg)](https://github.com/mongoid/mongoid-locker/actions)
+[![Test](https://github.com/mongoid/mongoid-locker/actions/workflows/test.yml/badge.svg)](https://github.com/mongoid/mongoid-locker/actions/workflows/test.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/04ee4ee75ff54659300a/maintainability)](https://codeclimate.com/github/mongoid/mongoid-locker/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/04ee4ee75ff54659300a/test_coverage)](https://codeclimate.com/github/mongoid/mongoid-locker/test_coverage)
 
