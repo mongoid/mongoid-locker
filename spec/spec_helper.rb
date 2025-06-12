@@ -2,6 +2,8 @@
 
 ENV['RACK_ENV'] = 'test'
 
+require 'logger' # Required for compatibility with activesupport 7
+
 if ENV['COVERAGE']
   require 'simplecov'
   require 'simplecov_json_formatter'
