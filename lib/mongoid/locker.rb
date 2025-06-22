@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'forwardable'
 require 'securerandom'
 
 module Mongoid
@@ -104,8 +103,6 @@ module Mongoid
 
       # @api private
       def included(klass)
-        klass.extend(Forwardable) unless klass.ancestors.include?(Forwardable)
-
         klass.extend ClassMethods
         klass.singleton_class.instance_eval { attr_accessor(*MODULE_METHODS) }
 
@@ -117,7 +114,7 @@ module Mongoid
         klass.backoff_algorithm = backoff_algorithm
         klass.locking_name_generator = locking_name_generator
 
-        klass.def_delegators(klass, *MODULE_METHODS)
+        klass.delegate(*MODULE_METHODS, to: :class)
         klass.singleton_class.delegate(*(methods(false) - MODULE_METHODS.flat_map { |method| [method, "#{method}=".to_sym] } - %i[included reset! configure]), to: self)
       end
     end
