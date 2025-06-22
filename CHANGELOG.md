@@ -1,8 +1,7 @@
 ## Changelog
 
-### 2.2.0 (Next)
+### 2.2.0 (2025-06-22)
 
-* Your contribution here.
 * [#107](https://github.com/mongoid/mongoid-locker/pull/107): Revert introduction of `forwardable` to ensure compatibility with mongoid-history - [@scpike](https://github.com/scpike).
 
 ### 2.1.0 (2024-05-07)
