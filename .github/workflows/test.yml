@@ -4,56 +4,47 @@ on: [push, pull_request]
 
 jobs:
   test:
-
     strategy:
       fail-fast: false
       matrix:
-        entry:
-          - { ruby: '3.1.7', mongo: 'mongo:4.4', mongoid: '5' }
-#          - { ruby: 'jruby-9.1.17.0', mongo: 'mongo:4.4', mongoid: '5' }
-          - { ruby: 'jruby-9.4.13.0', mongo: 'mongo:4.4', mongoid: '5' }
-          - { ruby: '3.1.7', mongo: 'mongo:4.4', mongoid: '6' }
-          - { ruby: '3.4.8', mongo: 'mongo:4.4', mongoid: '6' }
-          - { ruby: 'jruby-9.4.13.0', mongo: 'mongo:4.4', mongoid: '6' }
-          - { ruby: '3.1.7', mongo: 'mongo:4.4', mongoid: '7', coverage: 'true' }
-          - { ruby: '3.4.8', mongo: 'mongo:4.4', mongoid: '7' }
-          # - { ruby: 'jruby-9.4.13.0', mongo: 'mongo:4.4', mongoid: '7' }
-          - { ruby: '3.1.7', mongo: 'mongo:6.0', mongoid: '8' }
-          - { ruby: '3.4.8', mongo: 'mongo:7.0', mongoid: '8' }
-          - { ruby: '3.4.8', mongo: 'mongo:8.0', mongoid: '9' }
-          - { ruby: '4.0.0', mongo: 'mongo:7.0', mongoid: '8' }
-          - { ruby: '4.0.0', mongo: 'mongo:8.0', mongoid: '9' }
-          # - { ruby: 'jruby-9.4.13.0', mongo: 'mongo:8.0', mongoid: '8' }
-        experimental: [false]
-
-    name: test (ruby=${{ matrix.entry.ruby }}, mongo=${{ matrix.entry.mongo }}, mongoid=${{ matrix.entry.mongoid }})
-    runs-on: ubuntu-latest
-
-    continue-on-error: ${{ matrix.experimental }}
-
+        include:
+          - { ruby: '2.6', mongo: '4.4', mongoid: '5' }
+          - { ruby: 'jruby-9.4', mongo: '4.4', mongoid: '5' }
+          - { ruby: '2.7', mongo: '4.4', mongoid: '6' }
+          - { ruby: '3.1', mongo: '4.4', mongoid: '6' }
+          - { ruby: 'jruby-9.4', mongo: '4.4', mongoid: '6' }
+          - { ruby: '3.0', mongo: '4.4', mongoid: '7', coverage: 'true' }
+          - { ruby: '3.4', mongo: '4.4', mongoid: '7' }
+          - { ruby: '2.6', mongo: '6.0', mongoid: '8' }
+          - { ruby: '3.1', mongo: '7.0', mongoid: '8' }
+          - { ruby: '3.3', mongo: '7.0', mongoid: '9' }
+          - { ruby: '3.4', mongo: '8.0', mongoid: '9' }
+          - { ruby: '4.0', mongo: '7.0', mongoid: '8' }
+          - { ruby: '4.0', mongo: '8.0', mongoid: '9' }
+    name: test (ruby=${{ matrix.ruby }}, mongo=${{ matrix.mongo }}, mongoid=${{ matrix.mongoid }})
+    runs-on: ubuntu-22.04
     services:
       mongo:
-        image: ${{ matrix.entry.mongo }}
-        ports: ["27017:27017"]
-
+        image: mongo:${{ matrix.mongo }}
+        ports: ['27017:27017']
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand({ping: 1})' || mongo --quiet --eval 'db.adminCommand({ping: 1})'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
     env:
-      MONGOID_VERSION: ${{ matrix.entry.mongoid }}
-      COVERAGE: ${{ matrix.entry.coverage }}
-
+      MONGOID_VERSION: ${{ matrix.mongoid }}
+      COVERAGE: ${{ matrix.coverage }}
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.entry.ruby }}
-        bundler-cache: true
-
-    - name: Run tests
-      run: bundle exec rspec
-
-    - name: Code Climate
-      if: ${{ env.CC_TEST_REPORTER_ID != '' && success() && matrix.entry.coverage == 'true' }}
-      uses: paambaati/codeclimate-action@v3.2.0
-      env:
-        CC_TEST_REPORTER_ID: ${{ vars.CC_TEST_REPORTER_ID }}
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Run tests
+        run: bundle exec rspec
+      - name: Code Climate
+        if: ${{ vars.CC_TEST_REPORTER_ID != '' && success() && matrix.coverage == 'true' }}
+        uses: paambaati/codeclimate-action@v9
+        env:
+          CC_TEST_REPORTER_ID: ${{ vars.CC_TEST_REPORTER_ID }}
