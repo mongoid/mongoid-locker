@@ -5,10 +5,8 @@ ENV['RACK_ENV'] = 'test'
 require 'logger' # Required for compatibility with activesupport 7
 require 'bigdecimal' unless defined?(JRUBY_VERSION)
 
-if ENV['COVERAGE']
+if ENV['COVERAGE'] == 'true'
   require 'simplecov'
-  require 'simplecov_json_formatter'
-  SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
   SimpleCov.start do
     add_group 'Libraries', 'lib/'
     track_files 'lib/**/*.rb'

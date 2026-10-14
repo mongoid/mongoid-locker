@@ -1,9 +1,8 @@
 # Mongoid-Locker
 
 [![Gem Version](https://badge.fury.io/rb/mongoid-locker.svg)](https://badge.fury.io/rb/mongoid-locker)
-[![Test](https://github.com/mongoid/mongoid-locker/actions/workflows/test.yml/badge.svg)](https://github.com/mongoid/mongoid-locker/actions/workflows/test.yml)
-[![Maintainability](https://api.codeclimate.com/v1/badges/04ee4ee75ff54659300a/maintainability)](https://codeclimate.com/github/mongoid/mongoid-locker/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/04ee4ee75ff54659300a/test_coverage)](https://codeclimate.com/github/mongoid/mongoid-locker/test_coverage)
+[![CI](https://github.com/mongoid/mongoid-locker/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/mongoid/mongoid-locker/actions/workflows/test.yml?query=branch%3Amaster)
+[![Coverage Status](https://coveralls.io/repos/github/mongoid/mongoid-locker/badge.svg?branch=master)](https://coveralls.io/github/mongoid/mongoid-locker?branch=master)
 
 Document-level optimistic locking for MongoDB via Mongoid. Mongoid-Locker is an easy way to ensure only one process can perform a certain operation on a document at a time.
 

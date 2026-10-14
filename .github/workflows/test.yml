@@ -13,14 +13,14 @@ jobs:
           - { ruby: '2.7', mongo: '4.4', mongoid: '6' }
           - { ruby: '3.1', mongo: '4.4', mongoid: '6' }
           - { ruby: 'jruby-9.4', mongo: '4.4', mongoid: '6' }
-          - { ruby: '3.0', mongo: '4.4', mongoid: '7', coverage: 'true' }
+          - { ruby: '3.0', mongo: '4.4', mongoid: '7' }
           - { ruby: '3.4', mongo: '4.4', mongoid: '7' }
           - { ruby: '2.6', mongo: '6.0', mongoid: '8' }
           - { ruby: '3.1', mongo: '7.0', mongoid: '8' }
           - { ruby: '3.3', mongo: '7.0', mongoid: '9' }
           - { ruby: '3.4', mongo: '8.0', mongoid: '9' }
           - { ruby: '4.0', mongo: '7.0', mongoid: '8' }
-          - { ruby: '4.0', mongo: '8.0', mongoid: '9' }
+          - { ruby: '4.0', mongo: '8.0', mongoid: '9', coverage: 'true' }
     name: test (ruby=${{ matrix.ruby }}, mongo=${{ matrix.mongo }}, mongoid=${{ matrix.mongoid }})
     runs-on: ubuntu-22.04
     services:
@@ -43,8 +43,10 @@ jobs:
           bundler-cache: true
       - name: Run tests
         run: bundle exec rspec
-      - name: Code Climate
-        if: ${{ vars.CC_TEST_REPORTER_ID != '' && success() && matrix.coverage == 'true' }}
-        uses: paambaati/codeclimate-action@v9
-        env:
-          CC_TEST_REPORTER_ID: ${{ vars.CC_TEST_REPORTER_ID }}
+      - name: Report coverage
+        if: ${{ matrix.coverage == 'true' }}
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: coverage/.resultset.json
+          format: simplecov

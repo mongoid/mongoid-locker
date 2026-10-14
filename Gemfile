@@ -51,5 +51,4 @@ group :development, :test do
     gem 'rubocop-rspec', '>= 3.7'
   end
   gem 'simplecov', require: false
-  gem 'simplecov_json_formatter', require: false
 end
