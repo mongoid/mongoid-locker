@@ -2,6 +2,7 @@
 
 ### 2.3.0 (Next)
 
+* [#110](https://github.com/mongoid/mongoid-locker/pull/110): Modernize CI through Ruby 4.0, Mongoid 9 and MongoDB 8 while preserving legacy combinations and declaring missing test dependencies - [@dblock](https://github.com/dblock).
 * [#109](https://github.com/mongoid/mongoid-locker/pull/109): Migrate Danger to use danger-pr-comment workflow - [@dblock](https://github.com/dblock).
 * [#109](https://github.com/mongoid/mongoid-locker/pull/109): Remove support for Ruby 2.x - [@dblock](https://github.com/dblock).
 * [#109](https://github.com/mongoid/mongoid-locker/pull/109): Add support for Ruby 4.0 - [@dblock](https://github.com/dblock).
