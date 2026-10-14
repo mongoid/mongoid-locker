@@ -19,4 +19,5 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_dependency 'mongoid', '>= 5.0', '< 10'
+  s.metadata['rubygems_mfa_required'] = 'true'
 end

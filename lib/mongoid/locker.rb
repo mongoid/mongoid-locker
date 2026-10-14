@@ -45,7 +45,7 @@ module Mongoid
       # @param opts [Hash] (see #with_lock)
       # @return [Float]
       def exponential_backoff(_doc, opts)
-        2**opts[:attempt] + rand
+        (2**opts[:attempt]) + rand
       end
 
       # Returns time in seconds remaining to complete the lock of the provided document. Makes requests to the database.
@@ -115,7 +115,9 @@ module Mongoid
         klass.locking_name_generator = locking_name_generator
 
         klass.delegate(*MODULE_METHODS, to: :class)
-        klass.singleton_class.delegate(*(methods(false) - MODULE_METHODS.flat_map { |method| [method, "#{method}=".to_sym] } - %i[included reset! configure]), to: self)
+        klass.singleton_class.delegate(*(methods(false) - MODULE_METHODS.flat_map do |method|
+          [method, :"#{method}="]
+        end - %i[included reset! configure]), to: self)
       end
     end
 
@@ -202,7 +204,10 @@ module Mongoid
       # @param locking_name_generator [Symbol]
       def locker(**params)
         invalid_parameters = params.keys - Mongoid::Locker.singleton_class.const_get('MODULE_METHODS')
-        raise Mongoid::Locker::Errors::InvalidParameter.new(self.class, invalid_parameters.first) unless invalid_parameters.empty?
+        unless invalid_parameters.empty?
+          raise Mongoid::Locker::Errors::InvalidParameter.new(self.class,
+                                                              invalid_parameters.first)
+        end
 
         params.each_pair do |key, value|
           send("#{key}=", value)
@@ -271,7 +276,10 @@ module Mongoid
         opts[:attempt] += 1
         delay = self.class.send(backoff_algorithm, self, opts)
 
-        raise Errors::DocumentCouldNotGetLock.new(self.class, id) if delay >= maximum_backoff || opts[:attempt] >= opts[:retries]
+        if delay >= maximum_backoff || opts[:attempt] >= opts[:retries]
+          raise Errors::DocumentCouldNotGetLock.new(self.class,
+                                                    id)
+        end
 
         sleep delay
       end

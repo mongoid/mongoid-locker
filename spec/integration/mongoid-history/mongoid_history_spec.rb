@@ -5,8 +5,7 @@ require 'mongoid-history'
 # This replicates the exception reported at https://github.com/mongoid/mongoid-history/issues/238#issuecomment-1063155193
 # when mongoid-locker required 'forwardable' instead of relying on the
 # active support-provided delegation method
-RSpec.describe 'MongoidHistory' do # rubocop:disable RSpec/DescribeClass
-  # rubocop:disable RSpec/ExampleLength
+RSpec.describe 'MongoidHistory' do
   it 'does not raise an exception' do
     expect do
       Class.new do
@@ -20,5 +19,4 @@ RSpec.describe 'MongoidHistory' do # rubocop:disable RSpec/DescribeClass
       end
     end.not_to raise_exception
   end
-  # rubocop:enable RSpec/ExampleLength
 end
