@@ -54,6 +54,23 @@ Note that these locks are only enforced when using `#with_lock`, not at the data
 
 More in-depth method documentation can be found at [RubyDoc.info](https://www.rubydoc.info/gems/mongoid-locker).
 
+### Updating Embedded Documents
+
+Lock the root document and retrieve embedded documents **inside** the `with_lock` block. By default, acquiring a lock reloads the root document before yielding, replacing its cached embedded documents. An embedded document reference obtained before locking is therefore stale: changing it and saving the reloaded parent does not persist that child's changes. Unsaved changes made before acquiring the lock can also be discarded by the reload.
+
+```ruby
+parent.with_lock do
+  child = parent.children.first
+  child.status = 2
+  parent.option = 4
+  parent.save!
+end
+```
+
+If you select a particular child before locking, keep its ID and retrieve it again inside the block with `parent.children.find(child_id)`. This preserves the default reload, so the update works with the current persisted state.
+
+Alternatively, `parent.with_lock(reload: false)` preserves existing in-memory embedded references, but does not refresh the parent or its children after acquiring the lock. Use it only when you deliberately want to work with the state already loaded; acquiring the lock does not make that state current.
+
 ### Customizable :locking_name and :locked_at field names
 By default, Locker uses fields with `:locking_name` and `:locked_at` names which should be defined in a model.
 ```ruby
