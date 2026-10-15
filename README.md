@@ -155,6 +155,25 @@ class User
 ## Testing with RSpec
 Please see examples in [test_examples_spec.rb](spec/test_examples_spec.rb) file.
 
+### Sharded Collections
+
+Locking is integration-tested through a real `mongos` router with collections sharded by ranged and hashed `_id` keys. These tests cover acquiring and releasing locks, contention, expired locks, and exceptions. They use a single-shard cluster; they do not test chunk migrations or arbitrary non-`_id` shard keys.
+
+To run the sharding tests locally, start the disposable cluster and wait until its shard is registered:
+
+```sh
+docker run -d --name locker-sharding -p 127.0.0.1:27028:27017 \
+  -v "$PWD/spec/integration/sharding/start.sh:/start.sh:ro" \
+  mongo:8.0 bash /start.sh
+docker exec locker-sharding mongosh --quiet --eval 'db.adminCommand({listShards:1})'
+SHARDED_MONGODB_URI=mongodb://localhost:27028/mongoid_locker_sharding_test \
+  bundle exec rspec spec/integration/sharding
+docker stop locker-sharding
+docker rm locker-sharding
+```
+
+Use a dedicated test database: these tests drop and recreate their collection. Without `SHARDED_MONGODB_URI`, they are skipped by the normal suite. CI starts the cluster and runs them separately on MongoDB 6.0 and 8.0.
+
 ## Copyright & License
 
 Copyright (c) 2012-2020 Aidan Feldman & Contributors
