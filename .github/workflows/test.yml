@@ -3,6 +3,36 @@ name: Test
 on: [push, pull_request]
 
 jobs:
+  sharding:
+    name: Sharded collections (MongoDB ${{ matrix.mongo }})
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        mongo: ['6.0', '8.0']
+    env:
+      SHARDED_MONGODB_URI: mongodb://localhost:27028/mongoid_locker_sharding_test
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - name: Start sharded MongoDB
+        run: |
+          docker run -d --name locker-sharding -p 27028:27017 \
+            -v "$PWD/spec/integration/sharding/start.sh:/start.sh:ro" \
+            mongo:${{ matrix.mongo }} bash /start.sh
+          for attempt in $(seq 1 60); do
+            if docker exec locker-sharding mongosh --quiet --eval 'if (db.adminCommand({listShards:1}).shards.length !== 1) throw new Error("Shard not ready")' >/dev/null 2>&1; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs locker-sharding
+          exit 1
+      - name: Run sharding integration tests
+        run: bundle exec rspec spec/integration/sharding
   test:
     strategy:
       fail-fast: false
