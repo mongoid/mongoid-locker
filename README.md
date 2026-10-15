@@ -161,6 +161,3 @@ Please see examples in [test_examples_spec.rb](spec/test_examples_spec.rb) file.
 Copyright (c) 2012-2020 Aidan Feldman & Contributors
 
 MIT License, see [LICENSE](LICENSE.txt) for more information.
-## CI compatibility
-
-CI retains the existing Mongoid 5–8 and JRuby combinations and adds Mongoid 9 with Ruby 3.3, 3.4 and 4.0 against MongoDB through 8.0; select the dependency family with `MONGOID_VERSION` and run `bundle exec rspec`.
