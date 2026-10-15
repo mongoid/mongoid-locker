@@ -1,5 +1,9 @@
 ## Changelog
 
+### 2.3.1 (Next)
+
+* Your contribution here.
+
 ### 2.3.0 (2026-10-15)
 
 * [#19](https://github.com/mongoid/mongoid-locker/issues/19): Add real sharded-cluster integration coverage for locking collections sharded by ranged and hashed `_id` - [@dblock](https://github.com/dblock).
