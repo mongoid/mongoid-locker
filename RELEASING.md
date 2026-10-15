@@ -1,67 +1,51 @@
-Releasing Mongoid::Locker
-=========================
+# Releasing Mongoid::Locker
 
-There're no particular rules about when to release mongoid-locker. Release bug fixes frequently, features not so frequently and breaking API changes rarely.
+## Prepare
 
-### Release
+Use the upstream checkout on a clean `master`, verify `origin` points to `mongoid/mongoid-locker`, and run `git pull --ff-only`. Review existing CI results for supported platforms. Use patch versions for fixes, minor versions for backward-compatible features, and major versions for breaking changes.
 
-Run tests, check that all tests succeed locally.
+Set the version in `lib/mongoid/locker/version.rb`, date its section in `CHANGELOG.md` using `YYYY-MM-DD`, and remove that section's contribution placeholder.
 
-```
+```sh
 bundle install
-bundle exec rake
-```
-
-Check that the last build succeeded in [GitHub Actions](https://github.com/mongoid/mongoid-locker/actions) for all supported platforms.
-
-Check the version, if needed modify [lib/mongoid/locker/version.rb](lib/mongoid/locker/version.rb).
-
-*  Increment the third number if the release has bug fixes and/or very minor features, only (eg. change `0.5.1` to `0.5.2`).
-*  Increment the second number if the release contains major features or breaking API changes (eg. change `0.5.1` to `0.4.0`).
-
-Change "Next Release" in [CHANGELOG.md](CHANGELOG.md) to the new version.
-
-```
-### 0.4.0 (2014-01-27)
-```
-
-Remove the line with "Your contribution here.", since there will be no more contributions to this release.
-
-Commit your changes.
-
-```
-git add CHANGELOG.md lib/mongoid-locker/version.rb
-git commit -m "Preparing for release, 0.4.0."
+bundle exec rspec
+bundle exec rubocop
+git add CHANGELOG.md lib/mongoid/locker/version.rb RELEASING.md
+git commit -m "Preparing for release, 2.3.0."
 git push origin master
 ```
 
-Release.
+Do not wait for the preparation commit's CI checks before publishing.
 
-```
-$ bundle exec rake release
+## Publish RubyGems and GitHub
 
-mongoid-locker 0.4.0 built to pkg/mongoid-locker-0.4.0.gem.
-Tagged v0.4.0.
-Pushed git commits and tags.
-Pushed mongoid-locker 0.4.0 to rubygems.org.
+```sh
+bundle exec rake release
 ```
 
-### Prepare for the Next Version
+Complete RubyGems MFA when requested. This builds the gem, pushes the release tag, and publishes to RubyGems. If interrupted, inspect the existing tag and published version before retrying. Never move a published tag. If only publication is missing, run `gem push pkg/mongoid-locker-2.3.0.gem` with a fresh MFA code.
 
-Increment the minor version, modify [lib/mongoid-locker/version.rb](lib/mongoid-locker/version.rb).
+A tag is not a GitHub release. After verifying RubyGems publication, create a matching release with the changelog notes:
 
-Add the next release to [CHANGELOG.md](CHANGELOG.md).
-
+```sh
+version=2.3.0
+notes="$(mktemp)"
+awk -v version="$version" '
+  /^### / {
+    if (found) exit
+    if ($2 == version) found = 1
+    next
+  }
+  found { print }
+' CHANGELOG.md > "$notes"
+gh release create "v$version" --repo mongoid/mongoid-locker --verify-tag --title "$version" --notes-file "$notes" --latest
+rm "$notes"
+curl --fail --silent --show-error "https://rubygems.org/api/v2/rubygems/mongoid-locker/versions/$version.json"
+gh release view "v$version" --repo mongoid/mongoid-locker
 ```
-### 0.4.1 (Next)
 
-* Your contribution here.
-```
+Verify both the published gem and non-draft GitHub release.
 
-Commit your changes.
+## Prepare the Next Version
 
-```
-git add CHANGELOG.md lib/mongoid-locker/version.rb
-git commit -m "Preparing for next release, 0.4.1."
-git push origin master
-```
+Increment the development patch version in `lib/mongoid/locker/version.rb`, for example to `2.3.1`. Add `### 2.3.1 (Next)` and a contribution placeholder above the released changelog section. Commit and push these changes to `master`, leaving the release tag unchanged.
