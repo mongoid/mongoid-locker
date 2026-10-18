@@ -23,6 +23,11 @@ RSpec/MultipleExpectations:
 RSpec/LeakyConstantDeclaration:
   Enabled: false
 
+# This standalone Ruby 2.0 runner reports reproduction results, not RSpec examples.
+RSpec/Output:
+  Exclude:
+    - spec/integration/historical_sharding/reproduce.rb
+
 inherit_from: .rubocop_todo.yml
 
 plugins:

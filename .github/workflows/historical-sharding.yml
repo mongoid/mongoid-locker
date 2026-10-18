@@ -1,0 +1,26 @@
+name: Historical sharding
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - spec/integration/historical_sharding/**
+      - .github/workflows/historical-sharding.yml
+  pull_request:
+    paths:
+      - spec/integration/historical_sharding/**
+      - .github/workflows/historical-sharding.yml
+
+permissions:
+  contents: read
+
+jobs:
+  historical-sharding:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build September 2013 dependencies
+        run: docker build --platform linux/amd64 -t locker-2013 spec/integration/historical_sharding
+      - name: Attempt reproduction on two shards
+        run: docker run --rm --platform linux/amd64 --network none locker-2013

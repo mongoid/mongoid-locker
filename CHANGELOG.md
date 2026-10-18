@@ -4,6 +4,8 @@
 
 * Your contribution here.
 
+* [#114](https://github.com/mongoid/mongoid-locker/pull/114): Add an isolated September 2013 sharding reproduction using Ruby 2.0.0p247, MongoDB 2.4.6, and published mongoid-locker 0.2.1 on two shards; the original failure did not reproduce - [@dblock](https://github.com/dblock).
+
 ### 2.3.0 (2026-10-15)
 
 * [#19](https://github.com/mongoid/mongoid-locker/issues/19): Add real sharded-cluster integration coverage for locking collections sharded by ranged and hashed `_id` - [@dblock](https://github.com/dblock).
