@@ -3,6 +3,7 @@
 ### 2.3.1 (Next)
 
 * Your contribution here.
+* [#115](https://github.com/mongoid/mongoid-locker/pull/115): Lint Markdown, YAML, and spelling with rubocop-md, rubocop-prose, rubocop-spellcheck, and rubocop-yaml in a separate Lint workflow, and clean up documentation - [@dblock](https://github.com/dblock).
 
 ### 2.3.0 (2026-10-15)
 
@@ -13,6 +14,7 @@
 * [#109](https://github.com/mongoid/mongoid-locker/pull/109): Migrate Danger to use danger-pr-comment workflow - [@dblock](https://github.com/dblock).
 * [#109](https://github.com/mongoid/mongoid-locker/pull/109): Remove support for Ruby 2.x - [@dblock](https://github.com/dblock).
 * [#109](https://github.com/mongoid/mongoid-locker/pull/109): Add support for Ruby 4.0 - [@dblock](https://github.com/dblock).
+
 ### 2.2.0 (2025-06-22)
 
 * [#107](https://github.com/mongoid/mongoid-locker/pull/107): Revert introduction of `forwardable` to ensure compatibility with mongoid-history - [@scpike](https://github.com/scpike).
