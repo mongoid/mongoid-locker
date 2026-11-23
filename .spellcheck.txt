@@ -6,6 +6,7 @@ api
 backoff
 bbed
 BSON
+Bundler
 cesarizu
 chainable
 CHANGELOG
@@ -26,6 +27,7 @@ Feldman
 Fixnum
 forwardable
 Gemfile
+gemspec
 github
 InvalidParameter
 isdbgrid
@@ -38,6 +40,7 @@ md
 Mongoid
 mongoid
 MongoidHistory
+MongoidLockerRelease
 mongos
 mooremo
 msg
@@ -45,8 +48,10 @@ nchainani
 ObjectId
 param
 pschrammel
+Rakefile
 randikabanura
 rb
+README
 rsosag
 RSpec
 rspec

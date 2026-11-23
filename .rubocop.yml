@@ -38,7 +38,12 @@ Style/HashTransformValues:
   Enabled: true
 
 RSpec/MultipleExpectations:
+  inherit_mode:
+    merge:
+    - Exclude
   Enabled: false
+  Exclude:
+  - spec/release/release_spec.rb
 
 RSpec/LeakyConstantDeclaration:
   Enabled: false
@@ -144,3 +149,11 @@ RSpec/BeforeAfterAll:
     - Exclude
   Exclude:
   - spec/support/configurations_shared_context.rb
+
+# One release example verifies the tag, the next development commit, and their files together.
+RSpec/ExampleLength:
+  inherit_mode:
+    merge:
+    - Exclude
+  Exclude:
+  - spec/release/release_spec.rb

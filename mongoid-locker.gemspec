@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.push File.expand_path('lib', __dir__)
-
-require 'mongoid/locker/version'
+require_relative 'lib/mongoid/locker/version'
 
 Gem::Specification.new do |s|
   s.name = 'mongoid-locker'
