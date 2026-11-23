@@ -1,8 +1,6 @@
 # Mongoid-Locker
 
-[![Gem Version](https://badge.fury.io/rb/mongoid-locker.svg)](https://badge.fury.io/rb/mongoid-locker)
-[![CI](https://github.com/mongoid/mongoid-locker/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/mongoid/mongoid-locker/actions/workflows/test.yml?query=branch%3Amaster)
-[![Coverage Status](https://coveralls.io/repos/github/mongoid/mongoid-locker/badge.svg?branch=master)](https://coveralls.io/github/mongoid/mongoid-locker?branch=master)
+[![Gem Version](https://badge.fury.io/rb/mongoid-locker.svg)](https://badge.fury.io/rb/mongoid-locker) [![CI](https://github.com/mongoid/mongoid-locker/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/mongoid/mongoid-locker/actions/workflows/test.yml?query=branch%3Amaster) [![Coverage Status](https://coveralls.io/repos/github/mongoid/mongoid-locker/badge.svg?branch=master)](https://coveralls.io/github/mongoid/mongoid-locker?branch=master)
 
 Document-level optimistic locking for MongoDB via Mongoid. Mongoid-Locker is an easy way to ensure only one process can perform a certain operation on a document at a time.
 
@@ -11,6 +9,7 @@ Document-level optimistic locking for MongoDB via Mongoid. Mongoid-Locker is an 
 **NOTE:** Please refer to [1-x-stable](https://github.com/mongoid/mongoid-locker/tree/1-x-stable) branch for `1.x.x` documentation. See the [UPGRADING](UPGRADING.md) guide and [CHANGELOG](CHANGELOG.md) for an overview of the changes.
 
 [Tested](https://github.com/mongoid/mongoid-locker/actions) against:
+
 - MRI: `3.x`, `4.x`
 - JRuby `9.1.17.0`, `9.2.11.1`
 - Mongoid: `5`, `6`, `7`, `8`, `9`
@@ -71,8 +70,10 @@ If you select a particular child before locking, keep its ID and retrieve it aga
 
 Alternatively, `parent.with_lock(reload: false)` preserves existing in-memory embedded references, but does not refresh the parent or its children after acquiring the lock. Use it only when you deliberately want to work with the state already loaded; acquiring the lock does not make that state current.
 
-### Customizable :locking_name and :locked_at field names
+### Customizable `locking_name` and `locked_at` Field Names
+
 By default, Locker uses fields with `:locking_name` and `:locked_at` names which should be defined in a model.
+
 ```ruby
 class User
   include Mongoid::Document
@@ -84,6 +85,7 @@ end
 ```
 
 Use `Mongoid::Locker.configure` to setup parameters which used by Locker for all models where it's included.
+
 ```ruby
 Mongoid::Locker.configure do |config|
   config.locking_name_field = :global_locking_name
@@ -100,6 +102,7 @@ end
 ```
 
 The `locker` method in your model accepts options to setup parameters for the model.
+
 ```ruby
 class User
   include Mongoid::Document
@@ -108,37 +111,42 @@ class User
   field :locker_locking_name, type: String
   field :locker_locked_at, type: Time
 
-  locker locked_at_field: :locker_locking_name,
+  locker locking_name_field: :locker_locking_name,
          locked_at_field: :locker_locked_at
 end
 ```
 
-### Available parameters for Mongoid::Locker, a class where it's included
-| parameter | default | options | description |
-|---|---|---|---|
-| locking_name_field | `:locking_name` | any field name | field where name of locking is storing, must be of type `String` |
-| locked_at_field | `:locked_at` | any field name | field where it is storing the time of beginning a lock of a document, must be of type `Time` |
-| lock_timeout | `5` | | within this time (in seconds) a document is considered as locked |
-| locker_write_concern | `{ w: 1 }` | see [MongoDB Write Concern](https://docs.mongodb.com/manual/reference/write-concern/#write-concern-specification)| a write concern only used for lock and unlock operations |
-| maximum_backoff | `60.0` | | the highest timeout (in seconds) between retires to lock a document, reaching that value `#with_lock` method raises `Mongoid::Locker::Errors::DocumentCouldNotGetLock` |
-| backoff_algorithm | `:exponential_backoff` | `:locked_at_backoff` or [custom algorithm](#custom-backoff_algorithm-and-locking_name_generator) | algorithm used for timeout calculating between retries to lock a document|
-| locking_name_generator | `:secure_locking_name` | [custom generator](#custom-backoff_algorithm-and-locking_name_generator) | generator used to generate unique name of a lock |
+### Available Parameters
+
+| parameter              | default                | options                                                                                                           | description                                                                                                                                                            |
+| ---                    | ---                    | ---                                                                                                               | ---                                                                                                                                                                    |
+| locking_name_field     | `:locking_name`        | any field name                                                                                                    | field where name of locking is storing, must be of type `String`                                                                                                       |
+| locked_at_field        | `:locked_at`           | any field name                                                                                                    | field where it is storing the time of beginning a lock of a document, must be of type `Time`                                                                           |
+| lock_timeout           | `5`                    |                                                                                                                   | within this time (in seconds) a document is considered as locked                                                                                                       |
+| locker_write_concern   | `{ w: 1 }`             | see [MongoDB Write Concern](https://docs.mongodb.com/manual/reference/write-concern/#write-concern-specification) | a write concern only used for lock and unlock operations                                                                                                               |
+| maximum_backoff        | `60.0`                 |                                                                                                                   | the highest timeout (in seconds) between retries to lock a document, reaching that value `#with_lock` method raises `Mongoid::Locker::Errors::DocumentCouldNotGetLock` |
+| backoff_algorithm      | `:exponential_backoff` | `:locked_at_backoff` or [custom algorithm](#custom-backoff_algorithm-and-locking_name_generator)                  | algorithm used for timeout calculating between retries to lock a document                                                                                              |
+| locking_name_generator | `:secure_locking_name` | [custom generator](#custom-backoff_algorithm-and-locking_name_generator)                                          | generator used to generate unique name of a lock                                                                                                                       |
 
 For instances of a class where `Mongoid::Locker` is included, all parameters of a class are available for reading.
+
 ```ruby
-  document.lock_timeout
-  #=> 5
+document.lock_timeout
+# => 5
 ```
 
-### Custom :backoff_algorithm and :locking_name_generator
+### Custom `backoff_algorithm` and `locking_name_generator`
+
 A method which is defined in `Mongoid::Locker` are available in a class where it is included.
 
 Method `#with_lock` passes to the methods a document to which apply `#with_lock` and a hash of options. The hash may look like this:
+
 ```ruby
-  { retries: Infinity, reload: true, attempt: 0, locking_name: "71c1ccd4-72d9-4a83-bbed-adf65803bd5d" }
+{ retries: Infinity, reload: true, attempt: 0, locking_name: '71c1ccd4-72d9-4a83-bbed-adf65803bd5d' }
 ```
 
-A custom backoff algorithmoff **must return** a value more or equal `maximum_backoff` value to force `#with_lock` quit trying to lock a document, otherwise `#with_lock` will be trying to lock a document `INFINITY` times.
+A custom backoff algorithm **must return** a value more or equal `maximum_backoff` value to force `#with_lock` quit trying to lock a document, otherwise `#with_lock` will be trying to lock a document `INFINITY` times.
+
 ```ruby
 Mongoid::Locker.configure do |config|
   config.backoff_algorithm = :custom_backoff
@@ -154,6 +162,7 @@ end
 ```
 
 A custom locking name generator **must return** a string to secure uniqueness name of locking.
+
 ```ruby
 class User
   include Mongoid::Document
@@ -167,9 +176,11 @@ class User
   def self.custom_locking_name(_doc, _opts)
     SecureRandom.uuid
   end
+end
 ```
 
 ## Testing with RSpec
+
 Please see examples in [test_examples_spec.rb](spec/test_examples_spec.rb) file.
 
 ### Sharded Collections
@@ -191,8 +202,12 @@ docker rm locker-sharding
 
 Use a dedicated test database: these tests drop and recreate their collection. Without `SHARDED_MONGODB_URI`, they are skipped by the normal suite. CI starts the cluster and runs them separately on MongoDB 6.0 and 8.0.
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md), [CHANGELOG.md](CHANGELOG.md), [UPGRADING.md](UPGRADING.md), and [RELEASING.md](RELEASING.md).
+
 ## Copyright & License
 
 Copyright (c) 2012-2020 Aidan Feldman & Contributors
 
-MIT License, see [LICENSE](LICENSE.txt) for more information.
+MIT License, see [LICENSE.txt](LICENSE.txt) for more information.
