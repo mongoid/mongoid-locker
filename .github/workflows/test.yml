@@ -1,11 +1,18 @@
 name: Test
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [master]
+  pull_request:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   sharding:
     name: Sharded collections (MongoDB ${{ matrix.mongo }})
     runs-on: ubuntu-22.04
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -23,7 +30,7 @@ jobs:
           docker run -d --name locker-sharding -p 27028:27017 \
             -v "$PWD/spec/integration/sharding/start.sh:/start.sh:ro" \
             mongo:${{ matrix.mongo }} bash /start.sh
-          for attempt in $(seq 1 60); do
+          for _ in $(seq 1 60); do
             if docker exec locker-sharding mongosh --quiet --eval 'if (db.adminCommand({listShards:1}).shards.length !== 1) throw new Error("Shard not ready")' >/dev/null 2>&1; then
               exit 0
             fi
@@ -53,6 +60,7 @@ jobs:
           - { ruby: '4.0', mongo: '8.0', mongoid: '9', coverage: 'true' }
     name: test (ruby=${{ matrix.ruby }}, mongo=${{ matrix.mongo }}, mongoid=${{ matrix.mongoid }})
     runs-on: ubuntu-22.04
+    timeout-minutes: 20
     services:
       mongo:
         image: mongo:${{ matrix.mongo }}

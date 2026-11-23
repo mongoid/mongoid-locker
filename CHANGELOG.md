@@ -4,6 +4,7 @@
 
 * Your contribution here.
 * [#115](https://github.com/mongoid/mongoid-locker/pull/115): Lint Markdown, YAML, and spelling with rubocop-md, rubocop-prose, rubocop-spellcheck, and rubocop-yaml in a separate Lint workflow, and clean up documentation - [@dblock](https://github.com/dblock).
+* [#116](https://github.com/mongoid/mongoid-locker/pull/116): Run CI pushes only on the default branch, cancel superseded pull request runs, skip duplicate lint in the test matrix, and bound job times - [@dblock](https://github.com/dblock).
 
 ### 2.3.0 (2026-10-15)
 
