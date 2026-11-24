@@ -8,7 +8,9 @@ module MongoidLockerRelease
   def self.workflow(**options)
     RubyGemRelease::Workflow::RubyGem.new(
       version: RubyGemRelease::Version::RubyConstant.new(path: 'lib/mongoid/locker/version.rb', constant: 'VERSION'),
-      changelog: RubyGemRelease::Changelog::Intridea.new(placeholder: '* Your contribution here.'),
+      changelog: RubyGemRelease::Changelog::Intridea.new(
+        placeholder: '* Your contribution here.', date_format: '%Y-%m-%d'
+      ),
       **options
     )
   end
