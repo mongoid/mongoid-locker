@@ -1,5 +1,9 @@
 ## Changelog
 
+### 2.3.2 (Next)
+
+* Your contribution here.
+
 ### 2.3.1 (2026-11-24)
 
 * [#115](https://github.com/mongoid/mongoid-locker/pull/115): Lint Markdown, YAML, and spelling with rubocop-md, rubocop-prose, rubocop-spellcheck, and rubocop-yaml in a separate Lint workflow, and clean up documentation - [@dblock](https://github.com/dblock).
