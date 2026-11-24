@@ -53,7 +53,7 @@ if RUBY_ENGINE == 'ruby' && Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('
         project.release!
 
         released = project.remote_file('v1.2.0', 'CHANGELOG.md')
-        expect(released).to match(%r{\A### 1\.2\.0 \(\d{4}/\d{2}/\d{2}\)\n\n})
+        expect(released).to match(/\A### 1\.2\.0 \(\d{4}-\d{2}-\d{2}\)\n\n/)
         expect(released).to include(note)
         expect(released).not_to include('(Next)', placeholder)
         expect(project.remote_file('v1.2.0', version_path)).to include("VERSION = '1.2.0'")
